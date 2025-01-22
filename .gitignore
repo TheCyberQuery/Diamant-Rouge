@@ -1,0 +1,94 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+node_modules/
+
+# Environment variable files
+.env
+.env.*
+
+# WebStorm IDE files
+.idea/
+.vscode/
+*.iml
+
+# Build outputs
+dist/
+build/
+out/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# TypeScript
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm/
+
+# Optional yarn cache directory
+.yarn/
+.yarnrc.yml
+
+# Testing
+coverage/
+.nyc_output/
+jest-coverage/
+
+# Next.js
+.next/
+out/
+
+# Remix
+.cache/
+
+# Nuxt.js
+.nuxt/
+node_modules/
+
+# SvelteKit
+.svelte-kit/
+
+# Vue.js
+.vuepress/dist/
+.vuepress/.temp
+.temp/
+dist/
+
+# Angular
+.angular/
+.angular-cache/
+!src/environments/*.ts
+
+# React Native
+react-native/ios/*.xcodeproj/project.xcworkspace/
+react-native/android/.gradle/
+react-native/android/app/build/
+
+# Logs in Android/iOS
+**/*.log
+android/app/build/
+
+# Cypress
+cypress/videos/
+cypress/screenshots/
+
+# Storybook
+storybook-static/
+
+# Other
+.npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
