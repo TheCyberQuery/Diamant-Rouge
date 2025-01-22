@@ -122,7 +122,7 @@ We, at **TheCyberQuery**, extend our heartfelt appreciation for choosing us to b
         <img src="assets/images/tcq_logo.png" alt="TheCyberQuery Logo" width="100">
       </td>
       <td style="text-align: center; vertical-align: middle;">
-        <img src="assets/images/diamantrouge-logo.jpg" alt="Diamant-Rouge Logo" width="150">
+        <img src="assets/images/diamantrouge-logo.jpg" alt="Diamant-Rouge Logo" width="200">
       </td>
     </tr>
   </table>
