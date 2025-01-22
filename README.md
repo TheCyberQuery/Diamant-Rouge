@@ -3,7 +3,7 @@
 
 <div align="center">
   <!-- Diamant-Rouge logo -->
-  <img src="assets/images/diamantrouge-logo.jpg" alt="Diamant-Rouge Logo" width="250">    &nbsp;
+  <img src="assets/images/diamantrouge-logo.jpg" alt="Diamant-Rouge Logo" width="250">&nbsp;&nbsp;&nbsp;&nbsp;
 
   <!-- Separator with the "+" symbol -->
   <div style="font-size: 24px; font-weight: bold; margin: 20px 0;">+</div>
@@ -11,7 +11,6 @@
   <!-- TheCyberQuery logo with circular styling -->
   <img src="assets/images/tcq_logo.png" alt="TheCyberQuery Logo" width="150" height="150" style="border-radius: 50%;">
 </div>
-
 ### Welcome to the Diamant-Rouge jewelry store website project! ✨
 
 This repository is a collaborative project between **TheCyberQuery** and **Diamant-Rouge**, dedicated to building a modern, sleek, and user-friendly e-commerce platform for showcasing and selling beautiful jewelry. We strive to deliver the highest quality design and development, ensuring the site meets all customer expectations and industry standards.
