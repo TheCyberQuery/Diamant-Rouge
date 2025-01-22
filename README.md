@@ -3,7 +3,7 @@
 
 <div align="center">
   <!-- Diamant-Rouge logo -->
-  <img src="assets/images/diamantrouge-logo.jpg" alt="Diamant-Rouge Logo" width="250"  style="margin-right: 20px;">
+  <img src="assets/images/diamantrouge-logo.jpg" alt="Diamant-Rouge Logo" width="250">    &nbsp;
 
   <!-- Separator with the "+" symbol -->
   <div style="font-size: 24px; font-weight: bold; margin: 20px 0;">+</div>
