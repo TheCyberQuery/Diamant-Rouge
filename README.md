@@ -121,13 +121,6 @@ We, at **TheCyberQuery**, extend our heartfelt appreciation for choosing us to b
       <td style="text-align: center; vertical-align: middle;">
         <img src="assets/images/tcq_logo.png" alt="TheCyberQuery Logo" width="100">
       </td>
-
-      <!-- Separator "+" -->
-      <td style="text-align: center; font-size: 24px; font-weight: bold; vertical-align: middle;">
-        +
-      </td>
-
-      <!-- Diamant-Rouge Typography Logo -->
       <td style="text-align: center; vertical-align: middle;">
         <img src="assets/images/diamantrouge-logo.jpg" alt="Diamant-Rouge Logo" width="150">
       </td>
