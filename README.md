@@ -1,15 +1,15 @@
 # Diamant-Rouge Jewelry Store Website 🌟
 
 
-<div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; text-align: center;">
+<div align="center">
   <!-- Diamant-Rouge logo -->
-  <img src="assets/images/diamantrouge-logo.jpg" alt="Diamant-Rouge Logo" width="250" style="display: block;">
+  <img src="assets/images/diamantrouge-logo.jpg" alt="Diamant-Rouge Logo" width="250">
 
   <!-- Separator with the "+" symbol -->
-<span style="font-size: 24px; font-weight: bold; display: block;">+</span>
+  <div style="font-size: 24px; font-weight: bold; margin: 20px 0;">+</div>
 
   <!-- TheCyberQuery logo with circular styling -->
-  <img src="assets/images/tcq_logo.png" alt="TheCyberQuery Logo" width="150" height="150" style="border-radius: 50%; display: block;">
+  <img src="assets/images/tcq_logo.png" alt="TheCyberQuery Logo" width="150" height="150" style="border-radius: 50%;">
 </div>
 
 ### Welcome to the Diamant-Rouge jewelry store website project! ✨
