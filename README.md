@@ -2,7 +2,7 @@
 
 
 <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; text-align: center;">
-  <!-- Diamant-Rouge logo with inline typography styling -->
+  <!-- Diamant-Rouge logo -->
   <img src="assets/images/diamantrouge-logo.jpg" alt="Diamant-Rouge Logo" width="250" style="display: block;">
 
   <!-- Separator with the "+" symbol -->
