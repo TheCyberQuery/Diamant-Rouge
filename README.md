@@ -115,8 +115,8 @@ We, at **TheCyberQuery**, extend our heartfelt appreciation for choosing us to b
 <div align="center">
   <!-- Logo Container -->
   <div>
-    <img src="assets/images/tcq_logo.png" alt="TheCyberQuery Logo" width="100" style="vertical-align: middle; margin-right: 15px;">
-    <img src="assets/images/diamantrouge-logo.jpg" alt="Diamant-Rouge Logo" width="150" height="57"  style="vertical-align: middle; margin-bottom: 100px">
+    <img src="assets/images/tcq_logo.png" alt="TheCyberQuery Logo" width="57" style="vertical-align: middle; margin-right: 15px;">
+    <img src="assets/images/diamantrouge-logo.jpg" alt="Diamant-Rouge Logo" width="150" height="57"  style="vertical-align: middle;">
   </div>
 
   <!-- Text Below the Logos -->
