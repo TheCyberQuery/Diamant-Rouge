@@ -11,6 +11,7 @@
   <!-- TheCyberQuery logo with circular styling -->
   <img src="assets/images/tcq_logo.png" alt="TheCyberQuery Logo" width="150" height="150" style="border-radius: 50%;">
 </div>
+
 ### Welcome to the Diamant-Rouge jewelry store website project! ✨
 
 This repository is a collaborative project between **TheCyberQuery** and **Diamant-Rouge**, dedicated to building a modern, sleek, and user-friendly e-commerce platform for showcasing and selling beautiful jewelry. We strive to deliver the highest quality design and development, ensuring the site meets all customer expectations and industry standards.
@@ -112,13 +113,28 @@ We, at **TheCyberQuery**, extend our heartfelt appreciation for choosing us to b
 ---
 
 <div align="center">
-  <!-- Logo Container -->
-  <div>
-    <img src="assets/images/tcq_logo.png" alt="TheCyberQuery Logo" width="100" style="vertical-align: middle; margin-right: 15px;">
-    <img src="assets/images/diamantrouge-logo.jpg" alt="Diamant-Rouge Logo" width="150" height="100"  style="vertical-align: middle;">
-  </div>
 
-  <!-- Text Below the Logos -->
+  <!-- Use a table for consistent alignment -->
+  <table>
+    <tr>
+      <!-- TheCyberQuery Circular Logo -->
+      <td style="text-align: center; vertical-align: middle;">
+        <img src="assets/images/tcq_logo.png" alt="TheCyberQuery Logo" width="100">
+      </td>
+
+      <!-- Separator "+" -->
+      <td style="text-align: center; font-size: 24px; font-weight: bold; vertical-align: middle;">
+        +
+      </td>
+
+      <!-- Diamant-Rouge Typography Logo -->
+      <td style="text-align: center; vertical-align: middle;">
+        <img src="assets/images/diamantrouge-logo.jpg" alt="Diamant-Rouge Logo" width="150">
+      </td>
+    </tr>
+  </table>
+
+  <!-- Caption Underneath Logos -->
   <p>
     <em>Crafted with ❤️ by TheCyberQuery</em>
   </p>
