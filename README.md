@@ -1,26 +1,7 @@
 # Diamant-Rouge Jewelry Store Website 🌟
 
-<style>
-  .centered-column {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    text-align: center;
-  }
-  .centered-column img {
-    display: block;
-  }
-  .centered-column .separator {
-    font-size: 24px;
-    font-weight: bold;
-    display: block;
-  }
-  .circular {
-    border-radius: 50%;
-  }
-</style>
+
+<link rel="stylesheet" type="text/css" href="assets/styles/styles.css">
 
 <div class="centered-column">
   <!-- Diamant-Rouge logo with inline typography styling -->
