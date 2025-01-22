@@ -84,7 +84,7 @@ If you're working on this project or wish to try it locally, follow the steps be
 Please follow **TheCyberQuery's contribution guidelines** for code structure, branch naming conventions, and pull requests.
 
 ### For Clients:
-Feel free to drop comments or feedback directly via the GitHub Issues tab, or email us at [your-email@thecyberquery.com].
+Feel free to drop comments or feedback directly via the GitHub Issues tab, or email us at [contact@thecyberquery.com](mailto:contact@thecyberquery.com).
 
 ---
 
