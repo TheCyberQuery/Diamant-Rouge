@@ -3,11 +3,42 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-    // Create a sample product
-    const product = await prisma.product.create({
-        data: {
+    // 1. Create a Category
+    const ringsCategory = await prisma.category.upsert({
+        where: { slug: 'rings' },
+        update: {},
+        create: {
+            slug: 'rings',
+            translations: {
+                create: [
+                    {
+                        language: 'en',
+                        name: 'Rings',
+                        description: 'Elegantly crafted rings that symbolize love and heritage.',
+                    },
+                    {
+                        language: 'fr',
+                        name: 'Bagues',
+                        description: 'Bagues élégamment façonnées symbolisant l’amour et l’héritage.',
+                    },
+                    {
+                        language: 'ar',
+                        name: 'خواتم',
+                        description: 'خواتم مصممة بأناقة ترمز إلى الحب والتراث.',
+                    },
+                ],
+            },
+        },
+    });
+
+    // 2. Create a Product referencing that category
+    const rougePassion = await prisma.product.upsert({
+        where: { sku: 'ROUGE-PASSION-001' },
+        update: { categoryId: ringsCategory.id },
+        create: {
             sku: 'ROUGE-PASSION-001',
             basePrice: 999.99,
+            categoryId: ringsCategory.id,
             translations: {
                 create: [
                     {
@@ -32,7 +63,32 @@ async function main() {
             },
         },
     });
-    console.log('Created product: ', product);
+
+    // 3. Create some Product Variations (sizes, for example)
+    await prisma.productVariation.createMany({
+        data: [
+            {
+                productId: rougePassion.id,
+                variationType: 'Size',
+                variationValue: '5',
+                additionalPrice: 0,
+            },
+            {
+                productId: rougePassion.id,
+                variationType: 'Size',
+                variationValue: '6',
+                additionalPrice: 0,
+            },
+            {
+                productId: rougePassion.id,
+                variationType: 'Size',
+                variationValue: '7',
+                additionalPrice: 0,
+            },
+        ],
+    });
+
+    console.log('Seed completed!');
 }
 
 main()
