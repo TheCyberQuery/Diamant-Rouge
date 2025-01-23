@@ -1,0 +1,23 @@
+/* styles/globals.css */
+
+/* Font Imports (example using Google Fonts for Montserrat & a fallback for Didot) */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap');
+
+html, body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+    background-color: #0A0A0A; /* Ebony */
+    color: #F5F5F0; /* Ivory */
+}
+
+a {
+    color: #A00000; /* Crimson accent for links */
+    text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Didot', serif; /* or a fallback if Didot isn't available */
+    letter-spacing: 1px;
+}
