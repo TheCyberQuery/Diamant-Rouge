@@ -4,16 +4,18 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-    font-family: theme("fontFamily.sans");
-}
+@layer base {
+    html {
+        font-family: theme("fontFamily.sans");
+    }
 
-body {
-    @apply bg-ebony text-ivory;
-    margin: 0;
-    padding: 0;
-}
+    body {
+        @apply bg-ebony text-ivory;
+        margin: 0;
+        padding: 0;
+    }
 
-h1, h2, h3, h4, h5, h6 {
-    font-family: theme("fontFamily.serif");
+    h1, h2, h3, h4, h5, h6 {
+        font-family: theme("fontFamily.serif");
+    }
 }
