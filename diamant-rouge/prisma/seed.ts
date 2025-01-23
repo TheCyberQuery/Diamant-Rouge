@@ -1,5 +1,6 @@
-// prisma/seed.ts
 import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
+
 const prisma = new PrismaClient();
 
 async function main() {
@@ -86,6 +87,19 @@ async function main() {
                 additionalPrice: 0,
             },
         ],
+    });
+
+    // 4. Create a User with hashed password
+    const hashedPassword = await bcrypt.hash('0m3g4xxz', 10); // Replace with your chosen password
+
+    await prisma.user.upsert({
+        where: { email: 'user@test.com' },
+        update: {},
+        create: {
+            email: 'user@test.com', // Replace with your chosen email
+            password: hashedPassword,
+            name: 'Jane Doe', // Replace with the desired name or make it nullable
+        },
     });
 
     console.log('Seed completed!');
