@@ -1,7 +1,8 @@
-// pages/products/[id].tsx
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { prisma } from '../../lib/prisma';
+import { useCart } from '../../contexts/CartContext';
+import { useRouter } from 'next/router';
 
 type ProductDetailProps = {
     productData: {
@@ -13,56 +14,52 @@ type ProductDetailProps = {
             name: string;
             description: string;
         }[];
-        variations: {
-            id: number;
-            variationType: string;
-            variationValue: string;
-            additionalPrice: string;
-        }[];
     } | null;
     locale: string;
 };
 
 export default function ProductDetailPage({ productData, locale }: ProductDetailProps) {
+    const { addToCart } = useCart();
+    const router = useRouter();
+
     if (!productData) {
         return <div>Product not found</div>;
     }
 
-    // Find translation based on locale
     const translation =
         productData.translations.find(t => t.language === locale) ||
         productData.translations.find(t => t.language === 'en');
+
+    function handleAddToCart() {
+        addToCart({
+            productId: productData.id,
+            sku: productData.sku,
+            name: translation?.name || 'No name',
+            price: parseFloat(productData.basePrice),
+            quantity: 1,
+        });
+        // Possibly redirect or show a notification
+        router.push('/cart');
+    }
 
     return (
         <>
             <Head>
                 <title>{translation?.name} | Diamant-Rouge</title>
             </Head>
-            <main style={{ padding: '2rem' }}>
-                <h1>{translation?.name}</h1>
-                <p>SKU: {productData.sku}</p>
-                <p>Base Price: €{productData.basePrice}</p>
-                <p>{translation?.description}</p>
+            <main className="p-8">
+                <h1 className="text-3xl font-serif mb-2">{translation?.name}</h1>
+                <p className="mb-2">SKU: {productData.sku}</p>
+                <p className="mb-2">Price: €{productData.basePrice}</p>
+                <p className="mb-4">{translation?.description}</p>
 
-                {/* Psychological Cue: Scarcity (dummy example) */}
-                <p style={{ color: '#A00000', fontWeight: 'bold' }}>
-                    Limited Stock: Only 5 left!
-                </p>
+                {/* Scarcity Cue */}
+                <p className="text-crimson font-bold mb-4">Limited Stock: Only 5 left!</p>
 
-                {/* Variations */}
-                <div style={{ marginTop: '1rem' }}>
-                    <h3>Available Options</h3>
-                    <ul>
-                        {productData.variations.map((v) => (
-                            <li key={v.id}>
-                                {v.variationType}: {v.variationValue} (Extra: €{v.additionalPrice})
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-
-                {/* Call to Action */}
-                <button style={{ marginTop: '1rem', padding: '0.5rem 1rem', backgroundColor: '#A00000', color: '#fff' }}>
+                <button
+                    onClick={handleAddToCart}
+                    className="bg-crimson hover:bg-gold text-ivory py-2 px-4"
+                >
                     Add to Cart
                 </button>
             </main>
