@@ -2,10 +2,29 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
+import { NextSeo } from 'next-seo';
 
 export default function Home() {
     return (
         <>
+            <NextSeo
+                title="Diamant-Rouge | Luxury French Jewelry"
+                description="Explore timeless elegance and French craftsmanship at Diamant-Rouge."
+                openGraph={{
+                    url: 'https://your-domain.com/',
+                    title: 'Diamant-Rouge | Luxury French Jewelry',
+                    description: 'Explore timeless elegance and French craftsmanship.',
+                    images: [
+                        {
+                            url: 'https://your-domain.com/images/hero.jpg',
+                            width: 1200,
+                            height: 630,
+                            alt: 'Diamant-Rouge Hero',
+                        },
+                    ],
+                }}
+            />
+
             <Head>
                 <title>Diamant-Rouge | Luxury French Jewelry</title>
             </Head>
@@ -13,7 +32,7 @@ export default function Home() {
             {/* Hero Section */}
             <section className="relative h-screen flex items-center justify-center bg-black text-center">
                 <Image
-                    src="/images/hero.jpg" // create a placeholder in public/images/hero.jpg
+                    src="/images/bijouterie-casablanca-maroc-parures-pour-mariees-75.jpg" // create a placeholder in public/images/hero.jpg
                     alt="Hero background"
                     fill
                     className="object-cover opacity-40"
