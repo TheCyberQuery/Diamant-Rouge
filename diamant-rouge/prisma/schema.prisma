@@ -1,14 +1,32 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// prisma/schema.prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
 
 generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+// Basic product table
+model Product {
+  id        Int      @id @default(autoincrement())
+  sku       String   @unique
+  basePrice Decimal  @default(0.0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relation to translations
+  translations ProductTranslation[]
+}
+
+// Table for storing multiple language entries for each product
+model ProductTranslation {
+  id          Int     @id @default(autoincrement())
+  language    String
+  name        String
+  description String
+  productId   Int
+
+  product     Product @relation(fields: [productId], references: [id])
 }
