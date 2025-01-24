@@ -1,4 +1,3 @@
-// pages/collections/[slug].tsx
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { prisma } from '../../lib/prisma';
@@ -20,7 +19,7 @@ type CollectionProps = {
                 name: string;
             }[];
         }[];
-    };
+    } | null;
     locale: string;
 };
 
@@ -96,9 +95,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         },
     });
 
+    if (!categoryData) {
+        return {
+            notFound: true,
+        };
+    }
+
     return {
         props: {
-            categoryData: categoryData ? serializeSpecialFields(categoryData) : null,
+            categoryData: serializeSpecialFields(categoryData),
             locale,
         },
     };
