@@ -13,38 +13,39 @@ generator client {
 // PRODUCT & TRANSLATIONS
 // --------------------------------------------------------------------
 model Product {
-  id          Int                 @id @default(autoincrement())
-  sku         String              @unique
-  basePrice   Decimal             @default(0.0)
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt
-  categoryId  Int?
+  id           Int                  @id @default(autoincrement())
+  sku          String               @unique
+  basePrice    Decimal              @default(0.0)
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+  categoryId   Int?
   // Relationship fields
   translations ProductTranslation[]
-  category      Category?         @relation(fields: [categoryId], references: [id])
-  variations    ProductVariation[]
+  category     Category?            @relation(fields: [categoryId], references: [id])
+  variations   ProductVariation[]
+  wishlists    Wishlist[]
 }
 
 model ProductTranslation {
-  id          Int      @id @default(autoincrement())
+  id          Int     @id @default(autoincrement())
   language    String
   name        String
   description String
   productId   Int
-  product     Product  @relation(fields: [productId], references: [id])
+  product     Product @relation(fields: [productId], references: [id])
 }
 
 // --------------------------------------------------------------------
 // CATEGORY & TRANSLATIONS
 // --------------------------------------------------------------------
 model Category {
-  id          Int                @id @default(autoincrement())
-  slug        String             @unique
-  createdAt   DateTime           @default(now())
-  updatedAt   DateTime           @updatedAt
+  id        Int      @id @default(autoincrement())
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  translations  CategoryTranslation[]
-  products      Product[]
+  translations CategoryTranslation[]
+  products     Product[]
 }
 
 model CategoryTranslation {
@@ -61,13 +62,13 @@ model CategoryTranslation {
 // (e.g., ring sizes, gem types, metal colors, etc.)
 // --------------------------------------------------------------------
 model ProductVariation {
-  id         Int      @id @default(autoincrement())
-  productId  Int
-  variationType  String
-  variationValue String
+  id              Int     @id @default(autoincrement())
+  productId       Int
+  variationType   String
+  variationValue  String
   additionalPrice Decimal @default(0.0)
 
-  product    Product @relation(fields: [productId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
 }
 
 // --------------------------------------------------------------------
@@ -82,6 +83,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   orders    Order[]
+  wishlists Wishlist[]
 }
 
 // --------------------------------------------------------------------
@@ -89,24 +91,37 @@ model User {
 // (Basic placeholder for future expansions)
 // --------------------------------------------------------------------
 model Order {
-  id          Int          @id @default(autoincrement())
-  userId      Int
-  totalAmount Decimal       @default(0.0)
-  status      String        @default("PENDING")
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  id          Int      @id @default(autoincrement())
+  userId      Int?
+  totalAmount Decimal  @default(0.0)
+  status      String   @default("PENDING")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-  user        User         @relation(fields: [userId], references: [id])
-  orderItems  OrderItem[]
+  user       User?       @relation(fields: [userId], references: [id])
+  orderItems OrderItem[]
 }
 
 model OrderItem {
-  id          Int      @id @default(autoincrement())
-  orderId     Int
-  productId   Int
-  quantity    Int      @default(1)
-  price       Decimal  @default(0.0)
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  productId Int
+  quantity  Int     @default(1)
+  price     Decimal @default(0.0)
 
-  order       Order    @relation(fields: [orderId], references: [id])
+  order Order @relation(fields: [orderId], references: [id])
   // For more detail, you might also link to a specific variation if needed
+}
+
+// --------------------------------------------------------------------
+// WISHLIST TABLE
+// --------------------------------------------------------------------
+model Wishlist {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id])
+  // For simplicity, store product IDs.
+  // Alternatively, create a separate table for many-to-many relationship.
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
 }
