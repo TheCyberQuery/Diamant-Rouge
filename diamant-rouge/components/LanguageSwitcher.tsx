@@ -7,17 +7,17 @@ export default function LanguageSwitcher() {
     const { pathname, query, asPath } = router;
 
     return (
-        <div style={{ margin: '1rem' }}>
-            <Link href={{ pathname, query }} as={asPath} locale="en">
-                English
-            </Link>{' '}
-            |{' '}
-            <Link href={{ pathname, query }} as={asPath} locale="fr">
-                Français
-            </Link>{' '}
-            |{' '}
-            <Link href={{ pathname, query }} as={asPath} locale="ar">
-                العربية
+        <div className="flex gap-2">
+            <Link href={{ pathname, query }} as={asPath} locale="en" className="hover:text-crimson">
+                EN
+            </Link>
+            <span>|</span>
+            <Link href={{ pathname, query }} as={asPath} locale="fr" className="hover:text-crimson">
+                FR
+            </Link>
+            <span>|</span>
+            <Link href={{ pathname, query }} as={asPath} locale="ar" className="hover:text-crimson">
+                AR
             </Link>
         </div>
     );
