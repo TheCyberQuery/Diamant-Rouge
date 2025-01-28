@@ -8,14 +8,19 @@ import { motion } from 'framer-motion';
 // Placeholder images - place them in public/images
 const slides = [
     {
-        imageSrc: '/images/hero1.jpg', // Make sure these exist or use placeholders
+        imageSrc: '/images/bijouterie-casablanca-maroc-dimant-rouge-464.jpg', // Make sure these exist or use placeholders
         heading: 'Experience the Allure of Diamant-Rouge',
         subheading: 'Timeless elegance and seductive craftsmanship',
     },
     {
-        imageSrc: '/images/hero2.jpg',
+        imageSrc: '/images/parures-colliers-or-bijouterie-casablanca-maroc-825.jpg',
         heading: 'New Rouge Passion Collection',
         subheading: 'Limited Edition - Only 50 pieces worldwide',
+    },
+    {
+        imageSrc: '/images/bijouterie-casablanca-maroc-parures-pour-mariees-75.jpg',
+        heading: 'Discover the Iconic Classics',
+        subheading: 'Our most beloved designs, now available',
     },
 ];
 
