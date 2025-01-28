@@ -1,12 +1,27 @@
 // pages/index.tsx
-import Layout from '../components/Layout';
+import HeroCarousel from '../components/HeroCarousel';
 import Link from 'next/link';
 import Image from 'next/image';
 import { NextSeo } from 'next-seo';
+import { motion } from 'framer-motion';
 
-export default function Home() {
+// Placeholder images - place them in public/images
+const slides = [
+    {
+        imageSrc: '/images/hero1.jpg', // Make sure these exist or use placeholders
+        heading: 'Experience the Allure of Diamant-Rouge',
+        subheading: 'Timeless elegance and seductive craftsmanship',
+    },
+    {
+        imageSrc: '/images/hero2.jpg',
+        heading: 'New Rouge Passion Collection',
+        subheading: 'Limited Edition - Only 50 pieces worldwide',
+    },
+];
+
+export default function HomePage() {
     return (
-        <Layout title="Home" description="Welcome to Diamant-Rouge, the epitome of luxury jewelry.">
+        <>
             <NextSeo
                 title="Diamant-Rouge | Luxury French Jewelry"
                 description="Explore timeless elegance and French craftsmanship at Diamant-Rouge."
@@ -25,31 +40,17 @@ export default function Home() {
                 }}
             />
 
-
-            {/* Hero Section */}
-            <section className="relative h-screen flex items-center justify-center bg-black text-center">
-                <Image
-                    src="/images/bijouterie-casablanca-maroc-parures-pour-mariees-75.jpg" // create a placeholder in public/images/hero.jpg
-                    alt="Hero background"
-                    fill
-                    className="object-cover opacity-40"
-                />
-                <div className="relative z-10 text-ivory max-w-2xl">
-                    <h1 className="text-5xl font-serif">Experience the Allure of Diamant-Rouge</h1>
-                    <p className="mt-4">
-                        Embrace timeless elegance with our curated collections of fine jewelry.
-                    </p>
-                    <Link
-                        href="/collections/rings"
-                        className="inline-block mt-6 bg-crimson hover:bg-gold text-ivory py-3 px-6"
-                    >
-                        Explore Collections
-                    </Link>
-                </div>
-            </section>
+            {/* Hero Carousel */}
+            <HeroCarousel slides={slides} />
 
             {/* Featured Collections */}
-            <section className="py-16 px-4">
+            <motion.section
+                className="py-16 px-4"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+            >
                 <h2 className="text-3xl font-serif text-center mb-8">Featured Collections</h2>
                 <div className="flex flex-col md:flex-row gap-6 justify-center">
                     <Link href="/collections/rings" className="bg-ebony/50 p-6 text-center w-full md:w-1/3">
@@ -61,11 +62,17 @@ export default function Home() {
                         <p className="mt-2">Our iconic designs that never go out of style.</p>
                     </Link>
                 </div>
-            </section>
+            </motion.section>
 
             {/* Social Proof */}
-            <section className="py-8 px-4 bg-ebony/80">
-                <h2 className="text-2xl font-serif text-center mb-4">Praise & Press</h2>
+            <motion.section
+                className="py-8 px-4 bg-ebony/80 text-center text-ivory"
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+            >
+                <h2 className="text-2xl font-serif mb-4">Praise & Press</h2>
                 <div className="text-center space-y-2">
                     <blockquote>
                         “Incredibly exquisite, a testament to French craftsmanship.” – Vogue
@@ -74,7 +81,7 @@ export default function Home() {
                         “A new benchmark in luxury design.” – Celebrity X
                     </blockquote>
                 </div>
-            </section>
+            </motion.section>
 
             {/* Newsletter / Reciprocity */}
             <section className="py-8 px-4 text-center">
@@ -96,6 +103,6 @@ export default function Home() {
                     </button>
                 </form>
             </section>
-        </Layout>
+        </>
     );
 }

@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next';
-import Head from 'next/head';
 import { prisma } from '../../lib/prisma';
+import ProductCard from '../../components/ProductCard';
 
 type CollectionProps = {
     categoryData: {
@@ -18,7 +18,9 @@ type CollectionProps = {
                 language: string;
                 name: string;
             }[];
+            // ... other fields as needed
         }[];
+        // ... other fields as needed
     } | null;
     locale: string;
 };
@@ -28,62 +30,43 @@ export default function CollectionPage({ categoryData, locale }: CollectionProps
         return <div>Category not found</div>;
     }
 
-    // Find the translation that matches the current locale or fallback to 'en'
     const catTranslation =
         categoryData.translations.find(t => t.language === locale) ||
         categoryData.translations.find(t => t.language === 'en');
 
     return (
-        <>
-            <Head>
-                <title>{catTranslation?.name} | Diamant-Rouge</title>
-            </Head>
-            <main style={{ padding: '2rem' }}>
-                <h1>{catTranslation?.name}</h1>
-                {catTranslation?.description && <p>{catTranslation.description}</p>}
+        <section className="py-8 px-4">
+            <div className="max-w-6xl mx-auto">
+                <h1 className="text-4xl font-serif mb-4">{catTranslation?.name}</h1>
+                <p className="mb-8">{catTranslation?.description}</p>
 
-                <section style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', marginTop: '2rem' }}>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                     {categoryData.products.map((product) => {
                         const productTranslation =
                             product.translations.find(t => t.language === locale) ||
                             product.translations.find(t => t.language === 'en');
 
                         return (
-                            <div key={product.id} style={{ border: '1px solid #AAA', padding: '1rem', width: '200px' }}>
-                                <h2>{productTranslation?.name}</h2>
-                                <p>SKU: {product.sku}</p>
-                                <p>Price: €{product.basePrice}</p>
-                                {/* Link to Product Detail Page */}
-                                <a href={`/products/${product.id}`}>View Details</a>
-                            </div>
+                            <ProductCard
+                                key={product.id}
+                                id={product.id}
+                                sku={product.sku}
+                                name={productTranslation?.name || 'No Name'}
+                                price={product.basePrice}
+                            />
                         );
                     })}
-                </section>
-            </main>
-        </>
-    );
-}
-
-function serializeSpecialFields<T>(data: T): T {
-    return JSON.parse(
-        JSON.stringify(data, (key, value) => {
-            if (value instanceof Date) {
-                return value.toISOString(); // Convert Date to ISO string
-            }
-            if (value && typeof value === 'object' && value.constructor.name === 'Decimal') {
-                return value.toString(); // Convert Prisma Decimal to string
-            }
-            return value;
-        })
+                </div>
+            </div>
+        </section>
     );
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const { slug } = context.params!;
-    const locale = context.locale || 'en'; // for future i18n usage
+    const locale = context.locale || 'en';
 
-    // Fetch category & its products
-    const categoryData = await prisma.category.findUnique({
+    const rawCategoryData = await prisma.category.findUnique({
         where: { slug: slug as string },
         include: {
             translations: true,
@@ -95,15 +78,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         },
     });
 
-    if (!categoryData) {
-        return {
-            notFound: true,
-        };
-    }
+    // Convert Date fields to ISO strings
+    const categoryData = rawCategoryData
+        ? JSON.parse(JSON.stringify(rawCategoryData))
+        : null;
 
     return {
         props: {
-            categoryData: serializeSpecialFields(categoryData),
+            categoryData,
             locale,
         },
     };
