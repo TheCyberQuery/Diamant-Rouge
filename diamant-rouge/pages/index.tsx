@@ -1,12 +1,12 @@
 // pages/index.tsx
-import Head from 'next/head';
+import Layout from '../components/Layout';
 import Link from 'next/link';
 import Image from 'next/image';
 import { NextSeo } from 'next-seo';
 
 export default function Home() {
     return (
-        <>
+        <Layout title="Home" description="Welcome to Diamant-Rouge, the epitome of luxury jewelry.">
             <NextSeo
                 title="Diamant-Rouge | Luxury French Jewelry"
                 description="Explore timeless elegance and French craftsmanship at Diamant-Rouge."
@@ -25,9 +25,6 @@ export default function Home() {
                 }}
             />
 
-            <Head>
-                <title>Diamant-Rouge | Luxury French Jewelry</title>
-            </Head>
 
             {/* Hero Section */}
             <section className="relative h-screen flex items-center justify-center bg-black text-center">
@@ -99,6 +96,6 @@ export default function Home() {
                     </button>
                 </form>
             </section>
-        </>
+        </Layout>
     );
 }
