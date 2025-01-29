@@ -1,42 +1,56 @@
 import { FormEvent, useState } from 'react';
-import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
 
-export default function LoginPage() {
+export default function SignUpPage() {
     const router = useRouter();
     const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
 
-    async function handleLogin(e: FormEvent) {
+    async function handleSignUp(e: FormEvent) {
         e.preventDefault();
         setErrorMsg('');
-        const result = await signIn('credentials', {
-            redirect: false,
-            email,
-            password,
+
+        const response = await fetch('/api/auth/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, name, password }),
         });
-        if (result?.error) {
-            setErrorMsg(result.error);
+
+        if (response.ok) {
+            // Automatically redirect to login or auto-login
+            router.push('/login');
         } else {
-            // If no error, we can redirect
-            router.push('/');
+            const data = await response.json();
+            setErrorMsg(data.error || 'Failed to sign up');
         }
     }
 
     return (
         <section className="p-8 max-w-md mx-auto text-ivory">
-            <h1 className="text-3xl font-serif mb-4">Login</h1>
+            <h1 className="text-3xl font-serif mb-4">Create an Account</h1>
             {errorMsg && <p className="mb-2 text-red-500">{errorMsg}</p>}
-            <form onSubmit={handleLogin} className="space-y-4">
+
+            <form onSubmit={handleSignUp} className="space-y-4">
+                <div>
+                    <label className="block mb-1">Full Name</label>
+                    <input
+                        type="text"
+                        className="w-full p-2 text-ebony"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="Your Name"
+                    />
+                </div>
                 <div>
                     <label className="block mb-1">Email</label>
                     <input
                         type="email"
                         className="w-full p-2 text-ebony"
-                        placeholder="name@domain.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        placeholder="name@domain.com"
                     />
                 </div>
                 <div>
@@ -44,22 +58,15 @@ export default function LoginPage() {
                     <input
                         type="password"
                         className="w-full p-2 text-ebony"
-                        placeholder="********"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        placeholder="********"
                     />
                 </div>
                 <button type="submit" className="bg-crimson hover:bg-gold text-ivory py-2 px-4">
-                    Sign In
+                    Sign Up
                 </button>
             </form>
-
-            <p className="mt-4">
-                Don&apos;t have an account?{' '}
-                <a href="/signup" className="text-crimson hover:text-gold">
-                    Sign up
-                </a>
-            </p>
         </section>
     );
 }

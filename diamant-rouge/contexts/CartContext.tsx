@@ -1,8 +1,8 @@
-// contexts/CartContext.tsx
 import { createContext, useContext, useState, ReactNode } from 'react';
 
 type CartItem = {
     productId: number;
+    variationId?: number; // track which variation is chosen
     sku: string;
     name: string;
     price: number;
@@ -12,7 +12,7 @@ type CartItem = {
 type CartContextType = {
     cart: CartItem[];
     addToCart: (item: CartItem) => void;
-    removeFromCart: (productId: number) => void;
+    removeFromCart: (productId: number, variationId?: number) => void;
     clearCart: () => void;
 };
 
@@ -23,21 +23,26 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     function addToCart(item: CartItem) {
         setCart((prev) => {
-            const existing = prev.find((p) => p.productId === item.productId);
-            if (existing) {
-                return prev.map((p) =>
-                    p.productId === item.productId
-                        ? { ...p, quantity: p.quantity + item.quantity }
-                        : p
-                );
+            const existingIndex = prev.findIndex(
+                (p) => p.productId === item.productId && p.variationId === item.variationId
+            );
+            if (existingIndex > -1) {
+                // update existing item quantity
+                const updated = [...prev];
+                updated[existingIndex].quantity += item.quantity;
+                return updated;
             } else {
                 return [...prev, item];
             }
         });
     }
 
-    function removeFromCart(productId: number) {
-        setCart((prev) => prev.filter((p) => p.productId !== productId));
+    function removeFromCart(productId: number, variationId?: number) {
+        setCart((prev) =>
+            prev.filter(
+                (p) => p.productId !== productId || p.variationId !== variationId
+            )
+        );
     }
 
     function clearCart() {

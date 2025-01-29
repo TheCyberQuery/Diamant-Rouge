@@ -1,3 +1,4 @@
+// prisma/seed.ts
 import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
@@ -101,6 +102,25 @@ async function main() {
             name: 'Jane Doe', // Replace with the desired name or make it nullable
         },
     });
+
+    const existingAdmin = await prisma.user.findUnique({
+        where: { email: 'admin@diamant-rouge.com' },
+    });
+    if (!existingAdmin) {
+        const hashedPassword = await bcrypt.hash('admin123', 10);
+        await prisma.user.create({
+            data: {
+                email: 'admin@diamant-rouge.com',
+                password: hashedPassword,
+                role: 'admin',
+                name: 'Diamant Admin',
+            },
+        });
+        console.log('Admin user created => admin@diamant-rouge.com / admin123');
+    } else {
+        console.log('Admin user already exists. Skipping...');
+    }
+
 
     console.log('Seed completed!');
 }

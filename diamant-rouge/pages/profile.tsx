@@ -32,25 +32,27 @@ export default function ProfilePage({ orders }: { orders: any[] }) {
 export async function getServerSideProps(context: any) {
     const session = await getSession(context);
     if (!session) {
+        return { redirect: { destination: '/login', permanent: false } };
+    }
+
+
+    try {
+        const orders = await prisma.order.findMany({
+            where: { userId: session.user.id },
+            include: { orderItems: { include: { product: true } } },
+            orderBy: { createdAt: 'desc' },
+        });
         return {
-            redirect: { destination: '/login', permanent: false },
+            props: {
+                orders: JSON.parse(JSON.stringify(orders)), // This is valid
+            },
+        };
+    } catch (error) {
+        console.error('Profile SSR error:', error);
+        return {
+            props: {
+                orders: [],
+            },
         };
     }
-    // Assume session.user.id is the logged in user’s ID
-    const orders = await prisma.order.findMany({
-        where: { userId: session.user.id },
-        include: {
-            orderItems: {
-                include: {
-                    product: true,
-                },
-            },
-        },
-        orderBy: { createdAt: 'desc' },
-    });
-    return {
-        props: {
-            orders: JSON.parse(JSON.stringify(orders)),
-        },
-    };
 }

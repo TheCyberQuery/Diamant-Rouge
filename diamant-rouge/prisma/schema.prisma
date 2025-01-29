@@ -24,6 +24,7 @@ model Product {
   category     Category?            @relation(fields: [categoryId], references: [id])
   variations   ProductVariation[]
   wishlists    Wishlist[]
+  orderItems   OrderItem[]
 }
 
 model ProductTranslation {
@@ -67,6 +68,7 @@ model ProductVariation {
   variationType   String
   variationValue  String
   additionalPrice Decimal @default(0.0)
+  inventory       Int     @default(0)
 
   product Product @relation(fields: [productId], references: [id])
 }
@@ -77,8 +79,9 @@ model ProductVariation {
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
-  password  String
+  password  String // hashed password stored here
   name      String?
+  role      String   @default("customer") // can be 'admin' or 'customer'
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -94,9 +97,15 @@ model Order {
   id          Int      @id @default(autoincrement())
   userId      Int?
   totalAmount Decimal  @default(0.0)
-  status      String   @default("PENDING")
+  status      String   @default("PENDING") // Could be PENDING, CONFIRMED, SHIPPED, DELIVERED, CANCELLED
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  // Added shipping details
+  shippingAddress String?
+  city            String?
+  postalCode      String?
+  country         String?
 
   user       User?       @relation(fields: [userId], references: [id])
   orderItems OrderItem[]
@@ -109,7 +118,9 @@ model OrderItem {
   quantity  Int     @default(1)
   price     Decimal @default(0.0)
 
-  order Order @relation(fields: [orderId], references: [id])
+  order   Order   @relation(fields: [orderId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+
   // For more detail, you might also link to a specific variation if needed
 }
 
