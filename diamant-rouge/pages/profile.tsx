@@ -1,9 +1,29 @@
 import { getSession } from 'next-auth/react';
 import { prisma } from '../lib/prisma';
 
-export default function ProfilePage({ orders }: { orders: any[] }) {
+type OrderPlus = {
+    id: number;
+    status: string;
+    totalAmount: string;
+    shippingAddress: string | null;
+    city: string | null;
+    postalCode: string | null;
+    country: string | null;
+    createdAt: string;
+    orderItems: {
+        id: number;
+        productId: number;
+        quantity: number;
+        price: string;
+        product?: {
+            sku: string;
+        }
+    }[];
+};
+
+export default function ProfilePage({ orders }: { orders: OrderPlus[] }) {
     return (
-        <main className="p-8">
+        <main className="p-8 text-ivory">
             <h1 className="text-3xl font-serif mb-4">My Orders</h1>
             {orders.length === 0 ? (
                 <p>You have no orders yet.</p>
@@ -14,10 +34,17 @@ export default function ProfilePage({ orders }: { orders: any[] }) {
                             <p>Order #{order.id}</p>
                             <p>Status: {order.status}</p>
                             <p>Total: €{order.totalAmount}</p>
-                            <ul>
-                                {order.orderItems.map((item: any) => (
-                                    <li key={item.id}>
-                                        {item.product.sku} (Qty: {item.quantity})
+                            <p>
+                                Shipped To: {order.shippingAddress}, {order.city} {order.postalCode},{' '}
+                                {order.country}
+                            </p>
+                            <p>Placed On: {new Date(order.createdAt).toLocaleString()}</p>
+
+                            <ul className="mt-2 space-y-1">
+                                {order.orderItems.map((item) => (
+                                    <li key={item.id} className="pl-2">
+                                        Product SKU: {item.product?.sku || item.productId} (
+                                        Qty: {item.quantity}, Price: €{item.price})
                                     </li>
                                 ))}
                             </ul>
@@ -35,24 +62,34 @@ export async function getServerSideProps(context: any) {
         return { redirect: { destination: '/login', permanent: false } };
     }
 
+    const userId = Number(session.user.id);
 
     try {
-        const orders = await prisma.order.findMany({
-            where: { userId: session.user.id },
-            include: { orderItems: { include: { product: true } } },
+        // fetch orders with items + product sku
+        const rawOrders = await prisma.order.findMany({
+            where: { userId },
+            include: {
+                orderItems: {
+                    include: {
+                        product: {
+                            select: {
+                                sku: true,
+                            },
+                        },
+                    },
+                },
+            },
             orderBy: { createdAt: 'desc' },
         });
+
+        const orders = JSON.parse(JSON.stringify(rawOrders));
         return {
-            props: {
-                orders: JSON.parse(JSON.stringify(orders)), // This is valid
-            },
+            props: { orders },
         };
     } catch (error) {
         console.error('Profile SSR error:', error);
         return {
-            props: {
-                orders: [],
-            },
+            props: { orders: [] },
         };
     }
 }
