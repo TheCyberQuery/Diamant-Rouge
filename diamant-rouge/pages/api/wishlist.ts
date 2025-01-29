@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const userId = session.user.id;
+    const userId = parseInt(session.user.id, 10); // Convert userId to number
 
     if (req.method === 'POST') {
         try {

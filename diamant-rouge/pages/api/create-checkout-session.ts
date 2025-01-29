@@ -1,10 +1,9 @@
-// pages/api/create-checkout-session.ts
 import { NextApiRequest, NextApiResponse } from 'next';
 import Stripe from 'stripe';
 import { prisma } from '../../lib/prisma';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-    apiVersion: '2022-11-15',
+    apiVersion: '2024-12-18.acacia', // Update to the correct API version
 });
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

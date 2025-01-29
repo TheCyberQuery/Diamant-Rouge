@@ -1,19 +1,40 @@
-// pages/api/auth/[...nextauth].ts
-import NextAuth, { NextAuthOptions } from 'next-auth';
+import NextAuth, { NextAuthOptions, User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaClient } from '@prisma/client';
 import { compare } from 'bcryptjs';
 
-/**
- * Create a single Prisma client instance to share across modules.
- */
-console.log("DEBUG: NEXTAUTH_SECRET =>", process.env.NEXTAUTH_SECRET);
 const prisma = new PrismaClient();
 
 export const authOptions: NextAuthOptions = {
     secret: process.env.NEXTAUTH_SECRET,
-    session: {
-        strategy: 'jwt',
+    session: { strategy: 'jwt' },
+    cookies: {
+        sessionToken: {
+            name: 'nextauth_dev.session-token',
+            options: {
+                httpOnly: true,
+                sameSite: 'lax',
+                path: '/',
+                secure: false,
+            },
+        },
+        callbackUrl: {
+            name: 'nextauth_dev.callback-url',
+            options: {
+                sameSite: 'lax',
+                path: '/',
+                secure: false,
+            },
+        },
+        csrfToken: {
+            name: 'nextauth_dev.csrf-token',
+            options: {
+                httpOnly: false,
+                sameSite: 'lax',
+                path: '/',
+                secure: false,
+            },
+        },
     },
     providers: [
         CredentialsProvider({
@@ -22,37 +43,26 @@ export const authOptions: NextAuthOptions = {
                 email: { label: 'Email', type: 'text' },
                 password: { label: 'Password', type: 'password' },
             },
-            async authorize(credentials, req) {
-                if (!credentials?.email || !credentials?.password) {
+            authorize: async (credentials) => {
+                if (!credentials?.email || !credentials.password) {
                     throw new Error('Missing email or password');
                 }
-                // Find user by email
                 const user = await prisma.user.findUnique({
                     where: { email: credentials.email },
                 });
-
-                if (!user) {
-                    throw new Error('No user found');
-                }
-
-                // Check hashed password with bcrypt
+                if (!user) throw new Error('No user found');
                 const isValid = await compare(credentials.password, user.password);
-                if (!isValid) {
-                    throw new Error('Invalid credentials');
-                }
-
-                // Return user object if login is successful
+                if (!isValid) throw new Error('Invalid credentials');
                 return {
-                    id: user.id,
+                    id: user.id.toString(), // Convert id to string
                     email: user.email,
                     role: user.role,
                     name: user.name,
-                };
+                } as User; // Cast to User type
             },
         }),
     ],
     callbacks: {
-        // Add user info (role, etc.) to the JWT
         async jwt({ token, user }) {
             if (user) {
                 token.id = user.id;
@@ -61,10 +71,9 @@ export const authOptions: NextAuthOptions = {
             }
             return token;
         },
-        // Make the role available in session
         async session({ session, token }) {
             if (token) {
-                session.user.id = token.id as number;
+                session.user.id = token.id as string;
                 session.user.role = token.role as string;
                 session.user.email = token.email as string;
             }
@@ -72,8 +81,7 @@ export const authOptions: NextAuthOptions = {
         },
     },
     pages: {
-        signIn: '/login', // Our custom login page
-        // optional: signOut, error, etc.
+        signIn: '/login',
     },
 };
 

@@ -38,6 +38,9 @@ export default function ProductDetailPage({ productData, locale }: ProductDetail
         productData.translations.find(t => t.language === 'en');
 
     function handleAddToCart() {
+        if (!productData) {
+            return; // or handle the null case appropriately
+        }
         addToCart({
             productId: productData.id,
             sku: productData.sku,
