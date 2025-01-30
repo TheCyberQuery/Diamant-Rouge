@@ -4,14 +4,25 @@ import { getSession } from 'next-auth/react';
 import { prisma } from '../../../lib/prisma';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    console.log('--- PLACE-ORDER ROUTE START ---');
+    console.log('req.headers.cookie =>', req.headers.cookie);
+
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
+    // Check session
     const session = await getSession({ req });
+    console.log('place-order => session =>', session);
+
     if (!session) {
+        console.log('No session, returning 401');
         return res.status(401).json({ error: 'User not authenticated' });
     }
+
+    // If we get here, session was recognized
+    console.log('User ID =>', session.user.id);
+
     const userId = Number(session.user.id);
 
     const { cart, shippingAddress, city, postalCode, country } = req.body;
