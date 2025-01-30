@@ -1,10 +1,48 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getSession } from 'next-auth/react';
 import { prisma } from '../../../../lib/prisma';
+import { jwtVerify } from 'jose';
+
+interface DecodedPayload {
+    id: string;
+    role: string;
+    email: string;
+}
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    const session = await getSession({ req });
-    if (!session || session.user.role !== 'admin') {
+    console.log('--- ADMIN ORDER UPDATE ROUTE START ---');
+    console.log('req.headers.cookie =>', req.headers.cookie);
+
+    // Manually extract session token from cookies
+    const rawCookie = req.headers.cookie || '';
+    let match = rawCookie.match(/next-auth\.session-token=([^;]+)/);
+    if (!match) {
+        match = rawCookie.match(/__Secure-next-auth\.session-token=([^;]+)/);
+        if (!match) {
+            console.log('No session token in cookies. Returning 401...');
+            return res.status(401).json({ error: 'Not authorized. No token cookie found.' });
+        }
+    }
+
+    const tokenStr = decodeURIComponent(match[1]);
+
+    // Decode JWT token manually
+    let payload: DecodedPayload;
+    try {
+        const secret = process.env.NEXTAUTH_SECRET || '';
+        const { payload: decoded } = await jwtVerify(
+            tokenStr,
+            new TextEncoder().encode(secret)
+        );
+        console.log('Manual decode => payload =>', decoded);
+        payload = decoded as unknown as DecodedPayload;
+    } catch (err) {
+        console.log('Manual decode error =>', err);
+        return res.status(401).json({ error: 'Not authorized. Invalid token.' });
+    }
+
+    // Ensure user is an admin
+    if (payload.role !== 'admin') {
+        console.log('User is not admin. Returning 401...');
         return res.status(401).json({ error: 'Not authorized' });
     }
 
