@@ -19,7 +19,7 @@ model Product {
   createdAt    DateTime             @default(now())
   updatedAt    DateTime             @updatedAt
   categoryId   Int?
-  // Relationship fields
+  images       String[]             @default([])
   translations ProductTranslation[]
   category     Category?            @relation(fields: [categoryId], references: [id])
   variations   ProductVariation[]

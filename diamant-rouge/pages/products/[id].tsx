@@ -1,16 +1,12 @@
-// pages/products/[id].tsx
 import { GetServerSideProps } from 'next';
 import { prisma } from '../../lib/prisma';
-import { useCart } from '../../contexts/CartContext';
-import { useRouter } from 'next/router';
-import Image from 'next/image'; // optional for performance
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Thumbs } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/navigation';
+import Image from 'next/image';
 import { useState } from 'react';
+import { useCart } from '../../contexts/CartContext';
+import { NextSeo } from 'next-seo';
+import { motion } from 'framer-motion';
 
-type ProductDetailProps = {
+type ProductProps = {
     productData: {
         id: number;
         sku: string;
@@ -20,114 +16,134 @@ type ProductDetailProps = {
             name: string;
             description: string;
         }[];
+        variations: {
+            id: number;
+            variationType: string;
+            variationValue: string;
+            additionalPrice: string;
+            inventory: number;
+        }[];
     } | null;
     locale: string;
 };
 
-export default function ProductDetailPage({ productData, locale }: ProductDetailProps) {
-    const [thumbsSwiper, setThumbsSwiper] = useState<any>(null);
+export default function ProductPage({ productData, locale }: ProductProps) {
     const { addToCart } = useCart();
-    const router = useRouter();
+    const [selectedVariation, setSelectedVariation] = useState<number | null>(null);
+    const [quantity, setQuantity] = useState(1);
 
     if (!productData) {
-        return <div>Product not found</div>;
+        return (
+            <section className="py-8 text-center text-ivory">
+                <h1 className="text-4xl font-serif text-gold">Product Not Found</h1>
+                <p className="text-platinumGray">The product you're looking for doesn't exist.</p>
+            </section>
+        );
     }
 
-    const translation =
+    const productTranslation =
         productData.translations.find(t => t.language === locale) ||
         productData.translations.find(t => t.language === 'en');
 
-    function handleAddToCart() {
-        if (!productData) {
-            return; // or handle the null case appropriately
-        }
+    const basePrice = parseFloat(productData.basePrice);
+    const additionalPrice = selectedVariation
+        ? parseFloat(
+            productData.variations.find((v) => v.id === selectedVariation)?.additionalPrice || '0'
+        )
+        : 0;
+    const totalPrice = basePrice + additionalPrice;
+
+    const handleAddToCart = () => {
         addToCart({
             productId: productData.id,
+            variationId: selectedVariation || undefined,
             sku: productData.sku,
-            name: translation?.name || 'No name',
-            price: parseFloat(productData.basePrice),
-            quantity: 1,
+            name: productTranslation?.name || 'Unknown',
+            price: totalPrice,
+            quantity,
         });
-        router.push('/cart');
-    }
+    };
 
     return (
-        <section className="py-8 px-4">
-            <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+        <>
+            <NextSeo
+                title={`Diamant-Rouge | ${productTranslation?.name}`}
+                description={productTranslation?.description}
+                openGraph={{
+                    title: `Diamant-Rouge | ${productTranslation?.name}`,
+                    description: productTranslation?.description,
+                }}
+            />
 
-                {/* Product Image Gallery */}
-                <div>
-                    <Swiper
-                        modules={[Navigation, Thumbs]}
-                        navigation
-                        thumbs={{ swiper: thumbsSwiper }}
-                        className="mb-4"
-                    >
-                        {/* In real scenario, map over product images. For now, just placeholders. */}
-                        <SwiperSlide>
-                            <div className="relative w-full h-96 bg-gray-200">
-                                <img
-                                    src="/images/product-placeholder1.jpg"
-                                    alt="Product Image 1"
-                                    className="w-full h-full object-cover"
-                                />
-                            </div>
-                        </SwiperSlide>
-                        <SwiperSlide>
-                            <div className="relative w-full h-96 bg-gray-200">
-                                <img
-                                    src="/images/product-placeholder2.jpg"
-                                    alt="Product Image 2"
-                                    className="w-full h-full object-cover"
-                                />
-                            </div>
-                        </SwiperSlide>
-                    </Swiper>
-                    {/* Thumbnail Swiper */}
-                    <Swiper
-                        modules={[Navigation, Thumbs]}
-                        onSwiper={setThumbsSwiper}
-                        slidesPerView={3}
-                        spaceBetween={10}
-                        className="h-24"
-                    >
-                        <SwiperSlide>
-                            <img
-                                src="/images/product-placeholder1.jpg"
-                                alt="Thumbnail 1"
-                                className="w-full h-full object-cover cursor-pointer"
-                            />
-                        </SwiperSlide>
-                        <SwiperSlide>
-                            <img
-                                src="/images/product-placeholder2.jpg"
-                                alt="Thumbnail 2"
-                                className="w-full h-full object-cover cursor-pointer"
-                            />
-                        </SwiperSlide>
-                    </Swiper>
+            <motion.section
+                className="py-12 px-4 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12"
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+            >
+                {/* Image */}
+                <div className="relative">
+                    <Image
+                        src={`/images/products/diamond-cluster-earrings.png`} // Replace with real images
+                        width={600}
+                        height={600}
+                        alt={productTranslation?.name}
+                        className="rounded-lg shadow-luxury"
+                    />
                 </div>
 
-                {/* Product Info */}
+                {/* Product Details */}
                 <div>
-                    <h1 className="text-3xl font-serif mb-4">{translation?.name}</h1>
-                    <p className="text-lg mb-2">SKU: {productData.sku}</p>
-                    <p className="text-xl mb-4">Price: €{productData.basePrice}</p>
-                    <p className="mb-6">{translation?.description}</p>
+                    <h1 className="text-4xl font-serif text-gold mb-4">{productTranslation?.name}</h1>
+                    <p className="text-platinumGray mb-6">{productTranslation?.description}</p>
 
-                    <p className="text-crimson font-bold mb-4">
-                        Limited Stock: Only 5 left!
-                    </p>
+                    {/* Variations (if available) */}
+                    {productData.variations.length > 0 && (
+                        <div className="mb-4">
+                            <label className="block mb-2 text-ivory">Select Option</label>
+                            <div className="flex gap-4">
+                                {productData.variations.map((variation) => (
+                                    <button
+                                        key={variation.id}
+                                        className={`px-4 py-2 rounded ${
+                                            selectedVariation === variation.id
+                                                ? 'bg-gold text-ebony'
+                                                : 'bg-ebony text-ivory'
+                                        }`}
+                                        onClick={() => setSelectedVariation(variation.id)}
+                                        disabled={variation.inventory === 0}
+                                    >
+                                        {variation.variationValue}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
+                    {/* Quantity Selector */}
+                    <div className="mb-4 flex items-center gap-4">
+                        <label className="text-ivory">Quantity</label>
+                        <input
+                            type="number"
+                            min="1"
+                            max="10"
+                            value={quantity}
+                            onChange={(e) => setQuantity(Number(e.target.value))}
+                            className="p-2 w-16 text-center bg-ebony border border-gold text-ivory rounded"
+                        />
+                    </div>
+
+                    {/* Price & Add to Cart */}
+                    <p className="text-2xl font-bold text-gold mb-4">€{totalPrice.toFixed(2)}</p>
                     <button
                         onClick={handleAddToCart}
-                        className="bg-crimson hover:bg-gold text-ivory py-2 px-6 font-semibold"
+                        className="bg-crimson hover:bg-gold text-ivory px-6 py-3 rounded-full font-medium transition duration-300"
                     >
                         Add to Cart
                     </button>
                 </div>
-            </div>
-        </section>
+            </motion.section>
+        </>
     );
 }
 
@@ -137,13 +153,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const rawProductData = await prisma.product.findUnique({
         where: { id: Number(id) },
-        include: { translations: true },
+        include: {
+            translations: true,
+            variations: true,
+        },
     });
 
-    // Wrap in JSON.parse(JSON.stringify(...)):
-    const productData = rawProductData
-        ? JSON.parse(JSON.stringify(rawProductData))
-        : null;
+    const productData = rawProductData ? JSON.parse(JSON.stringify(rawProductData)) : null;
 
     return {
         props: {

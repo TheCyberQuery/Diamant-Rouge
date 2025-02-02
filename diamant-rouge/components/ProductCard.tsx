@@ -1,40 +1,43 @@
-// components/ProductCard.tsx
-import Link from 'next/link';
+import Link from "next/link";
+import Image from "next/image";
 
 type ProductCardProps = {
-    id: number;
-    sku: string;
-    name: string;
-    price: string;    // or number
-    imageUrl?: string; // If you store product images. Otherwise, use placeholders.
+    product: {
+        id: number;
+        sku: string;
+        basePrice: string;
+        translations: {
+            language: string;
+            name: string;
+            description?: string;
+        }[];
+    };
+    locale: string;
 };
 
-export default function ProductCard({
-                                        id,
-                                        sku,
-                                        name,
-                                        price,
-                                        imageUrl = '/images/placeholder.jpg',
-                                    }: ProductCardProps) {
+export default function ProductCard({ product, locale }: ProductCardProps) {
+    const productTranslation =
+        product.translations.find((t) => t.language === locale) ||
+        product.translations.find((t) => t.language === "en");
+
     return (
-        <div className="group bg-ebony/50 relative overflow-hidden">
-            {/* Product Image */}
-            <img
-                src={imageUrl}
-                alt={name}
-                className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-            <div className="p-4">
-                <h3 className="text-xl font-serif mb-1">{name}</h3>
-                <p className="text-sm">SKU: {sku}</p>
-                <p className="text-lg mt-2">€{price}</p>
-            </div>
-            <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                <Link
-                    href={`/products/${id}`}
-                    className="bg-crimson text-ivory py-2 px-4 font-sans uppercase text-sm hover:bg-gold"
-                >
-                    View Details
+        <div className="bg-ebony p-6 rounded-xl shadow-lg transition-transform transform hover:scale-105">
+            <Link href={`/products/${product.id}`} passHref>
+                <Image
+                    src={`/images/products/diamond-cluster-earrings.png`} // Replace with actual product images
+                    width={300}
+                    height={300}
+                    alt={productTranslation?.name || "Product"}
+                    className="rounded-lg cursor-pointer"
+                />
+            </Link>
+            <h3 className="text-xl font-serif text-gold mt-4">{productTranslation?.name}</h3>
+            <p className="text-platinumGray mt-2">€{parseFloat(product.basePrice).toFixed(2)}</p>
+            <div className="mt-4">
+                <Link href={`/products/${product.id}`} passHref>
+                    <button className="bg-crimson text-ivory px-4 py-2 rounded-full hover:bg-gold transition duration-300">
+                        View Details
+                    </button>
                 </Link>
             </div>
         </div>
