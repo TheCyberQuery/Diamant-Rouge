@@ -9,7 +9,10 @@ export default function CheckoutPage() {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
-    // shipping info states
+    // Payment method state
+    const [paymentMethod, setPaymentMethod] = useState<'CMI' | 'COD' | ''>('');
+
+    // Shipping info states
     const [shippingAddress, setShippingAddress] = useState('');
     const [city, setCity] = useState('');
     const [postalCode, setPostalCode] = useState('');
@@ -20,28 +23,60 @@ export default function CheckoutPage() {
     async function handleCheckout() {
         setLoading(true);
         setError('');
+
+        if (!paymentMethod) {
+            setError('Please select a payment method.');
+            setLoading(false);
+            return;
+        }
+
+        if (!shippingAddress || !city || !postalCode || !country) {
+            setError('Please fill out all shipping details.');
+            setLoading(false);
+            return;
+        }
+
         try {
-            const res = await fetch('/api/order/place-order', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    cart,
-                    shippingAddress,
-                    city,
-                    postalCode,
-                    country,
-                }),
-            });
-            const data = await res.json();
+            if (paymentMethod === 'CMI') {
+                const res = await fetch('/api/payment/cmi', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        orderId: Date.now().toString(),
+                        amount: total,
+                        customerEmail: 'customer@example.com', // Replace with actual email
+                    }),
+                });
 
-            if (!res.ok) {
-                setError(data.error || 'Failed to place order');
-                return;
+                const data = await res.json();
+                if (data.redirectUrl) {
+                    window.location.href = data.redirectUrl;
+                } else {
+                    setError('Payment error. Please try again.');
+                }
+            } else {
+                const res = await fetch('/api/order/place-order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        cart,
+                        paymentMethod,
+                        shippingAddress,
+                        city,
+                        postalCode,
+                        country,
+                    }),
+                });
+
+                const data = await res.json();
+                if (!res.ok) {
+                    setError(data.error || 'Failed to place order');
+                    return;
+                }
+
+                clearCart();
+                setCheckoutComplete(true);
             }
-
-            // order success
-            clearCart();
-            setCheckoutComplete(true);
         } catch (err) {
             console.error(err);
             setError('An error occurred placing your order');
@@ -78,7 +113,30 @@ export default function CheckoutPage() {
         <main className="p-8 max-w-2xl mx-auto text-ivory">
             <h1 className="text-3xl font-serif mb-4">Checkout</h1>
             <div className="mb-4">
-                <p>Total: €{total.toFixed(2)}</p>
+                <p>Total: MAD {total.toFixed(2)}</p>
+            </div>
+
+            {/* Payment Method Selection */}
+            <div className="mb-4">
+                <label className="block mb-2">Select Payment Method</label>
+                <div className="flex gap-4">
+                    <button
+                        className={`px-4 py-2 rounded ${
+                            paymentMethod === 'CMI' ? 'bg-gold text-ebony' : 'bg-ebony text-ivory'
+                        }`}
+                        onClick={() => setPaymentMethod('CMI')}
+                    >
+                        Pay with Credit Card (CMI)
+                    </button>
+                    <button
+                        className={`px-4 py-2 rounded ${
+                            paymentMethod === 'COD' ? 'bg-gold text-ebony' : 'bg-ebony text-ivory'
+                        }`}
+                        onClick={() => setPaymentMethod('COD')}
+                    >
+                        Pay on Delivery
+                    </button>
+                </div>
             </div>
 
             {/* Shipping Info */}
@@ -124,7 +182,7 @@ export default function CheckoutPage() {
                 disabled={loading}
                 className="bg-crimson hover:bg-gold text-ivory px-4 py-2"
             >
-                {loading ? 'Placing Order...' : 'Place Order'}
+                {loading ? 'Processing...' : 'Confirm & Pay'}
             </button>
         </main>
     );

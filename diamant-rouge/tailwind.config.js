@@ -9,13 +9,13 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Luxury Color Palette (Fix: Convert camelCase to kebab-case)
-        'rich-ebony': '#0A0A0A', // Deep black background
-        'velvet-crimson': '#A00000', // Premium dark red
-        'royal-gold': '#C9B37C', // Elegant gold
-        'soft-ivory': '#F5F5F0', // Soft white for text contrast
-        'diamond-white': '#FCFCFC', // Bright white for highlights
-        'platinum-gray': '#C0C0C0', // Metallic touch for text & borders
+        // Luxury Color Palette
+        richEbony: '#0A0A0A', // Deep black background
+        velvetCrimson: '#A00000', // Premium dark red
+        royalGold: '#C9B37C', // Elegant gold
+        softIvory: '#F5F5F0', // Soft white for text contrast
+        diamondWhite: '#FCFCFC', // Bright white for highlights
+        platinumGray: '#C0C0C0', // Metallic touch for text & borders
       },
       fontFamily: {
         sans: ['Montserrat', ...defaultTheme.fontFamily.sans], // Modern sans-serif

@@ -94,12 +94,13 @@ model User {
 // (Basic placeholder for future expansions)
 // --------------------------------------------------------------------
 model Order {
-  id          Int      @id @default(autoincrement())
-  userId      Int?
-  totalAmount Decimal  @default(0.0)
-  status      String   @default("PENDING") // Could be PENDING, CONFIRMED, SHIPPED, DELIVERED, CANCELLED
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            Int      @id @default(autoincrement())
+  userId        Int?
+  totalAmount   Decimal  @default(0.0)
+  status        String   @default("PENDING") // Could be PENDING, CONFIRMED, SHIPPED, DELIVERED, CANCELLED
+  paymentMethod String // ✅ NEW: Added Payment Method Field
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   // Added shipping details
   shippingAddress String?

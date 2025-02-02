@@ -13,12 +13,12 @@
 
 /* Typography & Layout */
 body {
-    @apply bg-rich-ebony text-soft-ivory font-serif tracking-wide;
+    @apply bg-richEbony text-softIvory font-serif tracking-wide;
 }
 
 /* Luxury Headings */
 h1, h2, h3 {
-    @apply text-royal-gold font-bold tracking-wide;
+    @apply text-royalGold font-bold tracking-wide;
 }
 h1 { @apply text-4xl md:text-6xl; }
 h2 { @apply text-3xl md:text-5xl; }
@@ -26,23 +26,23 @@ h3 { @apply text-2xl md:text-4xl; }
 
 /* Luxury Buttons */
 .button-primary {
-    @apply bg-royal-gold text-rich-ebony px-6 py-3 rounded-full font-medium hover:bg-velvet-crimson transition duration-300;
+    @apply bg-royalGold text-richEbony px-6 py-3 rounded-full font-medium hover:bg-velvetCrimson transition duration-300;
 }
 .button-secondary {
-    @apply bg-transparent border border-royal-gold text-royal-gold px-6 py-3 rounded-full font-medium hover:bg-royal-gold hover:text-rich-ebony transition duration-300;
+    @apply bg-transparent border border-royalGold text-royalGold px-6 py-3 rounded-full font-medium hover:bg-royalGold hover:text-richEbony transition duration-300;
 }
 
 /* Card Styling */
 .card {
-    @apply bg-rich-ebony rounded-lg shadow-luxury p-6 transition-transform hover:scale-105 duration-300;
+    @apply bg-richEbony rounded-lg shadow-luxury p-6 transition-transform hover:scale-105 duration-300;
 }
 
 /* Section Background */
 .section-dark {
-    @apply bg-rich-ebony text-soft-ivory;
+    @apply bg-richEbony text-softIvory;
 }
 .section-light {
-    @apply bg-diamond-white text-rich-ebony;
+    @apply bg-diamondWhite text-richEbony;
 }
 
 /* Image Shadows */

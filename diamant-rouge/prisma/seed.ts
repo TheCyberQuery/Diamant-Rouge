@@ -5,7 +5,10 @@ import bcrypt from 'bcryptjs';
 const prisma = new PrismaClient();
 
 async function main() {
-    // 1. Create a Category
+    console.log('🌱 Seeding database...');
+
+    // ✅ Create Categories
+    console.log('🔹 Creating categories...');
     const ringsCategory = await prisma.category.upsert({
         where: { slug: 'rings' },
         update: {},
@@ -15,119 +18,199 @@ async function main() {
                 create: [
                     {
                         language: 'en',
-                        name: 'Rings',
-                        description: 'Elegantly crafted rings that symbolize love and heritage.',
+                        name: 'Luxury Rings',
+                        description: 'Exquisite rings crafted with precision, symbolizing love and heritage.',
                     },
                     {
                         language: 'fr',
-                        name: 'Bagues',
-                        description: 'Bagues élégamment façonnées symbolisant l’amour et l’héritage.',
+                        name: 'Bagues de Luxe',
+                        description: 'Bagues exquises conçues avec précision, symbolisant l’amour et l’héritage.',
                     },
                     {
                         language: 'ar',
-                        name: 'خواتم',
-                        description: 'خواتم مصممة بأناقة ترمز إلى الحب والتراث.',
+                        name: 'خواتم فاخرة',
+                        description: 'خواتم رائعة مصممة بدقة ترمز إلى الحب والتراث.',
                     },
                 ],
             },
         },
     });
 
-    // 2. Create a Product referencing that category
-    const rougePassion = await prisma.product.upsert({
+    const braceletsCategory = await prisma.category.upsert({
+        where: { slug: 'bracelets' },
+        update: {},
+        create: {
+            slug: 'bracelets',
+            translations: {
+                create: [
+                    {
+                        language: 'en',
+                        name: 'Elegant Bracelets',
+                        description: 'Timeless bracelets adorned with the finest diamonds and gold.',
+                    },
+                    {
+                        language: 'fr',
+                        name: 'Bracelets Élégants',
+                        description: 'Bracelets intemporels ornés des plus beaux diamants et de l’or.',
+                    },
+                    {
+                        language: 'ar',
+                        name: 'أساور أنيقة',
+                        description: 'أساور خالدة مزينة بأجود الألماس والذهب.',
+                    },
+                ],
+            },
+        },
+    });
+
+    // ✅ Create Products
+    console.log('🔹 Creating products...');
+    const rougePassionRing = await prisma.product.upsert({
         where: { sku: 'ROUGE-PASSION-001' },
-        update: { categoryId: ringsCategory.id },
+        update: {},
         create: {
             sku: 'ROUGE-PASSION-001',
-            basePrice: 999.99,
+            basePrice: 4999.99,
             categoryId: ringsCategory.id,
             translations: {
                 create: [
                     {
                         language: 'en',
                         name: 'Rouge Passion Diamond Ring',
-                        description:
-                            'A tribute to eternal love. Meticulously cut diamond revealing an unparalleled inner fire.',
+                        description: 'A symbol of eternal love, set with a rare crimson diamond.',
                     },
                     {
                         language: 'fr',
-                        name: 'Bague Rouge Passion',
-                        description:
-                            "Un hommage à l'amour éternel. Un diamant taillé avec précision révélant un feu intérieur inégalé.",
+                        name: 'Bague Diamant Rouge Passion',
+                        description: "Un symbole d'amour éternel, serti d'un diamant rouge rare.",
                     },
                     {
                         language: 'ar',
-                        name: 'خاتم روج باشون',
-                        description:
-                            'تكريم للحب الأبدي. يكشف الماس المصقول بدقة عن بريق داخلي لا مثيل له.',
+                        name: 'خاتم الألماس روج باشون',
+                        description: 'رمز الحب الأبدي، مرصع بألماس قرمزي نادر.',
                     },
                 ],
             },
         },
     });
 
-    // 3. Create some Product Variations (sizes, for example)
+    const imperialBracelet = await prisma.product.upsert({
+        where: { sku: 'IMPERIAL-BRACELET-001' },
+        update: {},
+        create: {
+            sku: 'IMPERIAL-BRACELET-001',
+            basePrice: 2999.99,
+            categoryId: braceletsCategory.id,
+            translations: {
+                create: [
+                    {
+                        language: 'en',
+                        name: 'Imperial Gold Bracelet',
+                        description: 'A royal statement of elegance, crafted from 24k pure gold.',
+                    },
+                    {
+                        language: 'fr',
+                        name: 'Bracelet Impérial en Or',
+                        description: 'Une déclaration royale d’élégance, fabriquée en or pur 24 carats.',
+                    },
+                    {
+                        language: 'ar',
+                        name: 'سوار الإمبراطورية الذهبي',
+                        description: 'تصريح ملكي بالأناقة، مصنوع من الذهب الخالص عيار 24.',
+                    },
+                ],
+            },
+        },
+    });
+
+    // ✅ Create Product Variations
+    console.log('🔹 Adding product variations...');
     await prisma.productVariation.createMany({
         data: [
             {
-                productId: rougePassion.id,
-                variationType: 'Size',
-                variationValue: '5',
-                additionalPrice: 0,
-            },
-            {
-                productId: rougePassion.id,
+                productId: rougePassionRing.id,
                 variationType: 'Size',
                 variationValue: '6',
                 additionalPrice: 0,
+                inventory: 10,
             },
             {
-                productId: rougePassion.id,
+                productId: rougePassionRing.id,
                 variationType: 'Size',
                 variationValue: '7',
                 additionalPrice: 0,
+                inventory: 8,
+            },
+            {
+                productId: imperialBracelet.id,
+                variationType: 'Length',
+                variationValue: '18cm',
+                additionalPrice: 0,
+                inventory: 15,
             },
         ],
     });
 
-    // 4. Create a User with hashed password
-    const hashedPassword = await bcrypt.hash('0m3g4xxz', 10); // Replace with your chosen password
+    // ✅ Create Users
+    console.log('🔹 Creating users...');
+    const hashedPasswordUser = await bcrypt.hash('0m3g4xxz', 10);
+    const hashedPasswordAdmin = await bcrypt.hash('0m3g4xxz', 10);
 
     await prisma.user.upsert({
-        where: { email: 'user@test.com' },
+        where: { email: 'customer@diamant-rouge.com' },
         update: {},
         create: {
-            email: 'user@test.com', // Replace with your chosen email
-            password: hashedPassword,
-            name: 'Jane Doe', // Replace with the desired name or make it nullable
+            email: 'customer@diamant-rouge.com',
+            password: hashedPasswordUser,
+            name: 'Luxury Client',
+            role: 'customer',
         },
     });
 
-    const existingAdmin = await prisma.user.findUnique({
+    await prisma.user.upsert({
         where: { email: 'admin@diamant-rouge.com' },
+        update: {},
+        create: {
+            email: 'admin@diamant-rouge.com',
+            password: hashedPasswordAdmin,
+            name: 'Diamant Rouge Admin',
+            role: 'admin',
+        },
     });
-    if (!existingAdmin) {
-        const hashedPassword = await bcrypt.hash('admin123', 10);
-        await prisma.user.create({
-            data: {
-                email: 'admin@diamant-rouge.com',
-                password: hashedPassword,
-                role: 'admin',
-                name: 'Diamant Admin',
+
+    console.log('✅ Users created.');
+
+    // ✅ Create Sample Order
+    console.log('🔹 Creating a sample order...');
+    await prisma.order.create({
+        data: {
+            userId: 1,
+            totalAmount: 4999.99,
+            status: 'PENDING',
+            paymentMethod: 'COD',
+            shippingAddress: '123 Luxury Street, Casablanca',
+            city: 'Casablanca',
+            postalCode: '20000',
+            country: 'Morocco',
+            orderItems: {
+                create: [
+                    {
+                        productId: rougePassionRing.id,
+                        quantity: 1,
+                        price: 4999.99,
+                    },
+                ],
             },
-        });
-        console.log('Admin user created => admin@diamant-rouge.com / admin123');
-    } else {
-        console.log('Admin user already exists. Skipping...');
-    }
+        },
+    });
 
-
-    console.log('Seed completed!');
+    console.log('✅ Sample order created.');
+    console.log('🎉 Database seeding completed!');
 }
 
 main()
-    .catch((e) => {
-        console.error(e);
+    .catch((error) => {
+        console.error('❌ Seeding failed:', error);
         process.exit(1);
     })
     .finally(async () => {
