@@ -52,10 +52,10 @@ export default function ProductCard({ product, locale }: ProductCardProps) {
             {/* Product Image */}
             <Link href={`/products/${product.id}`} passHref>
                 <Image
-                    src={product.images.length > 0 ? product.images[0] : "/images/products/diamond-cluster-earrings.png"}
+                    src={product.images.length > 0 ? product.images[0] : "/images/placeholder.jpg"}
                     width={300}
                     height={300}
-                    alt={productTranslation?.name || "Product"}
+                    alt={productTranslation?.name || "Luxury Jewelry"}
                     className="rounded-lg cursor-pointer object-cover"
                 />
             </Link>
@@ -64,13 +64,13 @@ export default function ProductCard({ product, locale }: ProductCardProps) {
             <h3 className="text-xl font-serif text-gold mt-4">{productTranslation?.name}</h3>
 
             {/* Product Price */}
-            <p className="text-platinumGray mt-2">€{parseFloat(product.basePrice).toFixed(2)}</p>
+            <p className="text-platinumGray mt-2">Starting at €{parseFloat(product.basePrice).toFixed(2)}</p>
 
-            {/* View Details Button */}
+            {/* View Creation Button */}
             <div className="mt-4">
                 <Link href={`/products/${product.id}`} passHref>
                     <button className="bg-crimson text-ivory px-4 py-2 rounded-full hover:bg-gold transition duration-300">
-                        View Details
+                        View Creation
                     </button>
                 </Link>
             </div>

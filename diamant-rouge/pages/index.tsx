@@ -5,21 +5,75 @@ import { NextSeo } from "next-seo";
 import { motion } from "framer-motion";
 import { prisma } from "../lib/prisma";
 import ProductCard from "../components/ProductCard";
+import { jwtVerify } from "jose";
 
-
+// ✅ Fetch Products and Wishlist Safely
 export async function getServerSideProps(context) {
-    const locale = context.locale || "en"; // Get locale from Next.js
-    const featuredProducts = await prisma.product.findMany({
-        include: {
-            translations: true,
-            variations: true,
-        },
-        take: 6, // Fetch only 6 products for homepage display
-    });
+    let userId = null;
+    let wishlist = [];
 
-    return {
-        props: { products: JSON.parse(JSON.stringify(featuredProducts)), locale },
-    };
+    try {
+        // ✅ Manually Parse Session Token (Avoid `getSession` Bug)
+        const rawCookie = context.req.headers.cookie || '';
+        let match = rawCookie.match(/next-auth\.session-token=([^;]+)/) || rawCookie.match(/__Secure-next-auth\.session-token=([^;]+)/);
+
+        if (match) {
+            const secret = process.env.NEXTAUTH_SECRET || '';
+            const tokenStr = decodeURIComponent(match[1]);
+
+            try {
+                const { payload: decoded } = await jwtVerify(tokenStr, new TextEncoder().encode(secret));
+
+                // ✅ Ensure valid payload
+                if (decoded && typeof decoded === 'object' && decoded.id) {
+                    userId = Number(decoded.id);
+                    console.log(`✅ Authenticated user ID: ${userId}`);
+                } else {
+                    console.warn("⚠ Token payload structure invalid:", decoded);
+                }
+            } catch (tokenError) {
+                console.warn("⚠ Token verification failed:", tokenError);
+            }
+        }
+
+        console.log("✅ Fetching homepage data...");
+        // ✅ Fetch Featured Products
+        const featuredProducts = await prisma.product.findMany({
+            include: { translations: true, variations: true },
+            take: 6,
+        });
+        console.log("✅ Fetched featured products:", featuredProducts.length);
+
+        // ✅ Fetch Wishlist Only if User is Authenticated
+        if (userId) {
+            try {
+                const wishlistItems = await prisma.wishlist.findMany({
+                    where: { userId },
+                    select: { productId: true },
+                });
+                wishlist = wishlistItems.map((item) => item.productId);
+            } catch (wishlistError) {
+                console.warn("⚠ Failed to fetch wishlist:", wishlistError);
+            }
+        }
+
+        return {
+            props: {
+                products: JSON.parse(JSON.stringify(featuredProducts)),
+                wishlist: JSON.parse(JSON.stringify(wishlist)),
+                locale: context.locale || "en",
+            },
+        };
+    } catch (error) {
+        console.error('❌ Homepage Data Fetch Error:', error);
+        return {
+            props: {
+                products: [],
+                wishlist: [],
+                locale: context.locale || "en",
+            },
+        };
+    }
 }
 
 // Hero Carousel Slides
@@ -41,7 +95,7 @@ const slides = [
     },
 ];
 
-export default function HomePage({ products, locale }) {
+export default function HomePage({ products, wishlist, locale }) {
     return (
         <>
             <NextSeo
@@ -101,7 +155,7 @@ export default function HomePage({ products, locale }) {
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 max-w-7xl mx-auto">
                     {products.map((product) => (
-                        <ProductCard key={product.id} product={product} locale={locale} />
+                        <ProductCard key={product.id} product={product} locale={locale} isWishlisted={wishlist.includes(product.id)} />
                     ))}
                 </div>
                 <div className="text-center mt-10">

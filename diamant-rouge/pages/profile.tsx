@@ -18,6 +18,7 @@ type OrderPlus = {
         quantity: number;
         price: string;
         product?: {
+            id: number;
             sku: string;
             translations: {
                 language: string;
@@ -31,6 +32,7 @@ type WishlistItem = {
     id: number;
     productId: number;
     product: {
+        id: number;  // ✅ Ensure Product ID is available
         sku: string;
         basePrice: string;
         translations: {
@@ -90,7 +92,7 @@ export default function ProfilePage({ orders, wishlist, locale }: { orders: Orde
                                 product.translations.find(t => t.language === "en");
 
                             return (
-                                <div key={product.sku} className="bg-ebony/50 p-4 rounded-lg text-center">
+                                <div key={product.id} className="bg-ebony/50 p-4 rounded-lg text-center">
                                     <Image
                                         src={`/images/products/${product.sku.toLowerCase()}.png`}
                                         width={150}
@@ -100,7 +102,9 @@ export default function ProfilePage({ orders, wishlist, locale }: { orders: Orde
                                     />
                                     <h3 className="text-lg text-gold mt-2">{productTranslation?.name}</h3>
                                     <p className="text-platinumGray">€{parseFloat(product.basePrice).toFixed(2)}</p>
-                                    <Link href={`/products/${product.sku}`} passHref>
+
+                                    {/* ✅ FIXED: Use Product ID instead of SKU */}
+                                    <Link href={`/products/${product.id}`} passHref>
                                         <button className="mt-2 bg-crimson text-ivory px-4 py-2 rounded-full hover:bg-gold transition duration-300">
                                             View Product
                                         </button>
@@ -150,6 +154,7 @@ export async function getServerSideProps(context: any) {
                     include: {
                         product: {
                             select: {
+                                id: true,  // ✅ Ensure Product ID is selected
                                 sku: true,
                                 translations: {
                                     select: {
@@ -171,6 +176,7 @@ export async function getServerSideProps(context: any) {
             include: {
                 product: {
                     select: {
+                        id: true,  // ✅ Ensure Product ID is selected
                         sku: true,
                         basePrice: true,
                         translations: {
