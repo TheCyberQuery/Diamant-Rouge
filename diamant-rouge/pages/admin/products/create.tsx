@@ -1,10 +1,11 @@
-// pages/admin/products/create.tsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 
 export default function CreateProduct() {
     const router = useRouter();
 
+    // ✅ State Management
+    const [categories, setCategories] = useState([]);
     const [formData, setFormData] = useState({
         sku: "",
         basePrice: "",
@@ -17,15 +18,25 @@ export default function CreateProduct() {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
+    // ✅ Fetch Categories on Load
+    useEffect(() => {
+        fetch("/api/admin/categories")
+            .then((res) => res.json())
+            .then((data) => setCategories(data))
+            .catch(() => setError("Failed to load categories"));
+    }, []);
+
+    // ✅ Handle Input Changes
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
     const handleTranslationChange = (index, key, value) => {
-        const updatedTranslations = [...formData.translations];
-        updatedTranslations[index][key] = value;
-        setFormData((prev) => ({ ...prev, translations: updatedTranslations }));
+        setFormData((prev) => ({
+            ...prev,
+            translations: prev.translations.map((t, i) => i === index ? { ...t, [key]: value } : t),
+        }));
     };
 
     const addVariation = () => {
@@ -36,47 +47,35 @@ export default function CreateProduct() {
     };
 
     const handleVariationChange = (index, key, value) => {
-        const updatedVariations = [...formData.variations];
-        updatedVariations[index][key] = value;
-        setFormData((prev) => ({ ...prev, variations: updatedVariations }));
+        setFormData((prev) => ({
+            ...prev,
+            variations: prev.variations.map((v, i) => i === index ? { ...v, [key]: value } : v),
+        }));
     };
 
+    // ✅ Handle Image Upload
     const handleImageUpload = async (e) => {
         const file = e.target.files[0];
-        if (!file) {
-            setError("No file selected");
-            return;
-        }
+        if (!file) return setError("No file selected.");
 
         const formData = new FormData();
         formData.append("file", file);
 
         try {
-            const response = await fetch("/api/upload-image", {
-                method: "POST",
-                body: formData,
-            });
-
+            const response = await fetch("/api/upload-image", { method: "POST", body: formData });
             const data = await response.json();
 
             if (response.ok) {
-                console.log("✅ Image Uploaded:", data.imageUrl);
-
-                setFormData((prev) => ({
-                    ...prev,
-                    images: [...prev.images, data.imageUrl], // ✅ Ensure URL is stored
-                }));
+                setFormData((prev) => ({ ...prev, images: [...prev.images, data.imageUrl] }));
             } else {
-                console.error("❌ Image Upload Error:", data.error);
-                setError(data.error || "Image upload failed");
+                setError(data.error || "Image upload failed.");
             }
-        } catch (err) {
-            console.error("❌ Image Upload Error:", err);
+        } catch {
             setError("An error occurred while uploading the image.");
         }
     };
 
-// ✅ Function to remove an image before submitting
+    // ✅ Remove Image from List
     const handleRemoveImage = (index) => {
         setFormData((prev) => ({
             ...prev,
@@ -84,36 +83,31 @@ export default function CreateProduct() {
         }));
     };
 
-
-
-
+    // ✅ Handle Form Submission
     const handleSubmit = async () => {
         setLoading(true);
         setError("");
 
+        if (!formData.sku || !formData.basePrice || !formData.categoryId) {
+            setLoading(false);
+            return setError("SKU, Base Price, and Category are required.");
+        }
+
         try {
-            // ✅ Manually extract token from cookies
             const resSession = await fetch("/api/auth/session");
             const sessionData = await resSession.json();
-            if (!sessionData || !sessionData.user) {
-                throw new Error("Unauthorized: Admin session not found");
-            }
+            if (!sessionData || !sessionData.user) throw new Error("Unauthorized: Admin session not found");
 
             const res = await fetch("/api/admin/products", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${sessionData.user.token}`, // ✅ Include Token
+                    Authorization: `Bearer ${sessionData.user.token}`,
                 },
-                body: JSON.stringify({
-                    ...formData,
-                    images: formData.images, // ✅ Ensure images are sent
-                }),
+                body: JSON.stringify(formData),
             });
 
-            if (!res.ok) {
-                throw new Error("Failed to create product");
-            }
+            if (!res.ok) throw new Error("Failed to create product");
 
             router.push("/admin/products");
         } catch (err) {
@@ -122,9 +116,6 @@ export default function CreateProduct() {
             setLoading(false);
         }
     };
-
-
-
 
     return (
         <main className="max-w-2xl mx-auto p-6">
@@ -138,6 +129,19 @@ export default function CreateProduct() {
             <div className="mb-4">
                 <label className="block">Base Price (€)</label>
                 <input name="basePrice" type="number" value={formData.basePrice} onChange={handleInputChange} className="w-full p-2 border" />
+            </div>
+
+            {/* Category Selection */}
+            <div className="mb-4">
+                <label className="block">Category</label>
+                <select name="categoryId" value={formData.categoryId} onChange={handleInputChange} className="w-full p-2 border">
+                    <option value="">Select Category</option>
+                    {categories.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                            {cat.translations.find((t) => t.language === "en")?.name || cat.slug}
+                        </option>
+                    ))}
+                </select>
             </div>
 
             {/* Translations */}
@@ -170,16 +174,10 @@ export default function CreateProduct() {
                 {formData.images.map((url, index) => (
                     <div key={index} className="relative">
                         <img src={url} alt="Uploaded" className="w-16 h-16 object-cover rounded-md" />
-                        <button
-                            onClick={() => handleRemoveImage(index)}
-                            className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
-                        >
-                            ✕
-                        </button>
+                        <button onClick={() => handleRemoveImage(index)} className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center">✕</button>
                     </div>
                 ))}
             </div>
-
 
             {error && <p className="text-red-500 mt-4">{error}</p>}
 

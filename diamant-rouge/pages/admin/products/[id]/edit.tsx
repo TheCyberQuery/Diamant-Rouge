@@ -1,11 +1,10 @@
-// pages/admin/products/edit.tsx
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import { prisma } from '../../../../lib/prisma';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
-export default function EditProductPage({ product }: { product: any }) {
+export default function EditProductPage({ product, categories }: { product: any; categories: any[] }) {
     const router = useRouter();
     const [formData, setFormData] = useState({
         sku: product.sku,
@@ -64,14 +63,13 @@ export default function EditProductPage({ product }: { product: any }) {
         }
     };
 
-// ✅ Function to remove an image before updating
+    // ✅ Function to remove an image before updating
     const handleRemoveImage = (index) => {
         setFormData((prev) => ({
             ...prev,
             images: prev.images.filter((_, i) => i !== index),
         }));
     };
-
 
     const handleSubmit = async () => {
         setLoading(true);
@@ -110,6 +108,24 @@ export default function EditProductPage({ product }: { product: any }) {
                 <input name="basePrice" type="number" value={formData.basePrice} onChange={handleInputChange} className="w-full p-2 border" />
             </div>
 
+            {/* Category Selection */}
+            <div className="mb-4">
+                <label className="block">Category</label>
+                <select
+                    name="categoryId"
+                    value={formData.categoryId}
+                    onChange={handleInputChange}
+                    className="w-full p-2 border"
+                >
+                    <option value="">Select a category</option>
+                    {categories.map((category) => (
+                        <option key={category.id} value={category.id}>
+                            {category.translations.find((t) => t.language === "en")?.name || category.slug}
+                        </option>
+                    ))}
+                </select>
+            </div>
+
             {/* Translations */}
             <h3 className="text-xl mt-6 mb-2">Translations</h3>
             {formData.translations.map((t, index) => (
@@ -139,7 +155,6 @@ export default function EditProductPage({ product }: { product: any }) {
                 ))}
             </div>
 
-
             {error && <p className="text-red-500 mt-4">{error}</p>}
 
             <button onClick={handleSubmit} disabled={loading} className="bg-crimson text-white px-6 py-3 mt-6 rounded-full hover:bg-gold">
@@ -156,8 +171,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
 
     const { id } = context.params!;
+
+    // ✅ Fetch product and categories
     const rawProduct = await prisma.product.findUnique({
         where: { id: Number(id) },
+        include: { translations: true },
+    });
+
+    const rawCategories = await prisma.category.findMany({
         include: { translations: true },
     });
 
@@ -165,6 +186,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         return { notFound: true };
     }
 
+    // ✅ Convert Date fields to ISO strings to prevent serialization errors
     const product = JSON.parse(JSON.stringify(rawProduct));
-    return { props: { product } };
+    const categories = rawCategories.map((category) => ({
+        ...category,
+        createdAt: category.createdAt.toISOString(),
+        updatedAt: category.updatedAt.toISOString(),
+    }));
+
+    return { props: { product, categories } };
 };
+
