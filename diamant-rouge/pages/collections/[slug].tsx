@@ -1,8 +1,8 @@
-import { GetServerSideProps } from 'next';
-import { prisma } from '../../lib/prisma';
-import ProductCard from '../../components/ProductCard';
-import { NextSeo } from 'next-seo';
-import { useState } from 'react';
+import { GetServerSideProps } from "next";
+import { prisma } from "../../lib/prisma";
+import ProductCard from "../../components/ProductCard";
+import { NextSeo } from "next-seo";
+import { useState } from "react";
 
 type CollectionProps = {
     categoryData: {
@@ -16,6 +16,8 @@ type CollectionProps = {
             id: number;
             sku: string;
             basePrice: string;
+            images: string[];
+            createdAt: string; // ✅ Ensure date is returned as a string
             translations: {
                 language: string;
                 name: string;
@@ -36,27 +38,30 @@ export default function CollectionPage({ categoryData, locale }: CollectionProps
     }
 
     const catTranslation =
-        categoryData.translations.find(t => t.language === locale) ||
-        categoryData.translations.find(t => t.language === 'en');
+        categoryData.translations.find((t) => t.language === locale) ||
+        categoryData.translations.find((t) => t.language === "en");
 
     // Sorting & Filtering (Frontend)
-    const [sortOption, setSortOption] = useState('default');
-    let sortedProducts = [...categoryData.products];
+    const [sortOption, setSortOption] = useState("default");
 
-    if (sortOption === 'price-asc') {
-        sortedProducts.sort((a, b) => parseFloat(a.basePrice) - parseFloat(b.basePrice));
-    } else if (sortOption === 'price-desc') {
-        sortedProducts.sort((a, b) => parseFloat(b.basePrice) - parseFloat(a.basePrice));
-    }
+    const sortedProducts = [...categoryData.products].sort((a, b) => {
+        if (sortOption === "price-asc") {
+            return parseFloat(a.basePrice) - parseFloat(b.basePrice);
+        }
+        if (sortOption === "price-desc") {
+            return parseFloat(b.basePrice) - parseFloat(a.basePrice);
+        }
+        return 0;
+    });
 
     return (
         <>
             <NextSeo
                 title={`Diamant-Rouge | ${catTranslation?.name}`}
-                description={catTranslation?.description || 'Discover our exclusive jewelry collections.'}
+                description={catTranslation?.description || "Discover our exclusive jewelry collections."}
                 openGraph={{
                     title: `Diamant-Rouge | ${catTranslation?.name}`,
-                    description: catTranslation?.description || 'Luxury jewelry collection by Diamant-Rouge.',
+                    description: catTranslation?.description || "Luxury jewelry collection by Diamant-Rouge.",
                 }}
             />
 
@@ -81,23 +86,13 @@ export default function CollectionPage({ categoryData, locale }: CollectionProps
                     {/* Product Grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                         {sortedProducts.length > 0 ? (
-                            sortedProducts.map((product) => {
-                                const productTranslation =
-                                    product.translations.find(t => t.language === locale) ||
-                                    product.translations.find(t => t.language === 'en');
-
-                                return (
-                                    <ProductCard
-                                        key={product.id}
-                                        id={product.id}
-                                        sku={product.sku}
-                                        name={productTranslation?.name || 'No Name'}
-                                        price={product.basePrice}
-                                    />
-                                );
-                            })
+                            sortedProducts.map((product) => (
+                                <ProductCard key={product.id} product={product} locale={locale} /> // ✅ Corrected Prop Passing
+                            ))
                         ) : (
-                            <p className="text-center text-platinumGray col-span-3">No products found in this collection.</p>
+                            <p className="text-center text-platinumGray col-span-3">
+                                No products found in this collection.
+                            </p>
                         )}
                     </div>
                 </div>
@@ -108,7 +103,7 @@ export default function CollectionPage({ categoryData, locale }: CollectionProps
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const { slug } = context.params!;
-    const locale = context.locale || 'en';
+    const locale = context.locale || "en";
 
     const rawCategoryData = await prisma.category.findUnique({
         where: { slug: slug as string },
@@ -122,8 +117,22 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         },
     });
 
-    // Convert Date fields to ISO strings
-    const categoryData = rawCategoryData ? JSON.parse(JSON.stringify(rawCategoryData)) : null;
+    // ✅ Ensure all `Date` fields are converted to ISO strings to prevent serialization errors
+    const categoryData = rawCategoryData
+        ? JSON.parse(
+            JSON.stringify({
+                ...rawCategoryData,
+                createdAt: rawCategoryData.createdAt ? rawCategoryData.createdAt.toISOString() : null, // ✅ Convert Date
+                updatedAt: rawCategoryData.updatedAt ? rawCategoryData.updatedAt.toISOString() : null, // ✅ Convert Date
+                products: rawCategoryData.products.map((product) => ({
+                    ...product,
+                    images: product.images || [], // ✅ Ensures products always have an "images" array
+                    createdAt: product.createdAt ? product.createdAt.toISOString() : null, // ✅ Convert Date
+                    updatedAt: product.updatedAt ? product.updatedAt.toISOString() : null, // ✅ Convert Date
+                })),
+            })
+        )
+        : null;
 
     return {
         props: {

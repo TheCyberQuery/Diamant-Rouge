@@ -31,7 +31,13 @@ type ProductProps = {
 export default function ProductPage({ productData, locale }: ProductProps) {
     const { addToCart } = useCart();
     const [selectedVariation, setSelectedVariation] = useState<number | null>(null);
-    const [quantity, setQuantity] = useState(1);
+    const [quantity] = useState(1);
+
+    // ✅ Image state for preview and full-screen mode
+    const [selectedImage, setSelectedImage] = useState(
+        productData?.images?.length > 0 ? productData.images[0] : "/images/placeholder.jpg"
+    );
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     if (!productData) {
         return (
@@ -43,8 +49,8 @@ export default function ProductPage({ productData, locale }: ProductProps) {
     }
 
     const productTranslation =
-        productData.translations.find(t => t.language === locale) ||
-        productData.translations.find(t => t.language === "en");
+        productData.translations.find((t) => t.language === locale) ||
+        productData.translations.find((t) => t.language === "en");
 
     const basePrice = parseFloat(productData.basePrice);
     const additionalPrice = selectedVariation
@@ -84,13 +90,35 @@ export default function ProductPage({ productData, locale }: ProductProps) {
             >
                 {/* Image Section */}
                 <div className="relative">
-                    <Image
-                        src={productData.images.length > 0 ? productData.images[0] : "/images/placeholder.jpg"}
-                        width={600}
-                        height={600}
-                        alt={productTranslation?.name}
-                        className="rounded-lg shadow-luxury"
-                    />
+                    {/* ✅ Main Image Display with Zoom Effect */}
+                    <div className="relative group cursor-pointer" onClick={() => setIsModalOpen(true)}>
+                        <Image
+                            src={selectedImage}
+                            width={600}
+                            height={600}
+                            alt={productTranslation?.name}
+                            className="rounded-lg shadow-luxury transition-opacity duration-300 group-hover:scale-105"
+                        />
+                        {/* Zoom effect on hover */}
+                        <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition duration-300 rounded-lg"></div>
+                    </div>
+
+                    {/* ✅ Thumbnails Carousel */}
+                    <div className="flex gap-2 mt-4">
+                        {productData.images.map((image, index) => (
+                            <button key={index} onClick={() => setSelectedImage(image)}>
+                                <Image
+                                    src={image}
+                                    width={100}
+                                    height={100}
+                                    alt={`Thumbnail ${index}`}
+                                    className={`rounded-lg cursor-pointer transition ${
+                                        selectedImage === image ? "border-4 border-gold" : "opacity-80 hover:opacity-100"
+                                    }`}
+                                />
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
                 {/* Product Details */}
@@ -149,6 +177,30 @@ export default function ProductPage({ productData, locale }: ProductProps) {
                     </div>
                 </div>
             </motion.section>
+
+            {/* ✅ Full-Screen Image Modal */}
+            {isModalOpen && (
+                <div
+                    className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50"
+                    onClick={() => setIsModalOpen(false)}
+                >
+                    <div className="relative max-w-4xl">
+                        <Image
+                            src={selectedImage}
+                            width={1000}
+                            height={1000}
+                            alt="Full Screen View"
+                            className="rounded-lg shadow-luxury transition-transform duration-500 transform scale-100 hover:scale-105"
+                        />
+                        <button
+                            className="absolute top-4 right-4 text-white bg-ebony p-2 rounded-full"
+                            onClick={() => setIsModalOpen(false)}
+                        >
+                            ✕
+                        </button>
+                    </div>
+                </div>
+            )}
         </>
     );
 }
