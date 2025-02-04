@@ -76,6 +76,15 @@ export default function CreateProduct() {
         }
     };
 
+// ✅ Function to remove an image before submitting
+    const handleRemoveImage = (index) => {
+        setFormData((prev) => ({
+            ...prev,
+            images: prev.images.filter((_, i) => i !== index),
+        }));
+    };
+
+
 
 
     const handleSubmit = async () => {
@@ -155,11 +164,22 @@ export default function CreateProduct() {
             {/* Image Upload */}
             <h3 className="text-xl mt-6 mb-2">Images</h3>
             <input type="file" onChange={handleImageUpload} className="w-full p-2 border" />
+
+            {/* Image Preview with Remove Button */}
             <div className="flex gap-2 mt-2">
                 {formData.images.map((url, index) => (
-                    <img key={index} src={url} alt="Uploaded" className="w-16 h-16 object-cover" />
+                    <div key={index} className="relative">
+                        <img src={url} alt="Uploaded" className="w-16 h-16 object-cover rounded-md" />
+                        <button
+                            onClick={() => handleRemoveImage(index)}
+                            className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                        >
+                            ✕
+                        </button>
+                    </div>
                 ))}
             </div>
+
 
             {error && <p className="text-red-500 mt-4">{error}</p>}
 

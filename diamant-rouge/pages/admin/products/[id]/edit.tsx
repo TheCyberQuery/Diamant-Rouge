@@ -29,6 +29,50 @@ export default function EditProductPage({ product }: { product: any }) {
         setFormData((prev) => ({ ...prev, translations: updatedTranslations }));
     };
 
+    const handleImageUpload = async (e) => {
+        const file = e.target.files[0];
+        if (!file) {
+            setError("No file selected");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const response = await fetch("/api/upload-image", {
+                method: "POST",
+                body: formData,
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                console.log("✅ Image Uploaded:", data.imageUrl);
+
+                setFormData((prev) => ({
+                    ...prev,
+                    images: [...prev.images, data.imageUrl],
+                }));
+            } else {
+                console.error("❌ Image Upload Error:", data.error);
+                setError(data.error || "Image upload failed");
+            }
+        } catch (err) {
+            console.error("❌ Image Upload Error:", err);
+            setError("An error occurred while uploading the image.");
+        }
+    };
+
+// ✅ Function to remove an image before updating
+    const handleRemoveImage = (index) => {
+        setFormData((prev) => ({
+            ...prev,
+            images: prev.images.filter((_, i) => i !== index),
+        }));
+    };
+
+
     const handleSubmit = async () => {
         setLoading(true);
         setError("");
@@ -75,6 +119,26 @@ export default function EditProductPage({ product }: { product: any }) {
                     <textarea value={t.description} onChange={(e) => handleTranslationChange(index, "description", e.target.value)} className="w-full p-2 border mt-2" placeholder="Description"></textarea>
                 </div>
             ))}
+
+            {/* Image Upload */}
+            <h3 className="text-xl mt-6 mb-2">Product Images</h3>
+            <input type="file" onChange={handleImageUpload} className="w-full p-2 border" />
+
+            {/* Image Preview with Remove Button */}
+            <div className="flex gap-2 mt-2">
+                {formData.images.map((url, index) => (
+                    <div key={index} className="relative">
+                        <img src={url} alt="Uploaded" className="w-16 h-16 object-cover rounded-md" />
+                        <button
+                            onClick={() => handleRemoveImage(index)}
+                            className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                        >
+                            ✕
+                        </button>
+                    </div>
+                ))}
+            </div>
+
 
             {error && <p className="text-red-500 mt-4">{error}</p>}
 
