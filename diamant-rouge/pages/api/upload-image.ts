@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import formidable from "formidable";
+import formidable, { File } from "formidable";
 import fs from "fs";
 import path from "path";
 import { jwtVerify } from "jose";
@@ -53,17 +53,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     try {
+        // ✅ Define upload directory
+        const uploadDir = path.join(process.cwd(), "public/uploads");
+
+        // Ensure the directory exists
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+
         // ✅ Correctly initialize Formidable
         const form = formidable({
-            uploadDir: path.join(process.cwd(), "public/uploads"),
+            uploadDir, // Set upload directory explicitly
             keepExtensions: true,
             maxFileSize: 5 * 1024 * 1024, // 5MB limit
             multiples: false,
         });
-
-        if (!fs.existsSync(form.uploadDir)) {
-            fs.mkdirSync(form.uploadDir, { recursive: true });
-        }
 
         form.parse(req, async (err, fields, files) => {
             if (err) {
@@ -71,16 +75,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 return res.status(500).json({ error: "File upload failed" });
             }
 
-            const file = files.file as formidable.File;
-            if (!file) {
+            // ✅ Ensure a file exists and has a valid name
+            const fileArray = Array.isArray(files.file) ? files.file : [files.file]; // Handle single or multiple files
+            const file: File | undefined = fileArray[0];
+
+            if (!file || !file.filepath) {
+                console.error("❌ No file received.");
                 return res.status(400).json({ error: "No file uploaded" });
             }
 
-            const newFilePath = path.join(form.uploadDir, file.newFilename);
-            fs.renameSync(file.filepath, newFilePath);
-            const fileUrl = `/uploads/${file.newFilename}`;
+            // ✅ Generate a unique filename if `newFilename` is missing
+            const fileExtension = path.extname(file.originalFilename || "");
+            const uniqueFilename = `${Date.now()}-${Math.random().toString(36).substring(2, 10)}${fileExtension}`;
+            const newFilePath = path.join(uploadDir, uniqueFilename);
 
+            // ✅ Move file to the correct location
+            fs.renameSync(file.filepath, newFilePath);
+
+            const fileUrl = `/uploads/${uniqueFilename}`;
             console.log("✅ File uploaded successfully:", fileUrl);
+
             return res.status(200).json({ imageUrl: fileUrl });
         });
     } catch (error) {

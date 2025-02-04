@@ -100,9 +100,9 @@ export default function ProductPage({ productData, locale }: ProductProps) {
 
                     {/* Secure Payment Info */}
                     <div className="flex items-center gap-2 bg-ebony/60 p-3 rounded-lg mb-4">
-                        <p className="text-sm text-ivory">💳 Secure Payment</p>
-                        <Image src="/images/visa.png" width={40} height={24} alt="Visa" />
-                        <Image src="/images/mastercard.png" width={40} height={24} alt="Mastercard" />
+                        <p className="text-sm text-ivory">Secure Payment</p>
+                        <Image src="/images/icons/img.icons8.png" width={40} height={24} alt="Visa" />
+                        <Image src="/images/icons/mastercard-old.svg" width={40} height={24} alt="Mastercard" />
                     </div>
 
                     {/* Variations (if available) */}

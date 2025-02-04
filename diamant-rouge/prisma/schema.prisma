@@ -138,3 +138,12 @@ model Wishlist {
 
   @@unique([userId, productId]) // ✅ Prevent duplicate wishlist entries
 }
+
+// --------------------------------------------------------------------
+// APPOINTMENT TABLE
+// --------------------------------------------------------------------
+model Appointment {
+  id   Int      @id @default(autoincrement())
+  date DateTime
+  time String
+}

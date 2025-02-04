@@ -43,7 +43,10 @@ export default function CreateProduct() {
 
     const handleImageUpload = async (e) => {
         const file = e.target.files[0];
-        if (!file) return;
+        if (!file) {
+            setError("No file selected");
+            return;
+        }
 
         const formData = new FormData();
         formData.append("file", file);
@@ -57,11 +60,14 @@ export default function CreateProduct() {
             const data = await response.json();
 
             if (response.ok) {
+                console.log("✅ Image Uploaded:", data.imageUrl);
+
                 setFormData((prev) => ({
                     ...prev,
-                    images: [...prev.images, data.imageUrl],
+                    images: [...prev.images, data.imageUrl], // ✅ Ensure URL is stored
                 }));
             } else {
+                console.error("❌ Image Upload Error:", data.error);
                 setError(data.error || "Image upload failed");
             }
         } catch (err) {
@@ -69,6 +75,8 @@ export default function CreateProduct() {
             setError("An error occurred while uploading the image.");
         }
     };
+
+
 
     const handleSubmit = async () => {
         setLoading(true);
@@ -88,7 +96,10 @@ export default function CreateProduct() {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${sessionData.user.token}`, // ✅ Include Token
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify({
+                    ...formData,
+                    images: formData.images, // ✅ Ensure images are sent
+                }),
             });
 
             if (!res.ok) {
@@ -102,6 +113,7 @@ export default function CreateProduct() {
             setLoading(false);
         }
     };
+
 
 
 

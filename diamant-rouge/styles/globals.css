@@ -4,9 +4,9 @@
 
 /* Root Variables for Customization */
 :root {
-    --gold: #d4af37;
-    --deep-black: #0c0c0c;
-    --rich-ebony: #0A0A0A; /* Matching Tailwind */
+    --gold: #D4AF37;
+    --deep-black: #0C0C0C;
+    --rich-ebony: #0A0A0A;
     --crimson-red: #A00000;
     --ivory: #F5F5F0;
 }
@@ -24,17 +24,39 @@ h1 { @apply text-4xl md:text-6xl; }
 h2 { @apply text-3xl md:text-5xl; }
 h3 { @apply text-2xl md:text-4xl; }
 
-/* Luxury Buttons */
-.button-primary {
-    @apply bg-royalGold text-richEbony px-6 py-3 rounded-full font-medium hover:bg-velvetCrimson transition duration-300;
-}
-.button-secondary {
-    @apply bg-transparent border border-royalGold text-royalGold px-6 py-3 rounded-full font-medium hover:bg-royalGold hover:text-richEbony transition duration-300;
+/* Custom Components */
+@layer components {
+    .button-primary {
+        @apply bg-royalGold text-richEbony px-6 py-3 rounded-full font-medium
+        hover:bg-velvetCrimson hover:text-softIvory transition duration-300
+        shadow-luxury;
+    }
+
+    .button-secondary {
+        @apply bg-transparent border border-royalGold text-royalGold px-6 py-3
+        rounded-full font-medium hover:bg-royalGold hover:text-richEbony
+        transition duration-300;
+    }
+
+    /* Button Active & Disabled States */
+    .button-primary:disabled {
+        @apply bg-gray-500 text-gray-300 cursor-not-allowed;
+    }
+
+    /* Fixes Button Visibility in Dark Mode */
+    button {
+        @apply text-richEbony bg-diamondWhite border border-royalGold;
+    }
+
+    button:hover {
+        @apply text-richEbony bg-royalGold;
+    }
 }
 
 /* Card Styling */
 .card {
-    @apply bg-richEbony rounded-lg shadow-luxury p-6 transition-transform hover:scale-105 duration-300;
+    @apply bg-richEbony rounded-lg shadow-luxury p-6 transition-transform
+    hover:scale-105 duration-300;
 }
 
 /* Section Background */

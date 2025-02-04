@@ -1,5 +1,5 @@
 import { prisma } from '../lib/prisma';
-import { jwtVerify } from 'jose';
+import { getSession } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -120,29 +120,12 @@ export default function ProfilePage({ orders, wishlist, locale }: { orders: Orde
 }
 
 export async function getServerSideProps(context: any) {
-    const rawCookie = context.req.headers.cookie || '';
-    let match = rawCookie.match(/next-auth\.session-token=([^;]+)/) || rawCookie.match(/__Secure-next-auth\.session-token=([^;]+)/);
-
-    if (!match) {
+    const session = await getSession(context);
+    if (!session) {
         return { redirect: { destination: '/login', permanent: false } };
     }
 
-    const tokenStr = decodeURIComponent(match[1]);
-    let payload;
-
-    try {
-        const secret = process.env.NEXTAUTH_SECRET || '';
-        const { payload: decoded } = await jwtVerify(tokenStr, new TextEncoder().encode(secret));
-
-        if (typeof decoded !== 'object' || !decoded.id || !decoded.email) {
-            throw new Error('Invalid token payload structure.');
-        }
-        payload = decoded as { id: string };
-    } catch (err) {
-        return { redirect: { destination: '/login', permanent: false } };
-    }
-
-    const userId = Number(payload.id);
+    const userId = Number(session.user.id);
     const locale = context.locale || 'en';
 
     try {

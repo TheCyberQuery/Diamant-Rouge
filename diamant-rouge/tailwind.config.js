@@ -12,7 +12,7 @@ module.exports = {
         // Luxury Color Palette
         richEbony: '#0A0A0A', // Deep black background
         velvetCrimson: '#A00000', // Premium dark red
-        royalGold: '#C9B37C', // Elegant gold
+        royalGold: '#D4AF37', // Elegant gold (adjusted for contrast)
         softIvory: '#F5F5F0', // Soft white for text contrast
         diamondWhite: '#FCFCFC', // Bright white for highlights
         platinumGray: '#C0C0C0', // Metallic touch for text & borders
@@ -22,7 +22,7 @@ module.exports = {
         serif: ['Didot', 'serif'], // Elegant luxury serif
       },
       boxShadow: {
-        luxury: '0 4px 15px rgba(201, 179, 124, 0.3)', // Soft golden glow
+        luxury: '0 4px 15px rgba(201, 179, 124, 0.4)', // Enhanced soft golden glow
         subtle: '0 2px 8px rgba(255, 255, 255, 0.1)', // Subtle floating effect
       },
       letterSpacing: {
