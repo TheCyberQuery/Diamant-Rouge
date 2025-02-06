@@ -1,8 +1,9 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { useSession } from "next-auth/react"; // ✅ Import NextAuth session
 
 type CartItem = {
     productId: number;
-    variationId?: number; // track which variation is chosen
+    variationId?: number;
     sku: string;
     name: string;
     price: number;
@@ -19,7 +20,24 @@ type CartContextType = {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
+    const { data: session, status } = useSession(); // ✅ Get user session
+    const userEmail = session?.user?.email || "guest"; // ✅ Default to "guest" if not logged in
+    const userKey = `cart-${userEmail}`;
+
     const [cart, setCart] = useState<CartItem[]>([]);
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const savedCart = localStorage.getItem(userKey);
+            setCart(savedCart ? JSON.parse(savedCart) : []);
+        }
+    }, [userKey]); // ✅ Reload cart when user changes
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            localStorage.setItem(userKey, JSON.stringify(cart));
+        }
+    }, [cart, userKey]);
 
     function addToCart(item: CartItem) {
         setCart((prev) => {
@@ -27,7 +45,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
                 (p) => p.productId === item.productId && p.variationId === item.variationId
             );
             if (existingIndex > -1) {
-                // update existing item quantity
                 const updated = [...prev];
                 updated[existingIndex].quantity += item.quantity;
                 return updated;
@@ -59,7 +76,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 export function useCart() {
     const context = useContext(CartContext);
     if (!context) {
-        throw new Error('useCart must be used within a CartProvider');
+        throw new Error("useCart must be used within a CartProvider");
     }
     return context;
 }
