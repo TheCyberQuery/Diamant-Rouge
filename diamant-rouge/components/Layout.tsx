@@ -1,8 +1,7 @@
-// components/Layout.tsx
-import { ReactNode } from 'react';
-import Head from 'next/head';
-import Header from './Header';
-import Footer from './Footer';
+import { ReactNode } from "react";
+import Head from "next/head";
+import Header from "./Header";
+import Footer from "./Footer";
 
 type LayoutProps = {
     children: ReactNode;
@@ -13,19 +12,22 @@ type LayoutProps = {
 export default function Layout({ children, title, description }: LayoutProps) {
     return (
         <>
-            {/* Basic SEO tags. You can enhance these dynamically later. */}
+            {/* ✅ Enhanced SEO Metadata */}
             <Head>
-                <title>{title ? `${title} | Diamant-Rouge` : 'Diamant-Rouge'}</title>
+                <title>{title ? `${title} | Diamant-Rouge` : "Diamant-Rouge - Luxury Jewelry House"}</title>
                 {description && <meta name="description" content={description} />}
+                <meta name="viewport" content="width=device-width, initial-scale=1" />
             </Head>
 
-            {/* Site Header */}
+            {/* Luxury Fixed Header */}
             <Header />
 
             {/* Main Content Area */}
-            <main className="min-h-[80vh]">{children}</main>
+            <main className="min-h-screen pt-24 md:pt-28 bg-richEbony text-softIvory transition-opacity duration-500 ease-in-out">
+                {children}
+            </main>
 
-            {/* Site Footer */}
+            {/* Elegant Footer */}
             <Footer />
         </>
     );

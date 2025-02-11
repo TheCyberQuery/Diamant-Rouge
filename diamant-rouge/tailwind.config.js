@@ -4,60 +4,79 @@ module.exports = {
   content: [
     './pages/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
+    './contexts/**/*.{js,ts,jsx,tsx}',
     './styles/globals.css',
+  ],
+  safelist: [
+    'button-primary',
+    'button-secondary',
+    'card',
+    'alert',
+    'hover-scale',
+    'image-luxury',
+    'input-field',
+    'dropdown-menu',
+    'dropdown-menu-active',
+    'text-ivory', // ✅ Ensure ivory is registered
+    'bg-ivory',
+    'text-royalGold',
   ],
   theme: {
     extend: {
       colors: {
-        // Luxury Color Palette
-        richEbony: '#0A0A0A', // Deep black background
-        velvetCrimson: '#A00000', // Premium dark red
-        royalGold: '#D4AF37', // Elegant gold (adjusted for contrast)
-        softIvory: '#F5F5F0', // Soft white for text contrast
-        diamondWhite: '#FCFCFC', // Bright white for highlights
-        platinumGray: '#C0C0C0', // Metallic touch for text & borders
+        richEbony: '#0A0A0A',
+        velvetCrimson: '#8B0000',
+        royalGold: '#D4AF37',
+        softIvory: '#F5F5F0',
+        ivory: '#FFFFF0',
+        diamondWhite: '#FCFCFC',
+        platinumGray: '#B0B0B0',
+        deepBlack: '#0C0C0C',
       },
+
       fontFamily: {
-        sans: ['Montserrat', ...defaultTheme.fontFamily.sans], // Modern sans-serif
-        serif: ['Didot', 'serif'], // Elegant luxury serif
+        sans: ['Montserrat', ...defaultTheme.fontFamily.sans],
+        serif: ['Didot', 'serif'],
       },
+
       boxShadow: {
-        luxury: '0 4px 15px rgba(201, 179, 124, 0.4)', // Enhanced soft golden glow
-        subtle: '0 2px 8px rgba(255, 255, 255, 0.1)', // Subtle floating effect
+        luxury: '0 4px 15px rgba(201, 179, 124, 0.4)',
+        subtle: '0 2px 8px rgba(255, 255, 255, 0.1)',
+        deepGlow: '0px 8px 30px rgba(212, 175, 55, 0.6)',
       },
-      letterSpacing: {
-        tight: '-0.02em', // Slightly condensed for elegance
-        wide: '0.08em', // Extra space for luxury typography
-      },
+
       spacing: {
-        18: '4.5rem', // Extra-large spacing option
+        18: '4.5rem',
         22: '5.5rem',
         26: '6.5rem',
       },
+
       screens: {
-        '2xl': '1440px', // Optimized for large screens
+        '2xl': '1440px',
         '3xl': '1600px',
+        '4xl': '1920px',
       },
-      borderRadius: {
-        xl: '1rem',
-        '2xl': '1.5rem',
-        '3xl': '2rem', // More rounded for a soft luxury feel
-      },
+
       animation: {
-        fadeIn: 'fadeIn 0.5s ease-in-out',
+        fadeIn: 'fadeIn 0.6s ease-in-out',
+        slideIn: 'slideIn 0.5s ease-in-out',
       },
+
       keyframes: {
         fadeIn: {
           from: { opacity: 0 },
           to: { opacity: 1 },
         },
+        slideIn: {
+          from: { opacity: 0, transform: 'translateY(10px)' },
+          to: { opacity: 1, transform: 'translateY(0px)' },
+        },
       },
     },
   },
   plugins: [
-    require('tailwindcss-rtl'), // Adds RTL support for Arabic users
-    require('@tailwindcss/forms'), // Enhances form input styling
-    require('@tailwindcss/typography'), // Optimizes readability
-    require('@tailwindcss/aspect-ratio'), // Ensures image consistency
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/typography'),
+    require('@tailwindcss/aspect-ratio'),
   ],
 };

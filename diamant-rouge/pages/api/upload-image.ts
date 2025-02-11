@@ -65,7 +65,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const form = formidable({
             uploadDir, // Set upload directory explicitly
             keepExtensions: true,
-            maxFileSize: 5 * 1024 * 1024, // 5MB limit
+            maxFileSize: 100 * 1024 * 1024, // 5MB limit
             multiples: false,
         });
 

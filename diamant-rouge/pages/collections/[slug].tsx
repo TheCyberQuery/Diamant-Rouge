@@ -1,8 +1,10 @@
 import { GetServerSideProps } from "next";
 import { prisma } from "../../lib/prisma";
 import ProductCard from "../../components/ProductCard";
+import ProductFilters from "../../components/ProductFilters";
+import ProductSkeleton from "../../components/ProductSkeleton";
 import { NextSeo } from "next-seo";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type CollectionProps = {
     categoryData: {
@@ -17,7 +19,7 @@ type CollectionProps = {
             sku: string;
             basePrice: string;
             images: string[];
-            createdAt: string; // ✅ Ensure date is returned as a string
+            createdAt: string;
             translations: {
                 language: string;
                 name: string;
@@ -28,10 +30,17 @@ type CollectionProps = {
 };
 
 export default function CollectionPage({ categoryData, locale }: CollectionProps) {
+    const [sortedProducts, setSortedProducts] = useState(categoryData?.products || []);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        setTimeout(() => setLoading(false), 500);
+    }, []);
+
     if (!categoryData) {
         return (
-            <section className="py-8 text-center text-ivory">
-                <h1 className="text-4xl font-serif text-gold">Collection Not Found</h1>
+            <section className="py-12 text-center text-ivory">
+                <h1 className="text-5xl font-serif text-gold">Collection Not Found</h1>
                 <p className="text-platinumGray">The collection you're looking for doesn't exist.</p>
             </section>
         );
@@ -41,18 +50,13 @@ export default function CollectionPage({ categoryData, locale }: CollectionProps
         categoryData.translations.find((t) => t.language === locale) ||
         categoryData.translations.find((t) => t.language === "en");
 
-    // Sorting & Filtering (Frontend)
-    const [sortOption, setSortOption] = useState("default");
-
-    const sortedProducts = [...categoryData.products].sort((a, b) => {
-        if (sortOption === "price-asc") {
-            return parseFloat(a.basePrice) - parseFloat(b.basePrice);
-        }
-        if (sortOption === "price-desc") {
-            return parseFloat(b.basePrice) - parseFloat(a.basePrice);
-        }
-        return 0;
-    });
+    const handleSortChange = (sortOption: string) => {
+        let sorted = [...categoryData.products];
+        if (sortOption === "price-asc") sorted.sort((a, b) => parseFloat(a.basePrice) - parseFloat(b.basePrice));
+        if (sortOption === "price-desc") sorted.sort((a, b) => parseFloat(b.basePrice) - parseFloat(a.basePrice));
+        if (sortOption === "latest") sorted.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        setSortedProducts(sorted);
+    };
 
     return (
         <>
@@ -65,36 +69,21 @@ export default function CollectionPage({ categoryData, locale }: CollectionProps
                 }}
             />
 
-            <section className="py-8 px-4">
-                <div className="max-w-6xl mx-auto">
-                    <h1 className="text-4xl font-serif text-gold mb-4">{catTranslation?.name}</h1>
-                    <p className="mb-8 text-platinumGray">{catTranslation?.description}</p>
+            <section className="py-12 px-6 max-w-7xl mx-auto">
+                {/* Collection Title */}
+                <h1 className="text-5xl font-serif text-gold mb-6">{catTranslation?.name}</h1>
+                <p className="text-xl text-platinumGray mb-8">{catTranslation?.description}</p>
 
-                    {/* Sorting Dropdown */}
-                    <div className="flex justify-end mb-6">
-                        <select
-                            className="p-2 bg-ebony text-ivory rounded-lg border border-gold"
-                            onChange={(e) => setSortOption(e.target.value)}
-                            value={sortOption}
-                        >
-                            <option value="default">Sort By</option>
-                            <option value="price-asc">Price: Low to High</option>
-                            <option value="price-desc">Price: High to Low</option>
-                        </select>
-                    </div>
+                {/* Sorting & Filters */}
+                <ProductFilters onSortChange={handleSortChange} />
 
-                    {/* Product Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                        {sortedProducts.length > 0 ? (
-                            sortedProducts.map((product) => (
-                                <ProductCard key={product.id} product={product} locale={locale} /> // ✅ Corrected Prop Passing
-                            ))
-                        ) : (
-                            <p className="text-center text-platinumGray col-span-3">
-                                No products found in this collection.
-                            </p>
-                        )}
-                    </div>
+                {/* Product Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                    {loading
+                        ? [...Array(6)].map((_, i) => <ProductSkeleton key={i} />)
+                        : sortedProducts.length > 0
+                            ? sortedProducts.map((product) => <ProductCard key={product.id} product={product} locale={locale} />)
+                            : <p className="text-center text-platinumGray col-span-3">No products found in this collection.</p>}
                 </div>
             </section>
         </>
@@ -117,18 +106,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         },
     });
 
-    // ✅ Ensure all `Date` fields are converted to ISO strings to prevent serialization errors
+    // ✅ Ensure all `Date` fields are converted to ISO strings
     const categoryData = rawCategoryData
         ? JSON.parse(
             JSON.stringify({
                 ...rawCategoryData,
-                createdAt: rawCategoryData.createdAt ? rawCategoryData.createdAt.toISOString() : null, // ✅ Convert Date
-                updatedAt: rawCategoryData.updatedAt ? rawCategoryData.updatedAt.toISOString() : null, // ✅ Convert Date
+                createdAt: rawCategoryData.createdAt ? rawCategoryData.createdAt.toISOString() : null,
+                updatedAt: rawCategoryData.updatedAt ? rawCategoryData.updatedAt.toISOString() : null,
                 products: rawCategoryData.products.map((product) => ({
                     ...product,
-                    images: product.images || [], // ✅ Ensures products always have an "images" array
-                    createdAt: product.createdAt ? product.createdAt.toISOString() : null, // ✅ Convert Date
-                    updatedAt: product.updatedAt ? product.updatedAt.toISOString() : null, // ✅ Convert Date
+                    images: product.images || [],
+                    createdAt: product.createdAt ? product.createdAt.toISOString() : null,
+                    updatedAt: product.updatedAt ? product.updatedAt.toISOString() : null,
                 })),
             })
         )

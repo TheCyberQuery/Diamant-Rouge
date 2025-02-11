@@ -1,7 +1,7 @@
-// pages/admin/orders/index.tsx
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import { prisma } from '../../../lib/prisma';
+import Link from 'next/link';
 
 type AdminOrder = {
     id: number;
@@ -16,38 +16,44 @@ type AdminOrder = {
 export default function OrdersAdminPage({ orders }: { orders: AdminOrder[] }) {
     return (
         <section className="p-8 text-ivory">
-            <h1 className="text-3xl font-serif mb-4">Manage Orders</h1>
-            <table className="w-full bg-ebony/50 text-ivory">
-                <thead className="bg-ebony/80">
-                <tr>
-                    <th className="p-2 text-left">ID</th>
-                    <th className="p-2 text-left">User</th>
-                    <th className="p-2">Status</th>
-                    <th className="p-2">Total</th>
-                    <th className="p-2">Created</th>
-                    <th className="p-2">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                {orders.map((order) => (
-                    <tr key={order.id} className="border-b border-ivory/20">
-                        <td className="p-2">{order.id}</td>
-                        <td className="p-2">{order.user?.email ?? 'N/A'}</td>
-                        <td className="p-2 text-center">{order.status}</td>
-                        <td className="p-2 text-center">€{order.totalAmount}</td>
-                        <td className="p-2">{new Date(order.createdAt).toLocaleString()}</td>
-                        <td className="p-2 text-center">
-                            <a
-                                href={`/admin/orders/${order.id}`}
-                                className="text-crimson hover:text-gold"
-                            >
-                                View / Edit
-                            </a>
-                        </td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
+            <h1 className="text-4xl font-serif text-gold mb-6">Manage Orders</h1>
+
+            {orders.length === 0 ? (
+                <p className="text-platinumGray">No orders found.</p>
+            ) : (
+                <div className="overflow-x-auto">
+                    <table className="w-full bg-ebony/50 text-ivory rounded-lg shadow-lg">
+                        <thead className="bg-ebony/80 text-gold">
+                        <tr>
+                            <th className="p-3 text-left">ID</th>
+                            <th className="p-3 text-left">User</th>
+                            <th className="p-3">Status</th>
+                            <th className="p-3">Total (€)</th>
+                            <th className="p-3">Created</th>
+                            <th className="p-3">Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {orders.map((order) => (
+                            <tr key={order.id} className="border-b border-platinumGray">
+                                <td className="p-3">{order.id}</td>
+                                <td className="p-3">{order.user?.email ?? 'Guest'}</td>
+                                <td className="p-3 text-center">{order.status}</td>
+                                <td className="p-3 text-center">€{order.totalAmount}</td>
+                                <td className="p-3">{new Date(order.createdAt).toLocaleString()}</td>
+                                <td className="p-3 text-center">
+                                    <Link href={`/admin/orders/${order.id}`}>
+                                        <button className="bg-gold text-ebony px-4 py-2 rounded-lg hover:bg-crimson transition">
+                                            View / Edit
+                                        </button>
+                                    </Link>
+                                </td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
         </section>
     );
 }
@@ -63,8 +69,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         orderBy: { createdAt: 'desc' },
     });
 
-    const orders = JSON.parse(JSON.stringify(rawOrders)); // Convert dates to strings
     return {
-        props: { orders },
+        props: { orders: JSON.parse(JSON.stringify(rawOrders)) },
     };
 };

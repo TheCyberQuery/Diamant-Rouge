@@ -31,19 +31,14 @@ type ProductProps = {
 export default function ProductPage({ productData, locale }: ProductProps) {
     const { addToCart } = useCart();
     const [selectedVariation, setSelectedVariation] = useState<number | null>(null);
-    const [quantity] = useState(1);
-
-    // ✅ Image state for preview and full-screen mode
-    const [selectedImage, setSelectedImage] = useState(
-        productData?.images?.length > 0 ? productData.images[0] : "/images/placeholder.jpg"
-    );
+    const [selectedImage, setSelectedImage] = useState(productData?.images[0] || "/images/placeholder.jpg");
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     if (!productData) {
         return (
-            <section className="py-8 text-center text-ivory">
-                <h1 className="text-4xl font-serif text-gold">Creation Not Found</h1>
-                <p className="text-platinumGray">The piece you're looking for doesn't exist.</p>
+            <section className="py-12 text-center text-ivory">
+                <h1 className="text-5xl font-serif text-gold">Exclusive Masterpiece Not Found</h1>
+                <p className="text-platinumGray">The bespoke creation you seek is no longer available.</p>
             </section>
         );
     }
@@ -60,17 +55,6 @@ export default function ProductPage({ productData, locale }: ProductProps) {
         : 0;
     const totalPrice = basePrice + additionalPrice;
 
-    const handleAddToCart = () => {
-        addToCart({
-            productId: productData.id,
-            variationId: selectedVariation || undefined,
-            sku: productData.sku,
-            name: productTranslation?.name || "Unknown",
-            price: totalPrice,
-            quantity,
-        });
-    };
-
     return (
         <>
             <NextSeo
@@ -83,34 +67,32 @@ export default function ProductPage({ productData, locale }: ProductProps) {
             />
 
             <motion.section
-                className="py-12 px-4 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12"
+                className="py-16 px-6 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16"
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6 }}
             >
-                {/* Image Section */}
+                {/* 📸 Image Showcase */}
                 <div className="relative">
-                    {/* ✅ Main Image Display with Zoom Effect */}
                     <div className="relative group cursor-pointer" onClick={() => setIsModalOpen(true)}>
                         <Image
                             src={selectedImage}
-                            width={600}
-                            height={600}
+                            width={700}
+                            height={700}
                             alt={productTranslation?.name}
-                            className="rounded-lg shadow-luxury transition-opacity duration-300 group-hover:scale-105"
+                            className="rounded-lg shadow-luxury transition-transform duration-300 hover:scale-105"
                         />
-                        {/* Zoom effect on hover */}
                         <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition duration-300 rounded-lg"></div>
                     </div>
 
-                    {/* ✅ Thumbnails Carousel */}
-                    <div className="flex gap-2 mt-4">
+                    {/* 🔍 Thumbnails */}
+                    <div className="flex gap-3 mt-4">
                         {productData.images.map((image, index) => (
                             <button key={index} onClick={() => setSelectedImage(image)}>
                                 <Image
                                     src={image}
-                                    width={100}
-                                    height={100}
+                                    width={90}
+                                    height={90}
                                     alt={`Thumbnail ${index}`}
                                     className={`rounded-lg cursor-pointer transition ${
                                         selectedImage === image ? "border-4 border-gold" : "opacity-80 hover:opacity-100"
@@ -121,22 +103,25 @@ export default function ProductPage({ productData, locale }: ProductProps) {
                     </div>
                 </div>
 
-                {/* Product Details */}
+                {/* 🏷 Product Details */}
                 <div>
-                    <h1 className="text-4xl font-serif text-gold mb-4">{productTranslation?.name}</h1>
-                    <p className="text-platinumGray mb-6">{productTranslation?.description}</p>
+                    <h1 className="text-5xl font-serif text-gold mb-4">{productTranslation?.name}</h1>
+                    <p className="text-lg text-platinumGray mb-6">{productTranslation?.description}</p>
 
-                    {/* Secure Payment Info */}
-                    <div className="flex items-center gap-2 bg-ebony/60 p-3 rounded-lg mb-4">
-                        <p className="text-sm text-ivory">Secure Payment</p>
-                        <Image src="/images/icons/img.icons8.png" width={40} height={24} alt="Visa" />
-                        <Image src="/images/icons/mastercard-old.svg" width={40} height={24} alt="Mastercard" />
+                    {/* 💳 Secure Payment Block */}
+                    <div className="bg-ebony/50 p-4 rounded-lg text-ivory mb-6">
+                        <h3 className="text-lg font-semibold text-gold mb-2">Secure & Confidential Transactions</h3>
+                        <div className="flex items-center gap-4">
+                            <Image src="/images/icons/img.icons8.png" width={40} height={24} alt="Visa" />
+                            <Image src="/images/icons/mastercard-old.svg" width={40} height={24} alt="Mastercard" />
+                            <p className="text-sm text-platinumGray">Guaranteed authenticity & privacy</p>
+                        </div>
                     </div>
 
-                    {/* Variations (if available) */}
+                    {/* 🎨 Variations */}
                     {productData.variations.length > 0 && (
-                        <div className="mb-4">
-                            <label className="block mb-2 text-ivory">Select Option</label>
+                        <div className="mb-6">
+                            <label className="block mb-2 text-ivory">Select Customization</label>
                             <div className="flex gap-4">
                                 {productData.variations.map((variation) => (
                                     <button
@@ -155,76 +140,67 @@ export default function ProductPage({ productData, locale }: ProductProps) {
                         </div>
                     )}
 
-                    {/* Price Display */}
-                    <p className="text-2xl font-bold text-gold mb-4">Starting at €{totalPrice.toFixed(2)}</p>
+                    {/* 💰 Price Display */}
+                    <p className="text-3xl font-bold text-gold mb-6">
+                        {selectedVariation ? `Customized Price: €${totalPrice.toFixed(2)}` : `Starting at €${totalPrice.toFixed(2)}`}
+                    </p>
 
-                    {/* Action Buttons */}
-                    <div className="flex flex-col gap-4">
-                        {/* Add to Cart */}
-                        <button
-                            onClick={handleAddToCart}
-                            className="bg-crimson hover:bg-gold text-ivory px-6 py-3 rounded-full font-medium transition duration-300"
-                        >
-                            Add to Cart
+                    {/* 🛒 Add to Cart */}
+                    <button
+                        onClick={() =>
+                            addToCart({
+                                image: selectedImage,
+                                productId: productData.id,
+                                variationId: selectedVariation || undefined,
+                                sku: productData.sku,
+                                name: productTranslation?.name || "Unknown",
+                                price: totalPrice,
+                                quantity: 1,
+                            })
+                        }
+                        className="bg-crimson hover:bg-gold text-ivory px-6 py-3 rounded-full font-medium transition duration-300 w-full"
+                    >
+                        Add to Cart
+                    </button>
+
+                    {/* ✨ Book a Private Viewing */}
+                    <Link href="/appointments">
+                        <button className="bg-ebony hover:bg-gold text-ivory px-6 py-3 rounded-full font-medium transition duration-300 mt-4 w-full">
+                            Try in Showroom
                         </button>
-
-                        {/* Try in Showroom */}
-                        <Link href="/appointments">
-                            <button className="bg-ebony hover:bg-gold text-ivory px-6 py-3 rounded-full font-medium transition duration-300">
-                                Try in Showroom
-                            </button>
-                        </Link>
-                    </div>
+                    </Link>
                 </div>
             </motion.section>
-
-            {/* ✅ Full-Screen Image Modal */}
-            {isModalOpen && (
-                <div
-                    className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50"
-                    onClick={() => setIsModalOpen(false)}
-                >
-                    <div className="relative max-w-4xl">
-                        <Image
-                            src={selectedImage}
-                            width={1000}
-                            height={1000}
-                            alt="Full Screen View"
-                            className="rounded-lg shadow-luxury transition-transform duration-500 transform scale-100 hover:scale-105"
-                        />
-                        <button
-                            className="absolute top-4 right-4 text-white bg-ebony p-2 rounded-full"
-                            onClick={() => setIsModalOpen(false)}
-                        >
-                            ✕
-                        </button>
-                    </div>
-                </div>
-            )}
         </>
     );
 }
 
+// ✅ Fetch product securely & Convert Decimal Fields to String
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const { id } = context.params!;
-    const locale = context.locale || "en";
+    const id = parseInt(context.params?.id as string, 10);
+    if (isNaN(id)) return { notFound: true };
 
-    const rawProductData = await prisma.product.findUnique({
-        where: { id: Number(id) },
+    const product = await prisma.product.findUnique({
+        where: { id },
         include: {
             translations: true,
-            variations: true,
+            variations: true, // ✅ Ensure variations are always included
         },
     });
 
-    if (!rawProductData) {
-        return { notFound: true };
-    }
+    if (!product) return { notFound: true };
 
     return {
         props: {
-            productData: JSON.parse(JSON.stringify(rawProductData)),
-            locale,
+            productData: {
+                ...JSON.parse(JSON.stringify(product)),
+                basePrice: product.basePrice.toString(), // ✅ Convert Decimal to String
+                variations: product.variations.map((variation) => ({
+                    ...variation,
+                    additionalPrice: variation.additionalPrice.toString(), // ✅ Convert Decimal to String
+                })),
+            },
+            locale: context.locale || "en",
         },
     };
 };

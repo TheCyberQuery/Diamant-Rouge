@@ -1,4 +1,3 @@
-// pages/admin/orders/[id].tsx
 import { GetServerSideProps } from 'next';
 import { getSession } from 'next-auth/react';
 import { prisma } from '../../../lib/prisma';
@@ -15,12 +14,15 @@ export default function OrderEditPage({ orderData }: OrderEditProps) {
 
     async function handleStatusUpdate() {
         setLoading(true);
+        setMessage('');
+
         try {
             const res = await fetch(`/api/admin/orders/${orderData.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: orderStatus }),
             });
+
             const data = await res.json();
             if (!res.ok) {
                 setMessage(data.error || 'Failed to update order');
@@ -36,47 +38,54 @@ export default function OrderEditPage({ orderData }: OrderEditProps) {
 
     return (
         <section className="p-8 text-ivory">
-            <h1 className="text-3xl font-serif mb-4">
-                Editing Order #{orderData.id}
-            </h1>
+            <h1 className="text-4xl font-serif text-gold mb-6">Editing Order #{orderData.id}</h1>
             {message && <p className="text-crimson mb-2">{message}</p>}
 
-            <div className="space-y-2">
-                <p>User: {orderData.user?.email}</p>
-                <p>Created At: {new Date(orderData.createdAt).toLocaleString()}</p>
-                <p>Address: {orderData.shippingAddress}, {orderData.city} {orderData.postalCode}, {orderData.country}</p>
-                <p>Total: €{orderData.totalAmount}</p>
+            <div className="bg-richEbony p-6 rounded-lg shadow-lg space-y-3">
+                <p><strong>User:</strong> {orderData.user?.email || 'Guest'}</p>
+                <p><strong>Created At:</strong> {new Date(orderData.createdAt).toLocaleString()}</p>
+                <p><strong>Address:</strong> {orderData.shippingAddress}, {orderData.city} {orderData.postalCode}, {orderData.country}</p>
+                <p><strong>Total:</strong> €{orderData.totalAmount}</p>
 
-                <label>Status</label>
-                <select
-                    className="text-ebony p-2"
-                    value={orderStatus}
-                    onChange={(e) => setOrderStatus(e.target.value)}
-                >
-                    <option value="PENDING">PENDING</option>
-                    <option value="CONFIRMED">CONFIRMED</option>
-                    <option value="SHIPPED">SHIPPED</option>
-                    <option value="DELIVERED">DELIVERED</option>
-                    <option value="CANCELLED">CANCELLED</option>
-                </select>
+                {/* Update Status */}
+                <div className="mt-4">
+                    <label className="block text-lg mb-2">Update Status</label>
+                    <select
+                        className="bg-ebony border border-gold text-ivory px-3 py-2 rounded-md"
+                        value={orderStatus}
+                        onChange={(e) => setOrderStatus(e.target.value)}
+                        disabled={loading}
+                    >
+                        <option value="PENDING">Pending</option>
+                        <option value="CONFIRMED">Confirmed</option>
+                        <option value="SHIPPED">Shipped</option>
+                        <option value="DELIVERED">Delivered</option>
+                        <option value="CANCELLED">Cancelled</option>
+                    </select>
+                </div>
+
                 <button
                     onClick={handleStatusUpdate}
-                    className="bg-crimson hover:bg-gold text-ivory px-4 py-2 ml-2"
+                    className="mt-4 bg-crimson hover:bg-gold text-ivory px-6 py-3 rounded-lg transition"
                     disabled={loading}
                 >
                     {loading ? 'Updating...' : 'Update Status'}
                 </button>
             </div>
 
-            <h2 className="text-2xl font-serif mt-8 mb-4">Order Items</h2>
-            <ul className="space-y-2">
-                {orderData.orderItems.map((item: any) => (
-                    <li key={item.id} className="bg-ebony/50 p-4">
-                        <p>Product ID: {item.productId}</p>
-                        <p>Quantity: {item.quantity}</p>
-                        <p>Price: €{item.price}</p>
-                    </li>
-                ))}
+            <h2 className="text-3xl font-serif text-gold mt-8 mb-4">Order Items</h2>
+            <ul className="space-y-4">
+                {orderData.orderItems.map((item: any) => {
+                    const productName = item.product.translations.find((t: any) => t.language === 'en')?.name || 'Unnamed Product';
+                    return (
+                        <li key={item.id} className="bg-ebony/50 p-4 rounded-lg">
+                            <p><strong>{productName}</strong></p>
+                            <p>SKU: {item.product.sku}</p>
+                            <p>Quantity: {item.quantity}</p>
+                            <p>Price: €{parseFloat(item.price).toFixed(2)}</p>
+                        </li>
+                    );
+                })}
             </ul>
         </section>
     );
@@ -86,22 +95,28 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const { id } = context.params!;
     const session = await getSession(context);
     if (!session || session.user.role !== 'admin') {
-        return {
-            redirect: { destination: '/', permanent: false },
-        };
+        return { redirect: { destination: '/', permanent: false } };
     }
 
     const rawOrder = await prisma.order.findUnique({
         where: { id: Number(id) },
         include: {
             user: true,
-            orderItems: true,
+            orderItems: {
+                include: {
+                    product: {
+                        include: { translations: true },
+                    },
+                },
+            },
         },
     });
+
     if (!rawOrder) {
         return { notFound: true };
     }
 
-    const orderData = JSON.parse(JSON.stringify(rawOrder));
-    return { props: { orderData } };
+    return {
+        props: { orderData: JSON.parse(JSON.stringify(rawOrder)) },
+    };
 };

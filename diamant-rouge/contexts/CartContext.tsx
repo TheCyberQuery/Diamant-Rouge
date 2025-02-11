@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { useSession } from "next-auth/react"; // ✅ Import NextAuth session
+import { useSession } from "next-auth/react";
 
 type CartItem = {
     productId: number;
@@ -8,6 +8,7 @@ type CartItem = {
     name: string;
     price: number;
     quantity: number;
+    image?: string; // ✅ Ensure image is stored
 };
 
 type CartContextType = {
@@ -20,19 +21,21 @@ type CartContextType = {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
-    const { data: session, status } = useSession(); // ✅ Get user session
-    const userEmail = session?.user?.email || "guest"; // ✅ Default to "guest" if not logged in
+    const { data: session } = useSession();
+    const userEmail = session?.user?.email || "guest";
     const userKey = `cart-${userEmail}`;
 
     const [cart, setCart] = useState<CartItem[]>([]);
 
+    // ✅ Load cart from localStorage when user logs in/out
     useEffect(() => {
         if (typeof window !== "undefined") {
             const savedCart = localStorage.getItem(userKey);
             setCart(savedCart ? JSON.parse(savedCart) : []);
         }
-    }, [userKey]); // ✅ Reload cart when user changes
+    }, [userKey]);
 
+    // ✅ Save cart whenever it updates
     useEffect(() => {
         if (typeof window !== "undefined") {
             localStorage.setItem(userKey, JSON.stringify(cart));
@@ -56,9 +59,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
     function removeFromCart(productId: number, variationId?: number) {
         setCart((prev) =>
-            prev.filter(
-                (p) => p.productId !== productId || p.variationId !== variationId
-            )
+            prev.filter((p) => p.productId !== productId || p.variationId !== variationId)
         );
     }
 

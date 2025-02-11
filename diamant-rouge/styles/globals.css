@@ -2,78 +2,137 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Root Variables for Customization */
+/* ==========================================================
+   🎩 Root Theme Variables for Luxury Experience
+   ========================================================== */
 :root {
-    --gold: #D4AF37;
+    --royal-gold: #D4AF37;
     --deep-black: #0C0C0C;
     --rich-ebony: #0A0A0A;
-    --crimson-red: #A00000;
-    --ivory: #F5F5F0;
+    --velvet-crimson: #8B0000;
+    --diamond-white: #FAFAFA;
+    --platinum-gray: #B0B0B0;
+    --soft-ivory: #F5F5F0;
 }
 
-/* Typography & Layout */
+/* ==========================================================
+   📌 Base Typography & Layout
+   ========================================================== */
 body {
-    @apply bg-richEbony text-softIvory font-serif tracking-wide;
+    @apply bg-richEbony text-softIvory font-serif tracking-wide leading-relaxed;
 }
 
-/* Luxury Headings */
-h1, h2, h3 {
+/* Headings - Luxurious & Grand */
+h1, h2, h3, h4, h5 {
     @apply text-royalGold font-bold tracking-wide;
 }
-h1 { @apply text-4xl md:text-6xl; }
-h2 { @apply text-3xl md:text-5xl; }
-h3 { @apply text-2xl md:text-4xl; }
+h1 { @apply text-5xl md:text-7xl leading-tight; }
+h2 { @apply text-4xl md:text-6xl leading-snug; }
+h3 { @apply text-3xl md:text-5xl leading-snug; }
+h4 { @apply text-2xl md:text-4xl leading-snug; }
+h5 { @apply text-xl md:text-2xl leading-normal; }
 
-/* Custom Components */
+/* Paragraphs */
+p {
+    @apply text-platinumGray text-lg leading-relaxed;
+}
+
+/* ==========================================================
+   🔥 Custom Components (Luxury Buttons, Cards, and Sections)
+   ========================================================== */
 @layer components {
+    /* 🎭 Primary Action Button */
     .button-primary {
         @apply bg-royalGold text-richEbony px-6 py-3 rounded-full font-medium
-        hover:bg-velvetCrimson hover:text-softIvory transition duration-300
-        shadow-luxury;
+        hover:bg-velvetCrimson hover:text-softIvory
+        transition duration-300 shadow-luxury focus:ring-2 focus:ring-royalGold;
     }
 
+    /* 🏛️ Secondary Action Button */
     .button-secondary {
         @apply bg-transparent border border-royalGold text-royalGold px-6 py-3
         rounded-full font-medium hover:bg-royalGold hover:text-richEbony
         transition duration-300;
     }
 
-    /* Button Active & Disabled States */
-    .button-primary:disabled {
-        @apply bg-gray-500 text-gray-300 cursor-not-allowed;
+    /* 🚫 Disabled Button State */
+    .button-primary:disabled, .button-secondary:disabled {
+        @apply bg-gray-500 text-gray-300 cursor-not-allowed opacity-50;
     }
 
-    /* Fixes Button Visibility in Dark Mode */
-    button {
-        @apply text-richEbony bg-diamondWhite border border-royalGold;
+    /* 🖼️ Luxury Card */
+    .card {
+        @apply bg-richEbony rounded-lg shadow-luxury p-6
+        transition-transform hover:scale-105 duration-300 border border-platinumGray;
     }
 
-    button:hover {
-        @apply text-richEbony bg-royalGold;
+    /* 📌 Section Backgrounds */
+    .section-dark {
+        @apply bg-richEbony text-softIvory;
+    }
+    .section-light {
+        @apply bg-diamondWhite text-richEbony;
+    }
+
+    /* ✨ Image Styling */
+    .image-luxury {
+        @apply shadow-luxury rounded-2xl;
+    }
+
+    /* 🔘 Input Fields */
+    .input-field {
+        @apply bg-transparent border border-platinumGray text-softIvory px-4 py-2 rounded-lg
+        focus:border-royalGold focus:ring focus:ring-royalGold transition duration-300;
+    }
+
+    /* 🛎️ Alert & Notification */
+    .alert {
+        @apply bg-velvetCrimson text-softIvory px-4 py-3 rounded-lg font-medium;
+    }
+
+    /* 🖥️ Hover Animations */
+    .hover-scale {
+        @apply transition-transform duration-300 hover:scale-105;
+    }
+
+    /* 🔲 Dropdown */
+    .dropdown-menu {
+        @apply absolute left-0 mt-2 w-56 bg-richEbony text-ivory shadow-lg opacity-0 transform translate-y-4 scale-95
+        transition-all duration-500 rounded-lg overflow-hidden pointer-events-none;
+    }
+    .dropdown-menu-active {
+        @apply opacity-100 translate-y-0 scale-100 pointer-events-auto;
+    }
+
+    /* 📲 Mobile Menu */
+    .mobile-menu {
+        @apply absolute top-[4rem] left-0 w-full bg-richEbony text-ivory p-6 shadow-lg transition-all duration-500 transform scale-95 opacity-0 animate-fadeIn;
     }
 }
 
-/* Card Styling */
-.card {
-    @apply bg-richEbony rounded-lg shadow-luxury p-6 transition-transform
-    hover:scale-105 duration-300;
-}
-
-/* Section Background */
-.section-dark {
-    @apply bg-richEbony text-softIvory;
-}
-.section-light {
-    @apply bg-diamondWhite text-richEbony;
-}
-
-/* Image Shadows */
-.image-luxury {
-    @apply shadow-luxury rounded-2xl;
-}
-
-/* Dark Mode Support */
+/* ==========================================================
+   🌙 Dark Mode Adjustments (For Future Expansion)
+   ========================================================== */
 .dark-mode body {
-    background-color: var(--deep-black);
-    color: var(--ivory);
+    @apply bg-deepBlack text-softIvory;
+}
+
+.dark-mode h1, .dark-mode h2, .dark-mode h3 {
+    @apply text-royalGold;
+}
+
+.dark-mode .button-primary {
+    @apply bg-royalGold text-deepBlack hover:bg-velvetCrimson;
+}
+
+.dark-mode .card {
+    @apply bg-richEbony border border-platinumGray;
+}
+
+.dark-mode .section-dark {
+    @apply bg-deepBlack text-softIvory;
+}
+
+.dark-mode .image-luxury {
+    @apply shadow-deepGlow;
 }
