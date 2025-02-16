@@ -34,14 +34,18 @@ export default function CollectionPage({ categoryData, locale }: CollectionProps
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        setTimeout(() => setLoading(false), 500);
+        // Simulate a slight loading delay for the skeleton UI
+        const timer = setTimeout(() => setLoading(false), 500);
+        return () => clearTimeout(timer);
     }, []);
 
     if (!categoryData) {
         return (
-            <section className="py-12 text-center text-ivory">
-                <h1 className="text-5xl font-serif text-gold">Collection Not Found</h1>
-                <p className="text-platinumGray">The collection you're looking for doesn't exist.</p>
+            <section className="section-light min-h-screen flex flex-col items-center justify-center text-center p-8">
+                <h1 className="text-5xl font-serif text-brandGold mb-4">Collection Not Found</h1>
+                <p className="text-platinumGray">
+                    The collection you're looking for doesn't exist.
+                </p>
             </section>
         );
     }
@@ -51,10 +55,19 @@ export default function CollectionPage({ categoryData, locale }: CollectionProps
         categoryData.translations.find((t) => t.language === "en");
 
     const handleSortChange = (sortOption: string) => {
-        let sorted = [...categoryData.products];
-        if (sortOption === "price-asc") sorted.sort((a, b) => parseFloat(a.basePrice) - parseFloat(b.basePrice));
-        if (sortOption === "price-desc") sorted.sort((a, b) => parseFloat(b.basePrice) - parseFloat(a.basePrice));
-        if (sortOption === "latest") sorted.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+        const sorted = [...(categoryData.products || [])];
+
+        if (sortOption === "price-asc") {
+            sorted.sort((a, b) => parseFloat(a.basePrice) - parseFloat(b.basePrice));
+        } else if (sortOption === "price-desc") {
+            sorted.sort((a, b) => parseFloat(b.basePrice) - parseFloat(a.basePrice));
+        } else if (sortOption === "latest") {
+            sorted.sort(
+                (a, b) =>
+                    new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
+        }
+
         setSortedProducts(sorted);
     };
 
@@ -62,28 +75,41 @@ export default function CollectionPage({ categoryData, locale }: CollectionProps
         <>
             <NextSeo
                 title={`Diamant-Rouge | ${catTranslation?.name}`}
-                description={catTranslation?.description || "Discover our exclusive jewelry collections."}
+                description={
+                    catTranslation?.description || "Discover our exclusive jewelry collections."
+                }
                 openGraph={{
                     title: `Diamant-Rouge | ${catTranslation?.name}`,
-                    description: catTranslation?.description || "Luxury jewelry collection by Diamant-Rouge.",
+                    description:
+                        catTranslation?.description || "Luxury jewelry collection by Diamant-Rouge.",
                 }}
             />
 
-            <section className="py-12 px-6 max-w-7xl mx-auto">
+            <section className="section-light py-12 px-6 max-w-7xl mx-auto min-h-screen">
                 {/* Collection Title */}
-                <h1 className="text-5xl font-serif text-gold mb-6">{catTranslation?.name}</h1>
-                <p className="text-xl text-platinumGray mb-8">{catTranslation?.description}</p>
+                <h1 className="text-5xl font-serif text-brandGold mb-6">
+                    {catTranslation?.name}
+                </h1>
+                <p className="text-xl text-platinumGray mb-8 leading-relaxed">
+                    {catTranslation?.description}
+                </p>
 
                 {/* Sorting & Filters */}
                 <ProductFilters onSortChange={handleSortChange} />
 
                 {/* Product Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-8">
                     {loading
                         ? [...Array(6)].map((_, i) => <ProductSkeleton key={i} />)
                         : sortedProducts.length > 0
-                            ? sortedProducts.map((product) => <ProductCard key={product.id} product={product} locale={locale} />)
-                            : <p className="text-center text-platinumGray col-span-3">No products found in this collection.</p>}
+                            ? sortedProducts.map((product) => (
+                                <ProductCard key={product.id} product={product} locale={locale} />
+                            ))
+                            : (
+                                <p className="text-center text-platinumGray col-span-3">
+                                    No products found in this collection.
+                                </p>
+                            )}
                 </div>
             </section>
         </>
@@ -106,13 +132,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         },
     });
 
-    // ✅ Ensure all `Date` fields are converted to ISO strings
     const categoryData = rawCategoryData
         ? JSON.parse(
             JSON.stringify({
                 ...rawCategoryData,
-                createdAt: rawCategoryData.createdAt ? rawCategoryData.createdAt.toISOString() : null,
-                updatedAt: rawCategoryData.updatedAt ? rawCategoryData.updatedAt.toISOString() : null,
+                createdAt: rawCategoryData.createdAt
+                    ? rawCategoryData.createdAt.toISOString()
+                    : null,
+                updatedAt: rawCategoryData.updatedAt
+                    ? rawCategoryData.updatedAt.toISOString()
+                    : null,
                 products: rawCategoryData.products.map((product) => ({
                     ...product,
                     images: product.images || [],

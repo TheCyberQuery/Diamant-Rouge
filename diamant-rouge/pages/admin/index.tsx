@@ -1,27 +1,40 @@
 // pages/admin/index.tsx
-import { GetServerSideProps } from 'next';
-import { getSession } from 'next-auth/react';
+import Link from "next/link";
+import { GetServerSideProps } from "next";
+import { getSession } from "next-auth/react";
 
 export default function AdminDashboard() {
     return (
-        <section className="p-8">
-            <h1 className="text-3xl font-serif mb-4">Admin Dashboard</h1>
-            <p>Welcome to the Diamant-Rouge back office.</p>
-            <ul className="mt-4 list-disc list-inside">
+        <section className="section-light min-h-screen p-8">
+            <h1 className="text-3xl font-serif text-brandGold mb-4">Admin Dashboard</h1>
+            <p className="text-platinumGray">
+                Welcome to the Diamant-Rouge back office.
+            </p>
+
+            <ul className="mt-4 list-disc list-inside text-richEbony space-y-2">
                 <li>
-                    <a href="/admin/products" className="text-crimson hover:text-gold">
+                    <Link
+                        href="/admin/products"
+                        className="text-burgundy hover:text-brandGold transition"
+                    >
                         Manage Products
-                    </a>
+                    </Link>
                 </li>
                 <li>
-                    <a href="/admin/categories" className="text-crimson hover:text-gold">
+                    <Link
+                        href="/admin/categories"
+                        className="text-burgundy hover:text-brandGold transition"
+                    >
                         Manage Categories
-                    </a>
+                    </Link>
                 </li>
                 <li>
-                    <a href="/admin/orders" className="text-crimson hover:text-gold">
+                    <Link
+                        href="/admin/orders"
+                        className="text-burgundy hover:text-brandGold transition"
+                    >
                         View Orders
-                    </a>
+                    </Link>
                 </li>
             </ul>
         </section>
@@ -30,10 +43,10 @@ export default function AdminDashboard() {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const session = await getSession(context);
-    if (!session || session.user.role !== 'admin') {
+    if (!session || session.user.role !== "admin") {
         return {
             redirect: {
-                destination: '/',
+                destination: "/",
                 permanent: false,
             },
         };

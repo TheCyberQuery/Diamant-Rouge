@@ -11,6 +11,9 @@ const nextConfig = {
         // even if your project has ESLint errors.
         ignoreDuringBuilds: true,
     },
+    images: {
+        domains: ['amantys.fr'], // Add your image domain here
+    },
     // other config if needed...
 }
 

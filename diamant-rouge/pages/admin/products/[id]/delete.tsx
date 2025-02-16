@@ -1,7 +1,9 @@
-import { GetServerSideProps } from 'next';
-import { getSession } from 'next-auth/react';
-import { prisma } from '../../../../lib/prisma';
-import { useRouter } from 'next/router';
+// pages/admin/products/[id]/delete.tsx
+
+import { GetServerSideProps } from "next";
+import { getSession } from "next-auth/react";
+import { prisma } from "../../../../lib/prisma";
+import { useRouter } from "next/router";
 
 export default function DeleteProductPage({ product }: { product: any }) {
     const router = useRouter();
@@ -17,20 +19,41 @@ export default function DeleteProductPage({ product }: { product: any }) {
     }
 
     return (
-        <main className="max-w-lg mx-auto p-6 text-center">
-            <h1 className="text-3xl font-serif text-crimson mb-6">Confirm Deletion</h1>
-            <p className="mb-4">Are you sure you want to delete <strong>{product.translations.find((t: any) => t.language === "en")?.name || "this product"}</strong>?</p>
+        <main className="section-light min-h-screen p-6 flex flex-col items-center justify-center">
+            <h1 className="text-3xl font-serif text-burgundy mb-4">
+                Confirm Deletion
+            </h1>
+            <p className="text-platinumGray mb-6 text-center max-w-md">
+                Are you sure you want to delete{" "}
+                <strong>
+                    {product.translations.find((t: any) => t.language === "en")?.name ||
+                        "this product"}
+                </strong>
+                ?
+            </p>
 
-            <button onClick={handleDelete} className="bg-crimson text-white px-6 py-3 rounded-full hover:bg-gold">Delete</button>
-            <button onClick={() => router.push("/admin/products")} className="ml-4 bg-gray-600 text-white px-6 py-3 rounded-full hover:bg-gray-800">Cancel</button>
+            <div className="flex gap-6">
+                <button
+                    onClick={handleDelete}
+                    className="button-primary text-center"
+                >
+                    Delete
+                </button>
+                <button
+                    onClick={() => router.push("/admin/products")}
+                    className="button-secondary"
+                >
+                    Cancel
+                </button>
+            </div>
         </main>
     );
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const session = await getSession(context);
-    if (!session || session.user.role !== 'admin') {
-        return { redirect: { destination: '/', permanent: false } };
+    if (!session || session.user.role !== "admin") {
+        return { redirect: { destination: "/", permanent: false } };
     }
 
     const { id } = context.params!;

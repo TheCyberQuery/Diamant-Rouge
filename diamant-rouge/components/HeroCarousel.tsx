@@ -31,8 +31,9 @@ export default function HeroCarousel({ slides }: HeroCarouselProps) {
             {slides.map((slide, i) => (
                 <SwiperSlide key={i}>
                     <div className="relative w-full h-full">
-                        {/* ✅ Background Image with Overlay */}
-                        <div className="absolute inset-0 bg-black/50"></div>
+                        {/* ✅ Burgundy Tint Overlay instead of black */}
+                        <div className="absolute inset-0 bg-burgundy/40"></div>
+
                         <Image
                             src={slide.imageSrc}
                             alt={slide.heading}
@@ -40,9 +41,13 @@ export default function HeroCarousel({ slides }: HeroCarouselProps) {
                             objectFit="cover"
                             className="z-0"
                         />
+
                         {/* ✅ Luxury Text Centered */}
-                        <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-softIvory z-10 px-6">
-                            <h2 className="text-6xl font-serif text-gold drop-shadow-lg">{slide.heading}</h2>
+                        <div className="absolute inset-0 flex flex-col justify-center items-center text-center z-10 px-6">
+                            <h2 className="text-6xl font-serif text-brandGold drop-shadow-lg">
+                                {slide.heading}
+                            </h2>
+
                             {slide.subheading && (
                                 <p className="text-2xl text-platinumGray mt-4 max-w-3xl drop-shadow-lg">
                                     {slide.subheading}

@@ -87,11 +87,11 @@ export default function CheckoutPage() {
 
     if (checkoutComplete) {
         return (
-            <main className="p-8 text-center text-ivory">
-                <h1 className="text-4xl font-serif text-gold mb-4">Thank You!</h1>
-                <p>Your order has been placed successfully.</p>
+            <main className="section-light p-8 text-center min-h-screen">
+                <h1 className="text-4xl font-serif text-brandGold mb-4">Thank You!</h1>
+                <p className="text-platinumGray">Your order has been placed successfully.</p>
                 <button
-                    className="mt-4 bg-crimson text-ivory px-6 py-3 rounded-full hover:bg-gold transition"
+                    className="mt-4 bg-burgundy hover:bg-brandGold text-brandIvory px-6 py-3 rounded-full transition duration-300"
                     onClick={() => router.push("/profile")}
                 >
                     View My Orders
@@ -102,11 +102,11 @@ export default function CheckoutPage() {
 
     if (cart.length === 0) {
         return (
-            <main className="p-8 text-center text-ivory">
-                <h1 className="text-4xl font-serif text-gold mb-4">Checkout</h1>
-                <p>Your cart is empty.</p>
+            <main className="section-light p-8 text-center min-h-screen">
+                <h1 className="text-4xl font-serif text-brandGold mb-4">Checkout</h1>
+                <p className="text-platinumGray">Your cart is empty.</p>
                 <button
-                    className="mt-4 bg-gold text-ebony px-6 py-3 rounded-full hover:bg-crimson transition"
+                    className="mt-4 bg-brandGold text-richEbony px-6 py-3 rounded-full hover:bg-burgundy hover:text-brandIvory transition duration-300"
                     onClick={() => router.push("/")}
                 >
                     Continue Shopping
@@ -116,27 +116,35 @@ export default function CheckoutPage() {
     }
 
     return (
-        <main className="p-8 max-w-2xl mx-auto text-ivory">
-            <h1 className="text-4xl font-serif text-gold mb-6">Checkout</h1>
+        <main className="section-light p-8 max-w-2xl mx-auto min-h-screen">
+            <h1 className="text-4xl font-serif text-brandGold mb-6">Checkout</h1>
             <div className="mb-4">
-                <p className="text-xl font-bold text-gold">Total: €{total.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-brandGold">
+                    Total: €{total.toFixed(2)}
+                </p>
             </div>
 
             {/* Payment Method Selection */}
             <div className="mb-6">
-                <label className="block text-lg mb-2">Select Payment Method</label>
+                <label className="block text-lg font-semibold text-richEbony mb-2">
+                    Select Payment Method
+                </label>
                 <div className="flex gap-4">
                     <button
-                        className={`px-6 py-3 rounded-full transition ${
-                            paymentMethod === "CMI" ? "bg-gold text-ebony" : "bg-ebony text-ivory"
+                        className={`px-6 py-3 rounded-full transition duration-300 ${
+                            paymentMethod === "CMI"
+                                ? "bg-brandGold text-richEbony"
+                                : "bg-burgundy/20 text-richEbony hover:bg-burgundy/40"
                         }`}
                         onClick={() => setPaymentMethod("CMI")}
                     >
                         Pay with Credit Card (CMI)
                     </button>
                     <button
-                        className={`px-6 py-3 rounded-full transition ${
-                            paymentMethod === "COD" ? "bg-gold text-ebony" : "bg-ebony text-ivory"
+                        className={`px-6 py-3 rounded-full transition duration-300 ${
+                            paymentMethod === "COD"
+                                ? "bg-brandGold text-richEbony"
+                                : "bg-burgundy/20 text-richEbony hover:bg-burgundy/40"
                         }`}
                         onClick={() => setPaymentMethod("COD")}
                     >
@@ -147,9 +155,11 @@ export default function CheckoutPage() {
 
             {/* Shipping Info */}
             <div className="mb-4 space-y-2">
-                <label className="block text-lg">Address</label>
+                <label className="block text-lg font-semibold text-richEbony">
+                    Address
+                </label>
                 <input
-                    className="w-full p-3 text-ebony rounded-lg border border-gold focus:ring focus:ring-gold"
+                    className="w-full p-3 text-richEbony rounded-lg border border-brandGold focus:ring focus:ring-brandGold transition"
                     value={shippingAddress}
                     onChange={(e) => setShippingAddress(e.target.value)}
                     placeholder="Enter your shipping address"
@@ -157,18 +167,22 @@ export default function CheckoutPage() {
             </div>
             <div className="mb-4 space-y-2 flex gap-4">
                 <div className="flex-1">
-                    <label className="block text-lg">City</label>
+                    <label className="block text-lg font-semibold text-richEbony">
+                        City
+                    </label>
                     <input
-                        className="w-full p-3 text-ebony rounded-lg border border-gold focus:ring focus:ring-gold"
+                        className="w-full p-3 text-richEbony rounded-lg border border-brandGold focus:ring focus:ring-brandGold transition"
                         value={city}
                         onChange={(e) => setCity(e.target.value)}
                         placeholder="Enter city"
                     />
                 </div>
                 <div className="flex-1">
-                    <label className="block text-lg">Postal Code</label>
+                    <label className="block text-lg font-semibold text-richEbony">
+                        Postal Code
+                    </label>
                     <input
-                        className="w-full p-3 text-ebony rounded-lg border border-gold focus:ring focus:ring-gold"
+                        className="w-full p-3 text-richEbony rounded-lg border border-brandGold focus:ring focus:ring-brandGold transition"
                         value={postalCode}
                         onChange={(e) => setPostalCode(e.target.value)}
                         placeholder="Enter postal code"
@@ -176,21 +190,23 @@ export default function CheckoutPage() {
                 </div>
             </div>
             <div className="mb-6 space-y-2">
-                <label className="block text-lg">Country</label>
+                <label className="block text-lg font-semibold text-richEbony">
+                    Country
+                </label>
                 <input
-                    className="w-full p-3 text-ebony rounded-lg border border-gold focus:ring focus:ring-gold"
+                    className="w-full p-3 text-richEbony rounded-lg border border-brandGold focus:ring focus:ring-brandGold transition"
                     value={country}
                     onChange={(e) => setCountry(e.target.value)}
                     placeholder="Enter country"
                 />
             </div>
 
-            {error && <p className="text-red-500 text-lg mb-4">{error}</p>}
+            {error && <p className="text-burgundy text-lg mb-4">{error}</p>}
 
             <button
                 onClick={handleCheckout}
                 disabled={loading}
-                className="bg-crimson hover:bg-gold text-ivory px-6 py-3 rounded-full font-medium transition w-full"
+                className="bg-burgundy hover:bg-brandGold text-brandIvory px-6 py-3 rounded-full font-medium transition w-full duration-300"
             >
                 {loading ? "Processing..." : "Confirm & Pay"}
             </button>

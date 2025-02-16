@@ -31,14 +31,20 @@ type ProductProps = {
 export default function ProductPage({ productData, locale }: ProductProps) {
     const { addToCart } = useCart();
     const [selectedVariation, setSelectedVariation] = useState<number | null>(null);
-    const [selectedImage, setSelectedImage] = useState(productData?.images[0] || "/images/placeholder.jpg");
+    const [selectedImage, setSelectedImage] = useState(
+        productData?.images[0] || "/images/placeholder.jpg"
+    );
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     if (!productData) {
         return (
-            <section className="py-12 text-center text-ivory">
-                <h1 className="text-5xl font-serif text-gold">Exclusive Masterpiece Not Found</h1>
-                <p className="text-platinumGray">The bespoke creation you seek is no longer available.</p>
+            <section className="py-12 text-center section-dark">
+                <h1 className="text-5xl font-serif text-brandGold mb-4">
+                    Exclusive Masterpiece Not Found
+                </h1>
+                <p className="text-platinumGray">
+                    The bespoke creation you seek is no longer available.
+                </p>
             </section>
         );
     }
@@ -66,6 +72,7 @@ export default function ProductPage({ productData, locale }: ProductProps) {
                 }}
             />
 
+            {/* Main Section */}
             <motion.section
                 className="py-16 px-6 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16"
                 initial={{ opacity: 0, y: 50 }}
@@ -74,7 +81,10 @@ export default function ProductPage({ productData, locale }: ProductProps) {
             >
                 {/* 📸 Image Showcase */}
                 <div className="relative">
-                    <div className="relative group cursor-pointer" onClick={() => setIsModalOpen(true)}>
+                    <div
+                        className="relative group cursor-pointer"
+                        onClick={() => setIsModalOpen(true)}
+                    >
                         <Image
                             src={selectedImage}
                             width={700}
@@ -82,67 +92,103 @@ export default function ProductPage({ productData, locale }: ProductProps) {
                             alt={productTranslation?.name}
                             className="rounded-lg shadow-luxury transition-transform duration-300 hover:scale-105"
                         />
-                        <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition duration-300 rounded-lg"></div>
+                        {/* Light burgundy overlay on hover instead of Ebony */}
+                        <div className="absolute inset-0 bg-burgundy/20 opacity-0 group-hover:opacity-100 transition duration-300 rounded-lg"></div>
                     </div>
 
                     {/* 🔍 Thumbnails */}
                     <div className="flex gap-3 mt-4">
-                        {productData.images.map((image, index) => (
-                            <button key={index} onClick={() => setSelectedImage(image)}>
-                                <Image
-                                    src={image}
-                                    width={90}
-                                    height={90}
-                                    alt={`Thumbnail ${index}`}
-                                    className={`rounded-lg cursor-pointer transition ${
-                                        selectedImage === image ? "border-4 border-gold" : "opacity-80 hover:opacity-100"
-                                    }`}
-                                />
-                            </button>
-                        ))}
+                        {productData.images.map((image, index) => {
+                            const isSelected = selectedImage === image;
+                            return (
+                                <button
+                                    key={index}
+                                    onClick={() => setSelectedImage(image)}
+                                    className="rounded-lg overflow-hidden"
+                                >
+                                    <Image
+                                        src={image}
+                                        width={90}
+                                        height={90}
+                                        alt={`Thumbnail ${index}`}
+                                        className={`cursor-pointer transition ${
+                                            isSelected
+                                                ? "border-4 border-brandGold"
+                                                : "opacity-80 hover:opacity-100"
+                                        }`}
+                                    />
+                                </button>
+                            );
+                        })}
                     </div>
                 </div>
 
                 {/* 🏷 Product Details */}
                 <div>
-                    <h1 className="text-5xl font-serif text-gold mb-4">{productTranslation?.name}</h1>
-                    <p className="text-lg text-platinumGray mb-6">{productTranslation?.description}</p>
+                    <h1 className="text-5xl font-serif text-brandGold mb-4">
+                        {productTranslation?.name}
+                    </h1>
+                    <p className="text-lg text-platinumGray mb-6">
+                        {productTranslation?.description}
+                    </p>
 
                     {/* 💳 Secure Payment Block */}
-                    <div className="bg-ebony/50 p-4 rounded-lg text-ivory mb-6">
-                        <h3 className="text-lg font-semibold text-gold mb-2">Secure & Confidential Transactions</h3>
+                    <div className="bg-burgundy/10 p-4 rounded-lg text-richEbony mb-6">
+                        <h3 className="text-lg font-semibold text-brandGold mb-2">
+                            Secure & Confidential Transactions
+                        </h3>
                         <div className="flex items-center gap-4">
-                            <Image src="/images/icons/img.icons8.png" width={40} height={24} alt="Visa" />
-                            <Image src="/images/icons/mastercard-old.svg" width={40} height={24} alt="Mastercard" />
-                            <p className="text-sm text-platinumGray">Guaranteed authenticity & privacy</p>
+                            <Image
+                                src="/images/icons/img.icons8.png"
+                                width={40}
+                                height={24}
+                                alt="Visa"
+                            />
+                            <Image
+                                src="/images/icons/mastercard-old.svg"
+                                width={40}
+                                height={24}
+                                alt="Mastercard"
+                            />
+                            <p className="text-sm text-platinumGray">
+                                Guaranteed authenticity & privacy
+                            </p>
                         </div>
                     </div>
 
                     {/* 🎨 Variations */}
                     {productData.variations.length > 0 && (
                         <div className="mb-6">
-                            <label className="block mb-2 text-ivory">Select Customization</label>
-                            <div className="flex gap-4">
-                                {productData.variations.map((variation) => (
-                                    <button
-                                        key={variation.id}
-                                        className={`px-4 py-2 rounded ${
-                                            selectedVariation === variation.id
-                                                ? "bg-gold text-ebony"
-                                                : "bg-ebony text-ivory"
-                                        }`}
-                                        onClick={() => setSelectedVariation(variation.id)}
-                                    >
-                                        {variation.variationValue}
-                                    </button>
-                                ))}
+                            <label className="block mb-2 text-richEbony font-semibold">
+                                Select Customization
+                            </label>
+                            <div className="flex flex-wrap gap-4">
+                                {productData.variations.map((variation) => {
+                                    const isActive = selectedVariation === variation.id;
+                                    return (
+                                        <button
+                                            key={variation.id}
+                                            onClick={() => setSelectedVariation(variation.id)}
+                                            className={`px-4 py-2 rounded font-medium transition duration-300
+                        ${
+                                                isActive
+                                                    ? "bg-burgundy text-brandIvory"
+                                                    : "bg-burgundy/20 text-richEbony hover:bg-burgundy/40"
+                                            }`}
+                                        >
+                                            {variation.variationValue}
+                                        </button>
+                                    );
+                                })}
                             </div>
                         </div>
                     )}
 
                     {/* 💰 Price Display */}
-                    <p className="text-3xl font-bold text-gold mb-6">
-                        {selectedVariation ? `Customized Price: €${totalPrice.toFixed(2)}` : `Starting at €${totalPrice.toFixed(2)}`}
+                    <p className="text-3xl font-bold text-brandGold mb-6">
+                        {selectedVariation
+                            ? `Customized Price: €${totalPrice.toFixed(2)}`
+                            : `Starting at €${totalPrice.toFixed(2)}`}
                     </p>
 
                     {/* 🛒 Add to Cart */}
@@ -158,14 +204,14 @@ export default function ProductPage({ productData, locale }: ProductProps) {
                                 quantity: 1,
                             })
                         }
-                        className="bg-crimson hover:bg-gold text-ivory px-6 py-3 rounded-full font-medium transition duration-300 w-full"
+                        className="bg-burgundy hover:bg-brandGold text-brandIvory px-6 py-3 rounded-full font-medium transition duration-300 w-full"
                     >
                         Add to Cart
                     </button>
 
-                    {/* ✨ Book a Private Viewing */}
-                    <Link href="/appointments">
-                        <button className="bg-ebony hover:bg-gold text-ivory px-6 py-3 rounded-full font-medium transition duration-300 mt-4 w-full">
+                    {/* ✨ Book a Private Viewing (No Ebony in light mode) */}
+                    <Link href="/appointments" passHref>
+                        <button className="bg-burgundy hover:bg-brandGold text-brandIvory px-6 py-3 rounded-full font-medium transition duration-300 mt-4 w-full">
                             Try in Showroom
                         </button>
                     </Link>

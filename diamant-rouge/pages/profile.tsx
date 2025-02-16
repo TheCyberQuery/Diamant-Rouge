@@ -49,48 +49,67 @@ type WishlistItem = {
     };
 };
 
-export default function ProfilePage({ orders, wishlist, locale }: { orders: OrderPlus[], wishlist: WishlistItem[], locale: string }) {
+export default function ProfilePage({
+                                        orders,
+                                        wishlist,
+                                        locale,
+                                    }: {
+    orders: OrderPlus[];
+    wishlist: WishlistItem[];
+    locale: string;
+}) {
     const { removeFromWishlist } = useWishlist();
     const [wishlistItems, setWishlistItems] = useState(wishlist);
 
     async function handleRemoveFromWishlist(productId: number) {
-        setWishlistItems((prev) =>
-            prev.filter((item) => item.productId !== productId)
-        );
+        setWishlistItems((prev) => prev.filter((item) => item.productId !== productId));
         await removeFromWishlist(productId);
     }
 
     return (
-        <main className="p-8 text-ivory">
-            <h1 className="text-4xl font-serif mb-6">My Profile</h1>
+        <main className="section-light p-8 min-h-screen">
+            <h1 className="text-4xl font-serif mb-6 text-brandGold">My Profile</h1>
 
             {/* Order History */}
             <section className="mb-10">
-                <h2 className="text-3xl font-serif mb-4 text-gold">Order History</h2>
+                <h2 className="text-3xl font-serif mb-4 text-brandGold">Order History</h2>
                 {orders.length === 0 ? (
                     <p className="flex items-center gap-2 text-platinumGray">
-                        <ShoppingBag className="text-gold" size={20} /> You have no orders yet.
+                        <ShoppingBag className="text-brandGold" size={20} /> You have no orders yet.
                     </p>
                 ) : (
                     <ul className="space-y-6">
                         {orders.map((order) => (
-                            <li key={order.id} className="bg-ebony/50 p-4 rounded-lg shadow-lg relative">
-                                <p>Order <strong>#{order.id}</strong> - <span className="text-gold">{order.status}</span></p>
-                                <p>Total: <strong>€{order.totalAmount}</strong></p>
-                                <p>Shipped To: {order.shippingAddress}, {order.city} {order.postalCode}, {order.country}</p>
+                            <li
+                                key={order.id}
+                                className="bg-burgundy/10 p-4 rounded-lg shadow-luxury relative text-richEbony"
+                            >
+                                <p>
+                                    Order <strong>#{order.id}</strong> -{" "}
+                                    <span className="text-brandGold">{order.status}</span>
+                                </p>
+                                <p>
+                                    Total: <strong>€{order.totalAmount}</strong>
+                                </p>
+                                <p>
+                                    Shipped To: {order.shippingAddress}, {order.city}{" "}
+                                    {order.postalCode}, {order.country}
+                                </p>
                                 <p>Placed On: {new Date(order.createdAt).toLocaleString()}</p>
 
                                 {order.trackingNumber && (
-                                    <p className="flex items-center gap-2 text-sm text-platinumGray">
-                                        <Package className="text-gold" size={18} /> <strong>{order.trackingNumber}</strong>
+                                    <p className="flex items-center gap-2 text-sm text-platinumGray mt-1">
+                                        <Package className="text-brandGold" size={18} />{" "}
+                                        <strong>{order.trackingNumber}</strong>
                                     </p>
                                 )}
 
                                 <ul className="mt-3 space-y-1">
                                     {order.orderItems.map((item) => {
-                                        const productName = item.product?.translations.find(t => t.language === locale)?.name
-                                            || item.product?.translations.find(t => t.language === "en")?.name
-                                            || item.product?.sku;
+                                        const productName =
+                                            item.product?.translations.find((t) => t.language === locale)?.name ||
+                                            item.product?.translations.find((t) => t.language === "en")?.name ||
+                                            item.product?.sku;
 
                                         return (
                                             <li key={item.id} className="pl-2 text-platinumGray">
@@ -107,17 +126,18 @@ export default function ProfilePage({ orders, wishlist, locale }: { orders: Orde
 
             {/* Wishlist Section */}
             <section>
-                <h2 className="text-3xl font-serif mb-4 text-gold">My Wishlist</h2>
+                <h2 className="text-3xl font-serif mb-4 text-brandGold">My Wishlist</h2>
                 {wishlistItems.length === 0 ? (
                     <p className="flex items-center gap-2 text-platinumGray">
-                        <ShoppingBag className="text-gold" size={20} /> Your wishlist is empty.
+                        <ShoppingBag className="text-brandGold" size={20} /> Your wishlist is empty.
                     </p>
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                         <AnimatePresence>
                             {wishlistItems.map(({ product }) => {
-                                const productTranslation = product.translations.find(t => t.language === locale) ||
-                                    product.translations.find(t => t.language === "en");
+                                const productTranslation =
+                                    product.translations.find((t) => t.language === locale) ||
+                                    product.translations.find((t) => t.language === "en");
 
                                 return (
                                     <motion.div
@@ -126,28 +146,36 @@ export default function ProfilePage({ orders, wishlist, locale }: { orders: Orde
                                         animate={{ opacity: 1, scale: 1 }}
                                         exit={{ opacity: 0, scale: 0.8 }}
                                         transition={{ duration: 0.4 }}
-                                        className="relative bg-ebony/50 p-4 rounded-lg text-center shadow-lg"
+                                        className="relative bg-burgundy/10 p-4 rounded-lg text-center shadow-luxury text-richEbony"
                                     >
                                         {/* ✅ Properly Positioned Remove Button */}
                                         <button
                                             onClick={() => handleRemoveFromWishlist(product.id)}
-                                            className="absolute top-3 right-3 text-crimson border border-crimson p-1 rounded-full hover:bg-crimson hover:text-ivory transition duration-300"
+                                            className="absolute top-3 right-3 text-burgundy border border-burgundy p-1 rounded-full hover:bg-burgundy hover:text-brandIvory transition duration-300"
                                         >
                                             <Minus size={16} />
                                         </button>
 
                                         <Image
-                                            src={product.images.length > 0 ? product.images[0] : "/images/placeholder.jpg"}
+                                            src={
+                                                product.images.length > 0
+                                                    ? product.images[0]
+                                                    : "/images/placeholder.jpg"
+                                            }
                                             width={150}
                                             height={150}
                                             alt={productTranslation?.name || "Wishlist Product"}
                                             className="mx-auto rounded-md object-cover"
                                         />
-                                        <h3 className="text-lg text-gold mt-2">{productTranslation?.name}</h3>
-                                        <p className="text-platinumGray">€{parseFloat(product.basePrice).toFixed(2)}</p>
+                                        <h3 className="text-lg text-brandGold mt-2">
+                                            {productTranslation?.name}
+                                        </h3>
+                                        <p className="text-platinumGray">
+                                            €{parseFloat(product.basePrice).toFixed(2)}
+                                        </p>
 
                                         <Link href={`/products/${product.id}`} passHref>
-                                            <button className="mt-2 bg-gold text-ebony px-4 py-2 rounded-full hover:bg-crimson transition duration-300">
+                                            <button className="mt-2 bg-brandGold text-richEbony px-4 py-2 rounded-full hover:bg-burgundy hover:text-brandIvory transition duration-300">
                                                 View Product
                                             </button>
                                         </Link>
@@ -165,11 +193,11 @@ export default function ProfilePage({ orders, wishlist, locale }: { orders: Orde
 export async function getServerSideProps(context: any) {
     const session = await getSession(context);
     if (!session) {
-        return { redirect: { destination: '/login', permanent: false } };
+        return { redirect: { destination: "/login", permanent: false } };
     }
 
     const userId = Number(session.user.id);
-    const locale = context.locale || 'en';
+    const locale = context.locale || "en";
 
     try {
         // ✅ Fetch orders with tracking numbers & product images
@@ -184,14 +212,14 @@ export async function getServerSideProps(context: any) {
                                 sku: true,
                                 images: true,
                                 translations: {
-                                    select: { language: true, name: true }
-                                }
-                            }
-                        }
-                    }
-                }
+                                    select: { language: true, name: true },
+                                },
+                            },
+                        },
+                    },
+                },
             },
-            orderBy: { createdAt: 'desc' },
+            orderBy: { createdAt: "desc" },
         });
 
         // ✅ Fetch wishlist with product images
@@ -205,10 +233,10 @@ export async function getServerSideProps(context: any) {
                         basePrice: true,
                         images: true,
                         translations: {
-                            select: { language: true, name: true }
-                        }
-                    }
-                }
+                            select: { language: true, name: true },
+                        },
+                    },
+                },
             },
         });
 
@@ -216,11 +244,11 @@ export async function getServerSideProps(context: any) {
             props: {
                 orders: JSON.parse(JSON.stringify(rawOrders)),
                 wishlist: JSON.parse(JSON.stringify(rawWishlist)),
-                locale
+                locale,
             },
         };
     } catch (error) {
-        console.error('❌ Profile SSR error:', error);
+        console.error("❌ Profile SSR error:", error);
         return {
             props: { orders: [], wishlist: [], locale },
         };
