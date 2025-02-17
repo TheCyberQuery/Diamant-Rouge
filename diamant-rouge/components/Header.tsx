@@ -39,7 +39,7 @@ export default function Header() {
 
     // Local state
     const [menuOpen, setMenuOpen] = useState(false);
-    // Only update the scrolled state on the home page
+    // Only update the scrolled state based on window scrollY (applies to all pages)
     const [scrolled, setScrolled] = useState(false);
     const [showSearch, setShowSearch] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
@@ -76,13 +76,12 @@ export default function Header() {
         return () => clearTimeout(timer);
     }, [searchQuery]);
 
-    // Only on the home page add the scroll listener
+    // Add the scroll listener for all pages
     useEffect(() => {
-        if (!isHomePage) return;
         const onScroll = () => setScrolled(window.scrollY > 50);
         window.addEventListener("scroll", onScroll);
         return () => window.removeEventListener("scroll", onScroll);
-    }, [isHomePage]);
+    }, []);
 
     // Dark mode logic
     const [darkMode, setDarkMode] = useState(false);
@@ -107,8 +106,8 @@ export default function Header() {
         });
     };
 
-    // For logos and icons, define different sources based on scroll state,
-    // but if not on home page, always use the "scrolled" (solid) version.
+    // For logos and icons, use white icons on homepage when not scrolled,
+    // otherwise use black versions.
     const logoSrc = "/logo11.png";
     const whatsappIcon = isHomePage
         ? (scrolled
@@ -141,8 +140,9 @@ export default function Header() {
             : "https://amantys.fr/wp-content/uploads/2023/10/Panier.png")
         : "https://amantys.fr/wp-content/uploads/2023/10/Panier.svg";
 
-    // Define text class based on page and scroll.
-    // On home page, use white text when not scrolled; on other pages always use dark text.
+    // Define text class:
+    // On homepage, if not scrolled use white text, else black.
+    // On non-home pages, always use black.
     const defaultTextClass = isHomePage
         ? (scrolled ? "text-richEbony" : "text-white")
         : "text-richEbony";
@@ -215,7 +215,7 @@ export default function Header() {
     return (
         <header
             className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-                isHomePage ? (scrolled ? "bg-brandIvory" : "bg-transparent") : "bg-brandIvory"
+                scrolled ? "bg-brandIvory" : "bg-transparent"
             }`}
         >
             {/* Unified (top) Navigation Bar */}
@@ -228,12 +228,7 @@ export default function Header() {
                         rel="noopener noreferrer"
                         className="hover:opacity-80 transition"
                     >
-                        <Image
-                            src={whatsappIcon}
-                            alt="WhatsApp"
-                            width={27}
-                            height={27}
-                        />
+                        <Image src={whatsappIcon} alt="WhatsApp" width={27} height={27} />
                     </a>
                     <Link
                         href="/appointments"
@@ -274,24 +269,14 @@ export default function Header() {
                             className={`flex items-center transition hover:text-brandGold ${defaultTextClass}`}
                             target="_blank"
                         >
-                            <Image
-                                src={guideIcon}
-                                alt={t.guide}
-                                width={30}
-                                height={30}
-                            />
+                            <Image src={guideIcon} alt={t.guide} width={30} height={30} />
                             <span className="ml-1 text-sm font-medium">{t.guide}</span>
                         </Link>
                         <Link
                             href="/mon-panque"
                             className={`flex items-center transition hover:text-brandGold ${defaultTextClass}`}
                         >
-                            <Image
-                                src={accountIcon}
-                                alt={t.compte}
-                                width={20}
-                                height={20}
-                            />
+                            <Image src={accountIcon} alt={t.compte} width={20} height={20} />
                             <span className="ml-1 text-sm font-medium">{t.compte}</span>
                         </Link>
                         <button
@@ -300,24 +285,14 @@ export default function Header() {
                             }}
                             className={`flex items-center transition hover:text-brandGold ${defaultTextClass}`}
                         >
-                            <Image
-                                src={enviesIcon}
-                                alt={t.envies}
-                                width={20}
-                                height={20}
-                            />
+                            <Image src={enviesIcon} alt={t.envies} width={20} height={20} />
                             <span className="ml-1 text-sm font-medium">{t.envies}</span>
                         </button>
                         <Link
                             href="/mon-panier"
                             className={`flex items-center transition hover:text-brandGold ${defaultTextClass}`}
                         >
-                            <Image
-                                src={panierIcon}
-                                alt={t.panier}
-                                width={21}
-                                height={22}
-                            />
+                            <Image src={panierIcon} alt={t.panier} width={21} height={22} />
                             <span className="ml-1 text-sm font-medium">
                 {t.panier} ({cart.length})
               </span>
@@ -329,9 +304,27 @@ export default function Header() {
                         onClick={() => setMenuOpen(!menuOpen)}
                     >
                         {menuOpen ? (
-                            <X size={26} className={isHomePage ? (scrolled ? "text-richEbony" : "text-white") : "text-richEbony"} />
+                            <X
+                                size={26}
+                                className={
+                                    isHomePage
+                                        ? scrolled
+                                            ? "text-richEbony"
+                                            : "text-white"
+                                        : "text-richEbony"
+                                }
+                            />
                         ) : (
-                            <Menu size={26} className={isHomePage ? (scrolled ? "text-richEbony" : "text-white") : "text-richEbony"} />
+                            <Menu
+                                size={26}
+                                className={
+                                    isHomePage
+                                        ? scrolled
+                                            ? "text-richEbony"
+                                            : "text-white"
+                                        : "text-richEbony"
+                                }
+                            />
                         )}
                     </button>
                 </div>
@@ -427,12 +420,27 @@ export default function Header() {
                                     className="focus:outline-none relative top-2"
                                 >
                                     {showSearch ? (
-                                        <X size={26} className={isHomePage ? (scrolled ? "text-richEbony" : "text-white") : "text-richEbony"} />
+                                        <X
+                                            size={26}
+                                            className={
+                                                isHomePage
+                                                    ? scrolled
+                                                        ? "text-richEbony"
+                                                        : "text-white"
+                                                    : "text-richEbony"
+                                            }
+                                        />
                                     ) : (
                                         <FontAwesomeIcon
                                             icon={faMagnifyingGlass}
                                             size="lg"
-                                            className={isHomePage ? (scrolled ? "text-richEbony" : "text-white") : "text-richEbony"}
+                                            className={
+                                                isHomePage
+                                                    ? scrolled
+                                                        ? "text-richEbony"
+                                                        : "text-white"
+                                                    : "text-richEbony"
+                                            }
                                         />
                                     )}
                                 </button>
@@ -445,7 +453,7 @@ export default function Header() {
                 {showSearch ? (
                     <div
                         className={`absolute left-0 top-full w-full transition-all duration-500 ${
-                            isHomePage ? (scrolled ? "bg-brandIvory" : "bg-transparent") : "bg-brandIvory"
+                            scrolled ? "bg-brandIvory" : "bg-transparent"
                         } animate-slideDownRefined`}
                         style={{ animationDuration: "1.8s" }}
                     >
@@ -486,7 +494,7 @@ export default function Header() {
                     activeSubmenu.key && (
                         <div
                             className={`absolute left-0 top-full w-full transition-all duration-500 ${
-                                isHomePage ? (scrolled ? "bg-brandIvory" : "bg-transparent") : "bg-brandIvory"
+                                scrolled ? "bg-brandIvory" : "bg-transparent"
                             } animate-slideDownRefined`}
                             style={{ animationDuration: "1.8s" }}
                             onMouseEnter={handleSubmenuEnter}
