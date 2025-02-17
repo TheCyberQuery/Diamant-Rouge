@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useCart } from "../../contexts/CartContext";
 import { NextSeo } from "next-seo";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 
 type ProductProps = {
@@ -38,25 +38,28 @@ export default function ProductPage({ productData, locale }: ProductProps) {
 
     if (!productData) {
         return (
-            <section className="py-12 text-center section-dark">
-                <h1 className="text-5xl font-serif text-brandGold mb-4">
+            <section className="py-12 text-center bg-gray-900 text-white">
+                <h1 className="text-5xl font-serif mb-4">
                     Exclusive Masterpiece Not Found
                 </h1>
-                <p className="text-platinumGray">
+                <p className="text-lg text-gray-300">
                     The bespoke creation you seek is no longer available.
                 </p>
             </section>
         );
     }
 
+    // Find translation based on current locale (or fallback to English)
     const productTranslation =
         productData.translations.find((t) => t.language === locale) ||
         productData.translations.find((t) => t.language === "en");
 
+    // Parse prices
     const basePrice = parseFloat(productData.basePrice);
     const additionalPrice = selectedVariation
         ? parseFloat(
-            productData.variations.find((v) => v.id === selectedVariation)?.additionalPrice || "0"
+            productData.variations.find((v) => v.id === selectedVariation)
+                ?.additionalPrice || "0"
         )
         : 0;
     const totalPrice = basePrice + additionalPrice;
@@ -72,156 +75,195 @@ export default function ProductPage({ productData, locale }: ProductProps) {
                 }}
             />
 
-            {/* Main Section */}
-            <motion.section
-                className="py-16 px-6 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16"
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-            >
-                {/* 📸 Image Showcase */}
-                <div className="relative">
-                    <div
-                        className="relative group cursor-pointer"
-                        onClick={() => setIsModalOpen(true)}
-                    >
-                        <Image
-                            src={selectedImage}
-                            width={700}
-                            height={700}
-                            alt={productTranslation?.name}
-                            className="rounded-lg shadow-luxury transition-transform duration-300 hover:scale-105"
-                        />
-                        {/* Light burgundy overlay on hover instead of Ebony */}
-                        <div className="absolute inset-0 bg-burgundy/20 opacity-0 group-hover:opacity-100 transition duration-300 rounded-lg"></div>
-                    </div>
-
-                    {/* 🔍 Thumbnails */}
-                    <div className="flex gap-3 mt-4">
-                        {productData.images.map((image, index) => {
-                            const isSelected = selectedImage === image;
-                            return (
-                                <button
-                                    key={index}
-                                    onClick={() => setSelectedImage(image)}
-                                    className="rounded-lg overflow-hidden"
-                                >
-                                    <Image
-                                        src={image}
-                                        width={90}
-                                        height={90}
-                                        alt={`Thumbnail ${index}`}
-                                        className={`cursor-pointer transition ${
-                                            isSelected
-                                                ? "border-4 border-brandGold"
-                                                : "opacity-80 hover:opacity-100"
-                                        }`}
-                                    />
-                                </button>
-                            );
-                        })}
-                    </div>
-                </div>
-
-                {/* 🏷 Product Details */}
-                <div>
-                    <h1 className="text-5xl font-serif text-brandGold mb-4">
-                        {productTranslation?.name}
-                    </h1>
-                    <p className="text-lg text-platinumGray mb-6">
-                        {productTranslation?.description}
-                    </p>
-
-                    {/* 💳 Secure Payment Block */}
-                    <div className="bg-burgundy/10 p-4 rounded-lg text-richEbony mb-6">
-                        <h3 className="text-lg font-semibold text-brandGold mb-2">
-                            Secure & Confidential Transactions
-                        </h3>
-                        <div className="flex items-center gap-4">
+            <main className="py-16 px-6 max-w-7xl mx-auto">
+                <motion.section
+                    className="grid grid-cols-1 md:grid-cols-2 gap-16"
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                >
+                    {/* IMAGE SHOWCASE */}
+                    <div className="relative">
+                        <button
+                            aria-label="View full size image"
+                            className="group block relative"
+                            onClick={() => setIsModalOpen(true)}
+                        >
                             <Image
-                                src="/images/icons/img.icons8.png"
-                                width={40}
-                                height={24}
-                                alt="Visa"
+                                src={selectedImage}
+                                width={700}
+                                height={700}
+                                alt={productTranslation?.name || "Product image"}
+                                className="rounded-lg shadow-lg transition-transform duration-300 hover:scale-105"
                             />
-                            <Image
-                                src="/images/icons/mastercard-old.svg"
-                                width={40}
-                                height={24}
-                                alt="Mastercard"
-                            />
-                            <p className="text-sm text-platinumGray">
-                                Guaranteed authenticity & privacy
-                            </p>
+                            <div className="absolute inset-0 bg-burgundy/20 opacity-0 group-hover:opacity-100 transition duration-300 rounded-lg"></div>
+                        </button>
+
+                        {/* Thumbnail Gallery */}
+                        <div className="flex gap-3 mt-4" aria-label="Product image thumbnails">
+                            {productData.images.map((image, index) => {
+                                const isSelected = selectedImage === image;
+                                return (
+                                    <button
+                                        key={index}
+                                        onClick={() => setSelectedImage(image)}
+                                        className="rounded-lg overflow-hidden focus:outline-none"
+                                        aria-label={`View image ${index + 1}`}
+                                    >
+                                        <Image
+                                            src={image}
+                                            width={90}
+                                            height={90}
+                                            alt={`Thumbnail ${index + 1}`}
+                                            className={`cursor-pointer transition ${
+                                                isSelected
+                                                    ? "border-4 border-brandGold"
+                                                    : "opacity-80 hover:opacity-100"
+                                            }`}
+                                        />
+                                    </button>
+                                );
+                            })}
                         </div>
                     </div>
 
-                    {/* 🎨 Variations */}
-                    {productData.variations.length > 0 && (
-                        <div className="mb-6">
-                            <label className="block mb-2 text-richEbony font-semibold">
-                                Select Customization
-                            </label>
-                            <div className="flex flex-wrap gap-4">
-                                {productData.variations.map((variation) => {
-                                    const isActive = selectedVariation === variation.id;
-                                    return (
-                                        <button
-                                            key={variation.id}
-                                            onClick={() => setSelectedVariation(variation.id)}
-                                            className={`px-4 py-2 rounded font-medium transition duration-300
-                        ${
-                                                isActive
-                                                    ? "bg-burgundy text-brandIvory"
-                                                    : "bg-burgundy/20 text-richEbony hover:bg-burgundy/40"
-                                            }`}
-                                        >
-                                            {variation.variationValue}
-                                        </button>
-                                    );
-                                })}
+                    {/* PRODUCT DETAILS */}
+                    <div>
+                        <h1 className="text-5xl font-serif text-brandGold mb-4">
+                            {productTranslation?.name}
+                        </h1>
+                        <p className="text-lg text-platinumGray mb-6">
+                            {productTranslation?.description}
+                        </p>
+
+                        {/* PAYMENT INFORMATION */}
+                        <div className="bg-burgundy/10 p-4 rounded-lg text-richEbony mb-6">
+                            <h3 className="text-lg font-semibold text-brandGold mb-2">
+                                Secure & Confidential Transactions
+                            </h3>
+                            <div className="flex items-center gap-4">
+                                <Image
+                                    src="/images/icons/visa.png"
+                                    width={40}
+                                    height={24}
+                                    alt="Visa"
+                                />
+                                <Image
+                                    src="/images/icons/mastercard.svg"
+                                    width={40}
+                                    height={24}
+                                    alt="Mastercard"
+                                />
+                                <p className="text-sm text-platinumGray">
+                                    Guaranteed authenticity & privacy
+                                </p>
                             </div>
                         </div>
-                    )}
 
-                    {/* 💰 Price Display */}
-                    <p className="text-3xl font-bold text-brandGold mb-6">
-                        {selectedVariation
-                            ? `Customized Price: €${totalPrice.toFixed(2)}`
-                            : `Starting at €${totalPrice.toFixed(2)}`}
-                    </p>
+                        {/* VARIATIONS */}
+                        {productData.variations.length > 0 && (
+                            <div className="mb-6">
+                                <label className="block mb-2 text-richEbony font-semibold">
+                                    Select Customization
+                                </label>
+                                <div className="flex flex-wrap gap-4">
+                                    {productData.variations.map((variation) => {
+                                        const isActive = selectedVariation === variation.id;
+                                        return (
+                                            <button
+                                                key={variation.id}
+                                                onClick={() => setSelectedVariation(variation.id)}
+                                                className={`px-4 py-2 rounded font-medium transition duration-300 ${
+                                                    isActive
+                                                        ? "bg-burgundy text-brandIvory"
+                                                        : "bg-burgundy/20 text-richEbony hover:bg-burgundy/40"
+                                                }`}
+                                            >
+                                                {variation.variationValue}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        )}
 
-                    {/* 🛒 Add to Cart */}
-                    <button
-                        onClick={() =>
-                            addToCart({
-                                image: selectedImage,
-                                productId: productData.id,
-                                variationId: selectedVariation || undefined,
-                                sku: productData.sku,
-                                name: productTranslation?.name || "Unknown",
-                                price: totalPrice,
-                                quantity: 1,
-                            })
-                        }
-                        className="bg-burgundy hover:bg-brandGold text-brandIvory px-6 py-3 rounded-full font-medium transition duration-300 w-full"
-                    >
-                        Add to Cart
-                    </button>
+                        {/* PRICE DISPLAY */}
+                        <p className="text-3xl font-bold text-brandGold mb-6">
+                            {selectedVariation
+                                ? `Customized Price: €${totalPrice.toFixed(2)}`
+                                : `Starting at €${totalPrice.toFixed(2)}`}
+                        </p>
 
-                    {/* ✨ Book a Private Viewing (No Ebony in light mode) */}
-                    <Link href="/appointments" passHref>
-                        <button className="bg-burgundy hover:bg-brandGold text-brandIvory px-6 py-3 rounded-full font-medium transition duration-300 mt-4 w-full">
-                            Try in Showroom
+                        {/* ADD TO CART BUTTON */}
+                        <button
+                            onClick={() =>
+                                addToCart({
+                                    image: selectedImage,
+                                    productId: productData.id,
+                                    variationId: selectedVariation || undefined,
+                                    sku: productData.sku,
+                                    name: productTranslation?.name || "Unknown",
+                                    price: totalPrice,
+                                    quantity: 1,
+                                })
+                            }
+                            className="bg-burgundy hover:bg-brandGold text-brandIvory px-6 py-3 rounded-full font-medium transition duration-300 w-full"
+                        >
+                            Add to Cart
                         </button>
-                    </Link>
-                </div>
-            </motion.section>
+
+                        {/* APPOINTMENT LINK */}
+                        <Link href="/appointments" passHref>
+                            <button className="bg-burgundy hover:bg-brandGold text-brandIvory px-6 py-3 rounded-full font-medium transition duration-300 mt-4 w-full">
+                                Try in Showroom
+                            </button>
+                        </Link>
+                    </div>
+                </motion.section>
+
+                {/* FULLSCREEN IMAGE MODAL */}
+                <AnimatePresence>
+                    {isModalOpen && (
+                        <motion.div
+                            className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsModalOpen(false)}
+                            aria-modal="true"
+                            role="dialog"
+                            aria-label="Fullscreen product image"
+                        >
+                            <motion.div
+                                className="relative max-w-3xl"
+                                initial={{ scale: 0.8 }}
+                                animate={{ scale: 1 }}
+                                exit={{ scale: 0.8 }}
+                                onClick={(e) => e.stopPropagation()}
+                            >
+                                <Image
+                                    src={selectedImage}
+                                    width={1000}
+                                    height={1000}
+                                    alt={productTranslation?.name || "Product Image"}
+                                    className="rounded-lg shadow-2xl"
+                                />
+                                <button
+                                    className="absolute top-4 right-4 text-white text-3xl"
+                                    onClick={() => setIsModalOpen(false)}
+                                    aria-label="Close modal"
+                                >
+                                    &times;
+                                </button>
+                            </motion.div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+            </main>
         </>
     );
 }
 
-// ✅ Fetch product securely & Convert Decimal Fields to String
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const id = parseInt(context.params?.id as string, 10);
     if (isNaN(id)) return { notFound: true };
@@ -230,7 +272,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         where: { id },
         include: {
             translations: true,
-            variations: true, // ✅ Ensure variations are always included
+            variations: true,
         },
     });
 
@@ -240,10 +282,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         props: {
             productData: {
                 ...JSON.parse(JSON.stringify(product)),
-                basePrice: product.basePrice.toString(), // ✅ Convert Decimal to String
+                basePrice: product.basePrice.toString(),
                 variations: product.variations.map((variation) => ({
                     ...variation,
-                    additionalPrice: variation.additionalPrice.toString(), // ✅ Convert Decimal to String
+                    additionalPrice: variation.additionalPrice.toString(),
                 })),
             },
             locale: context.locale || "en",

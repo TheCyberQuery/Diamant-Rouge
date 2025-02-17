@@ -8,8 +8,7 @@
 :root {
     --brand-gold: #D4AF37;
     --brand-burgundy: #6A0F23;
-    --brand-ivory: #FAF3E3;
-
+    --brand-ivory: #c6a43b; /* Accent for headings if needed */
     --platinum-gray: #B0B0B0;
     --diamond-white: #FCFCFC;
 }
@@ -18,15 +17,10 @@
    📌 Base Typography & Layout (LIGHT MODE DEFAULT)
    ========================================================== */
 body {
-    /* Main site background: brand Ivory
-       Body text: neutral or platinumGray for readability
-       (We keep "text-richEbony" if you'd like a darker text.
-        It's okay as a color in the config, just not used as the entire background.)
-    */
     @apply bg-brandIvory text-richEbony font-serif tracking-wide leading-relaxed;
 }
 
-/* Headings - Gold to mirror the logo lines */
+/* Headings use the brand gold */
 h1, h2, h3, h4, h5 {
     @apply text-brandGold font-bold tracking-wide;
 }
@@ -37,13 +31,13 @@ h3 { @apply text-3xl md:text-5xl leading-snug; }
 h4 { @apply text-2xl md:text-4xl leading-snug; }
 h5 { @apply text-xl md:text-2xl leading-normal; }
 
-/* Paragraphs - typically platinumGray for subtle contrast */
+/* Paragraphs styled in platinum gray for subtle contrast */
 p {
     @apply text-platinumGray text-lg leading-relaxed;
 }
 
 /* ==========================================================
-   🔥 Custom Components (Buttons, Cards, Sections)
+   🔥 Custom Components (Buttons, Cards, etc.)
    ========================================================== */
 @layer components {
     /* 🎭 Primary Action Button */
@@ -56,53 +50,38 @@ p {
     /* 🏛️ Secondary Action Button */
     .button-secondary {
         @apply bg-transparent border border-brandGold text-brandGold px-6 py-3
-        rounded-full font-medium hover:bg-brandGold hover:text-richEbony
-        transition duration-300;
+        rounded-full font-medium hover:bg-brandGold hover:text-richEbony transition duration-300;
     }
 
-    /* Disabled Buttons */
+    /* Disabled Button Styles */
     .button-primary:disabled,
     .button-secondary:disabled {
         @apply bg-gray-400 text-gray-100 cursor-not-allowed opacity-50;
     }
 
-    /* 🖼️ Luxury Card (light mode) */
+    /* 🖼️ Luxury Card Component */
     .card {
         @apply bg-brandIvory border border-brandGold text-richEbony rounded-lg
         shadow-luxury p-6 transition-transform hover:scale-105 duration-300;
     }
 
-    /* 📌 Section Backgrounds (No Ebony in light mode) */
-    .section-dark {
-        /* "Dark" section in light mode => use burgundy instead of Ebony */
-        @apply bg-burgundy text-brandIvory;
-    }
-    .section-light {
-        @apply bg-brandIvory text-richEbony;
-    }
-
-    /* ✨ Image Styling */
-    .image-luxury {
-        @apply shadow-luxury rounded-2xl;
-    }
-
-    /* 🔘 Input Fields */
+    /* ✨ Custom Input Field */
     .input-field {
         @apply bg-transparent border border-brandGold text-richEbony px-4 py-2 rounded-lg
         focus:border-brandGold focus:ring focus:ring-brandGold transition duration-300;
     }
 
-    /* 🛎️ Alert & Notification */
+    /* 🔘 Alert Box */
     .alert {
         @apply bg-burgundy text-brandIvory px-4 py-3 rounded-lg font-medium;
     }
 
-    /* 🖥️ Hover Animations */
+    /* 🖥️ Hover Scale Effect */
     .hover-scale {
         @apply transition-transform duration-300 hover:scale-105;
     }
 
-    /* 🔲 Dropdown */
+    /* 🔲 Dropdown Menu */
     .dropdown-menu {
         @apply absolute left-0 mt-2 w-56 bg-brandIvory text-richEbony shadow-lg opacity-0
         transform translate-y-4 scale-95 transition-all duration-500 rounded-lg
@@ -117,13 +96,10 @@ p {
    🌙 Dark Mode Adjustments
    ========================================================== */
 .dark body {
-    /* Ebony background, gold headings, ivory text.
-       Only in dark mode does Ebony appear.
-    */
     @apply bg-richEbony text-brandIvory;
 }
 
-/* Headings in Dark Mode remain gold */
+/* Keep headings gold in dark mode */
 .dark h1,
 .dark h2,
 .dark h3,
@@ -132,17 +108,17 @@ p {
     @apply text-brandGold;
 }
 
-/* Cards in Dark Mode => Ebony background, gold border, ivory text */
+/* Card styling for dark mode */
 .dark .card {
     @apply bg-richEbony border-brandGold text-brandIvory;
 }
 
-/* Input Fields in Dark Mode */
+/* Input fields in dark mode */
 .dark .input-field {
     @apply text-brandIvory border-brandGold focus:border-brandGold;
 }
 
-/* Buttons in Dark Mode */
+/* Buttons in dark mode */
 .dark .button-primary {
     @apply bg-brandGold text-richEbony hover:bg-burgundy hover:text-brandIvory;
 }
@@ -150,7 +126,7 @@ p {
     @apply border-brandGold text-brandGold hover:bg-brandGold hover:text-richEbony;
 }
 
-/* Dropdown in Dark Mode => Ebony background, ivory text */
+/* Dropdown in dark mode */
 .dark .dropdown-menu {
     @apply bg-richEbony text-brandIvory;
 }

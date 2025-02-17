@@ -25,15 +25,12 @@ export default function Layout({ children, title, description }: LayoutProps) {
             {/* Luxury Fixed Header */}
             <Header />
 
-            {/*
-        Main Content Area
-        Remove bg-richEbony and text-softIvory so light mode uses your default
-        brandIvory + brandGold + burgundy, and Ebony is applied only in dark mode
-        via .dark body { ... } from your global CSS.
-      */}
-            <main className="min-h-screen pt-24 md:pt-28 transition-opacity duration-500 ease-in-out">
-                {children}
-            </main>
+            {/* Main Content Area */}
+            <div className="container mx-auto ">
+                <main className="min-h-screen  transition-opacity duration-500 ease-in-out">
+                    {children}
+                </main>
+            </div>
 
             {/* Elegant Footer */}
             <Footer />

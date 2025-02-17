@@ -11,6 +11,8 @@
     "postbuild": "next-sitemap"
   },
   "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "^6.7.2",
+    "@fortawesome/react-fontawesome": "^0.2.2",
     "@hookform/resolvers": "^3.10.0",
     "@paypal/react-paypal-js": "^8.8.1",
     "@prisma/client": "^6.2.1",
@@ -35,8 +37,11 @@
     "querystring": "^0.2.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-icons": "^5.4.0",
+    "react-slick": "^0.30.3",
+    "slick-carousel": "^1.8.1",
     "stripe": "^17.5.0",
-    "swiper": "^11.2.1",
+    "swiper": "^11.2.4",
     "tailwind-scrollbar-hide": "^2.0.0",
     "zod": "^3.24.1"
   },
