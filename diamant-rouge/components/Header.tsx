@@ -138,7 +138,7 @@ export default function Header() {
     const panierIcon = isHomePage
         ? (scrolled
             ? "https://amantys.fr/wp-content/uploads/2023/10/Panier.svg"
-            : "https://amantys.fr/wp-content/uploads/2023/10/Panier_white.png")
+            : "https://amantys.fr/wp-content/uploads/2023/10/Panier.png")
         : "https://amantys.fr/wp-content/uploads/2023/10/Panier.svg";
 
     // Define text class based on page and scroll.
