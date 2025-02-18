@@ -1,4 +1,4 @@
-// component/Layout.tsx
+// components/Layout.tsx
 import { ReactNode } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
@@ -27,13 +27,18 @@ export default function Layout({ children, title, description }: LayoutProps) {
 
             <Header />
 
-            <div className="container mx-auto">
-                <main className={`min-h-screen transition-opacity duration-500 ease-in-out ${!isHomePage ? "pt-24 md:pt-28" : ""}`}>
+            {/* Main container nearly full width (95% of viewport) */}
+            <div className="w-full mx-auto px-20 md:px-15" style={{ maxWidth: "95%" }}>
+                <main
+                    className={`min-h-screen transition-opacity duration-500 ease-in-out ${
+                        !isHomePage ? "pt-24 md:pt-28" : ""
+                    }`}
+                >
                     {children}
                 </main>
+            <Footer />
             </div>
 
-            <Footer />
         </>
     );
 }

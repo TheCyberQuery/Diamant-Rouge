@@ -38,8 +38,8 @@ module.exports = {
         ivory: '#FFFFF0',
       },
       fontFamily: {
-        sans: ['Montserrat', ...defaultTheme.fontFamily.sans],
-        serif: ['Didot', 'serif'],
+        sans: ['railway-reg', ...defaultTheme.fontFamily.sans],
+        serif: ['railway-reg', ...defaultTheme.fontFamily.serif],
       },
       fontSize: {
         '6.5xl': '4rem',
