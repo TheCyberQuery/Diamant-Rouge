@@ -20,12 +20,12 @@ type ProductCardProps = {
 
 export default function ProductCard({ product, locale }: ProductCardProps) {
     const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
-    const [hovered, setHovered] = useState(false);
 
-    // Determine the product name based on the current locale
+    // Determine the product name based on the current locale,
+    // defaulting to French ("fr") if no match is found.
     const productTranslation =
         product.translations.find((t) => t.language === locale) ||
-        product.translations.find((t) => t.language === "en");
+        product.translations.find((t) => t.language === "fr");
 
     // Check if product is in the user's wishlist
     const isInWishlist = wishlist.some((item) => item.productId === product.id);
@@ -40,24 +40,10 @@ export default function ProductCard({ product, locale }: ProductCardProps) {
     }
 
     return (
-        <div
-            className="card hover-scale relative overflow-hidden"
-            onMouseEnter={() => setHovered(true)}
-            onMouseLeave={() => setHovered(false)}
-        >
-            {/* Wishlist Button */}
-            <button
-                onClick={handleWishlist}
-                className={`absolute top-3 right-3 p-2 rounded-full transition-all shadow-luxury z-10
-          ${isInWishlist ? "bg-burgundy text-brandIvory" : "bg-brandIvory text-richEbony"}
-        `}
-            >
-                {isInWishlist ? "❤️" : "🤍"}
-            </button>
-
-            {/* Product Image & Quick View Overlay */}
-            <Link href={`/products/${product.id}`} passHref>
-                <div className="relative w-full h-[320px] cursor-pointer rounded-lg overflow-hidden">
+        <div className="relative overflow-hidden">
+            {/* Product Image */}
+            <Link href={`/products/${product.id}`} passHref legacyBehavior>
+                <a className="block relative w-full h-[320px] rounded-lg overflow-hidden cursor-pointer">
                     <Image
                         src={
                             product.images.length > 0
@@ -69,22 +55,33 @@ export default function ProductCard({ product, locale }: ProductCardProps) {
                         alt={productTranslation?.name || "Luxury Jewelry"}
                         className="rounded-lg"
                     />
-                    {hovered && (
-                        <div className="absolute inset-0 bg-burgundy/40 flex items-center justify-center text-brandIvory text-lg font-medium">
-                            Quick View
-                        </div>
-                    )}
-                </div>
+                </a>
             </Link>
 
-            {/* Product Info */}
-            <div className="p-4 text-center">
+            {/* Title and Wishlist Button inline */}
+            <div className="px-3 pt-2 flex items-center justify-between">
                 <h3 className="text-lg font-serif text-brandGold">
                     {productTranslation?.name}
                 </h3>
-                <p className="text-platinumGray mt-1">
+                <button onClick={handleWishlist} className="p-2 transition-all">
+                    {isInWishlist ? "❤️" : "🤍"}
+                </button>
+            </div>
+
+            {/* Product Price (margin removed using m-0) */}
+            <div className="px-3 text-left">
+                <p className="text-platinumGray m-0">
                     Starting at €{parseFloat(product.basePrice).toFixed(2)}
                 </p>
+            </div>
+
+            {/* "Voir la création" Button aligned to the left */}
+            <div className="px-3 pb-3 pt-2 text-left">
+                <Link href={`/products/${product.id}`} passHref legacyBehavior>
+                    <a className="mt-2 border border-brandGold text-brandGold font-semibold text-sm px-4 py-2">
+                        Voir la création
+                    </a>
+                </Link>
             </div>
         </div>
     );

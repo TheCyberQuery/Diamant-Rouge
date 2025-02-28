@@ -97,6 +97,55 @@ export default function Footer() {
                 </div>
             </section>
 
+            {/* REVIEWS SECTION */}
+            <section className="inner-section review-section py-12 border-b border-black ">
+                <div className="max-w-4xl mx-auto text-center">
+                    <h5 className="text-3xl font-serif">Vos avis</h5>
+                    <p className="mt-4 text-lg text-gray-600">NOTE GENERALE GOOGLE</p>
+                    <ul className="flex justify-center items-center space-x-4 mt-2">
+                        <li className="text-2xl font-bold">4,9/5</li>
+                        <li>
+                            <img
+                                src="https://amantys.fr/wp-content/uploads/2024/06/reviewStar.svg"
+                                alt="Stars"
+                                className="h-4 w-auto"
+                            />
+                        </li>
+                    </ul>
+                </div>
+                <div className="mt-8 max-w-6xl mx-auto">
+                    {/* Here you can implement your carousel; for demonstration, we show static review items */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {[
+                            {
+                                name: "Mitchell Brinkman",
+                                rating: "5/5",
+                                date: "la semaine dernière",
+                                review:
+                                    "Amantys offre un savoir-faire haut de gamme, du professionnalisme et une expérience raffinée mais accessible. L’équipe, en particulier Marie, a travaillé sans relâche pour donner vie à un projet spécial pour ma fiancée et moi. La gentillesse et la richesse des connaissances de Marie étaient évidentes alors qu’elle expliquait tout le processus.",
+                            },
+                            {
+                                name: "Wendy Anani",
+                                rating: "5/5",
+                                date: "la semaine dernière",
+                                review:
+                                    "Un grand merci à l’équipe d’Amantys Paris pour cette expérience inoubliable ! J’ai été accueillie chaleureusement dès mon arrivée pour un essayage de bague de fiançailles. Ma bague est tout simplement sublime, exactement ce dont je rêvais.",
+                            },
+                        ].map((item, idx) => (
+                            <div key={idx} className=" p-6 ">
+                                <h5 className="text-xl font-serif">{item.name}</h5>
+                                <div className="flex items-center justify-between mt-2">
+                                    <span className="text-base font-medium">NOTE : {item.rating}</span>
+                                    <span className="text-sm text-gray-500">{item.date}</span>
+                                </div>
+                                <p className="mt-4 text-gray-700">{item.review}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+
             {/* Footer Navigation */}
             <section className="py-16 border-b border-black">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-10">

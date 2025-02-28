@@ -13,7 +13,7 @@ type LayoutProps = {
 
 export default function Layout({ children, title, description }: LayoutProps) {
     const router = useRouter();
-    const isHomePage = router.pathname === "/";
+    const isProductPage = router.pathname.startsWith("/products/");
 
     return (
         <>
@@ -31,7 +31,7 @@ export default function Layout({ children, title, description }: LayoutProps) {
             <div className="w-full mx-auto px-20 md:px-15" style={{ maxWidth: "95%" }}>
                 <main
                     className={`min-h-screen transition-opacity duration-500 ease-in-out ${
-                        !isHomePage ? "pt-24 md:pt-28" : ""
+                        !!isProductPage ? "pt-24 md:pt-28" : ""
                     }`}
                 >
                     {children}

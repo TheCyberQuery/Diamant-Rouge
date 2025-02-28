@@ -9,7 +9,7 @@ import { useCart } from "../contexts/CartContext";
 import { useWishlist } from "../contexts/WishlistContext";
 import { Menu, X } from "lucide-react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass, faDiamond, faGem } from "@fortawesome/free-solid-svg-icons";
 
 export default function Header() {
     const { data: session } = useSession();
@@ -17,29 +17,30 @@ export default function Header() {
     const { wishlist } = useWishlist();
     const router = useRouter();
     const currentLocale = router.locale || "fr";
-    const isHomePage = router.pathname === "/";
+    const isProductPage = router.pathname.startsWith("/products/");
+    const shouldApplyColorSwitching = !isProductPage;
 
+    // Enhanced French translations with more elegant and poetic language
     const translations = {
         fr: {
-            appointment: "Prendre Rendez-vous",
-            collections: "Collections sur‑mesure",
-            atelier: "Les créations de l’Atelier",
+            appointment: "Réservation Privilège",
+            collections: "Collections sur-mesure",
+            atelier: "L'Art de l'Atelier",
             haute: "Haute Joaillerie",
-            expertise: "Expertise et Savoir‑faire",
-            showrooms: "Showrooms",
-            joaillerie: "Comprendre la joaillerie",
-            guide: "Guide",
-            compte: "Compte",
-            envies: "Envies",
-            panier: "Panier",
-            rechercher: "Rechercher",
+            expertise: "Héritage & Savoir-faire",
+            showrooms: "Écrins de Prestige",
+            joaillerie: "L'Univers des Diamants",
+            guide: "Guide du Connaisseur",
+            compte: "Espace Privilège",
+            envies: "Vos Coups de Cœur",
+            panier: "Votre Écrin",
+            rechercher: "Explorer nos Trésors",
         },
     };
     const t = translations[currentLocale] || translations.fr;
 
     // Local state
     const [menuOpen, setMenuOpen] = useState(false);
-    // Only update the scrolled state based on window scrollY (applies to all pages)
     const [scrolled, setScrolled] = useState(false);
     const [showSearch, setShowSearch] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
@@ -49,15 +50,15 @@ export default function Header() {
     const [activeSubmenu, setActiveSubmenu] = useState({ key: null, left: 0, width: 0 });
     const hideTimeout = useRef(null);
 
-    // Dummy search data (replace with your real API)
-    const dummyData = [
-        "Diamond Ring",
-        "Gold Necklace",
-        "Silver Bracelet",
-        "Platinum Earrings",
-        "Emerald Pendant",
-        "Ruby Brooch",
-        "Sapphire Watch",
+    // Elegant product naming for search
+    const elegantProducts = [
+        "Bague Éternité Diamant",
+        "Collier Héritage Or Rose",
+        "Bracelet Intemporel Platine",
+        "Boucles d'Oreilles Éclat Royal",
+        "Pendentif Émeraude Rêverie",
+        "Broche Rubis Dynastie",
+        "Montre Saphir Prestige",
     ];
 
     // Debounce search update
@@ -67,7 +68,7 @@ export default function Header() {
                 setSearchResults([]);
             } else {
                 setSearchResults(
-                    dummyData.filter((item) =>
+                    elegantProducts.filter((item) =>
                         item.toLowerCase().includes(searchQuery.toLowerCase())
                     )
                 );
@@ -106,77 +107,51 @@ export default function Header() {
         });
     };
 
-    // For logos and icons, use white icons on homepage when not scrolled,
-    // otherwise use black versions.
+    // For logos and icons
     const logoSrc = "/logo11.png";
-    const whatsappIcon = isHomePage
-        ? (scrolled
-            ? "https://amantys.fr/wp-content/uploads/2023/07/Logo-WhatsApp-1-1.svg"
-            : "https://amantys.fr/wp-content/uploads/2023/07/Logo-WhatsApp.svg")
-        : "https://amantys.fr/wp-content/uploads/2023/07/Logo-WhatsApp-1-1.svg";
-    const calendarIcon = isHomePage
-        ? (scrolled
-            ? "https://amantys.fr/wp-content/uploads/2023/07/Calendrier-1.svg"
-            : "https://amantys.fr/wp-content/uploads/2023/07/Calendrier.svg")
-        : "https://amantys.fr/wp-content/uploads/2023/07/Calendrier-1.svg";
-    const guideIcon = isHomePage
-        ? (scrolled
-            ? "https://amantys.fr/wp-content/uploads/2024/06/Diamond-spark-rotation-HD-BLACK-new-1.gif"
-            : "https://amantys.fr/wp-content/uploads/2024/06/Diamond-spark-rotation-HD-WHITE-1-1.gif")
-        : "https://amantys.fr/wp-content/uploads/2024/06/Diamond-spark-rotation-HD-BLACK-new-1.gif";
-    const accountIcon = isHomePage
-        ? (scrolled
-            ? "https://amantys.fr/wp-content/uploads/2023/08/Compte.svg"
-            : "https://amantys.fr/wp-content/uploads/2023/08/Compte_white.svg")
-        : "https://amantys.fr/wp-content/uploads/2023/08/Compte.svg";
-    const enviesIcon = isHomePage
-        ? (scrolled
-            ? "https://amantys.fr/wp-content/uploads/2023/08/Vector-1.svg"
-            : "https://amantys.fr/wp-content/uploads/2023/08/Vector-1_white.svg")
-        : "https://amantys.fr/wp-content/uploads/2023/08/Vector-1.svg";
-    const panierIcon = isHomePage
-        ? (scrolled
-            ? "https://amantys.fr/wp-content/uploads/2023/10/Panier.svg"
-            : "https://amantys.fr/wp-content/uploads/2023/10/Panier.png")
-        : "https://amantys.fr/wp-content/uploads/2023/10/Panier.svg";
 
-    // Define text class:
-    // On homepage, if not scrolled use white text, else black.
-    // On non-home pages, always use black.
-    const defaultTextClass = isHomePage
+    // Custom icon paths - Using better quality static paths instead of external URLs
+    const whatsappIcon = "/images/icons/whatsapp-icon.svg"; // Replace with your local path
+    const calendarIcon = "/images/icons/calendar-icon.svg"; // Replace with your local path
+    const guideIcon = "/images/icons/diamond-guide-icon.svg"; // Replace with your local path
+    const accountIcon = "/images/icons/account-icon.svg"; // Replace with your local path
+    const enviesIcon = "/images/icons/wishlist-icon.svg"; // Replace with your local path
+    const panierIcon = "/images/icons/cart-icon.svg"; // Replace with your local path
+
+    const defaultTextClass = shouldApplyColorSwitching
         ? (scrolled ? "text-richEbony" : "text-white")
         : "text-richEbony";
 
-    // Submenu content mapping
+    // Enhanced submenu content with more elegant descriptions
     const submenuContent = {
         atelier: [
-            { href: "/atelier-creations/inspirations", label: "Inspirations" },
-            { href: "/atelier-creations/engagement-rings", label: "Bagues de fiançailles" },
-            { href: "/atelier-creations/pre-proposal-rings", label: "Bagues de pré‑demande" },
-            { href: "/atelier-creations/alliances", label: "Alliances pour elle & pour lui" },
-            { href: "/atelier-creations/necklaces", label: "Colliers" },
-            { href: "/atelier-creations/bracelets", label: "Bracelets" },
-            { href: "/atelier-creations/earrings", label: "Boucles d’oreilles" },
+            { href: "/atelier-creations/inspirations", label: "Sources d'Inspiration" },
+            { href: "/atelier-creations/engagement-rings", label: "Bagues de Fiançailles d'Exception" },
+            { href: "/atelier-creations/pre-proposal-rings", label: "Bagues de Pré-Demande Sentimentales" },
+            { href: "/atelier-creations/alliances", label: "Alliances Éternelles" },
+            { href: "/atelier-creations/necklaces", label: "Colliers Précieux" },
+            { href: "/atelier-creations/bracelets", label: "Bracelets Rafffinés" },
+            { href: "/atelier-creations/earrings", label: "Boucles d'Oreilles Éblouissantes" },
         ],
         expertise: [
-            { href: "/expertise/diamonds", label: "L’essentiel du diamant" },
-            { href: "/expertise/ethical-diamonds", label: "Diamants éthiques d’exception" },
-            { href: "/expertise/custom-service", label: "Notre service sur‑mesure" },
-            { href: "/expertise/artisanal", label: "Confection artisanale à Paris" },
-            { href: "/expertise/quality", label: "Qualité au meilleur prix" },
-            { href: "/about-us", label: "Histoire de la Maison" },
+            { href: "/expertise/diamonds", label: "L'Âme du Diamant" },
+            { href: "/expertise/ethical-diamonds", label: "Diamants Éthiques d'Exception" },
+            { href: "/expertise/custom-service", label: "L'Art du Sur-Mesure" },
+            { href: "/expertise/artisanal", label: "Confection Artisanale Parisienne" },
+            { href: "/expertise/quality", label: "Excellence au Prix Juste" },
+            { href: "/about-us", label: "Histoire et Héritage de la Maison" },
         ],
         showrooms: [
-            { href: "/showrooms/paris", label: "Paris – l’Atelier" },
-            { href: "/showrooms/bordeaux", label: "Bordeaux" },
-            { href: "/showrooms/virtual", label: "En visio" },
+            { href: "/showrooms/paris", label: "Paris – Le Cœur de la Maison" },
+            { href: "/showrooms/bordeaux", label: "Bordeaux – L'Écrin du Sud-Ouest" },
+            { href: "/showrooms/virtual", label: "Rendez-vous Virtuel Personnalisé" },
         ],
         joaillerie: [
-            { href: "/joaillerie/engagement-guide", label: "Guide fiançailles & mariage" },
-            { href: "/joaillerie/custom-gifts", label: "Cadeaux sur‑mesure" },
-            { href: "/joaillerie/diamond-science", label: "Science des diamants" },
-            { href: "/joaillerie/tips", label: "Tuto & conseils" },
-            { href: "/joaillerie/news", label: "Actualités" },
+            { href: "/joaillerie/engagement-guide", label: "Art des Fiançailles & du Mariage" },
+            { href: "/joaillerie/custom-gifts", label: "Cadeaux d'Exception Sur-Mesure" },
+            { href: "/joaillerie/diamond-science", label: "Science et Poésie des Diamants" },
+            { href: "/joaillerie/tips", label: "Conseils de Joailliers" },
+            { href: "/joaillerie/news", label: "Journal de la Maison" },
         ],
     };
 
@@ -214,8 +189,8 @@ export default function Header() {
 
     return (
         <header
-            className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-                scrolled ? "bg-brandIvory" : "bg-transparent"
+            className={`fixed top-0 w-full z-50 transition-all duration-700 ${
+                scrolled ? "bg-brandIvory shadow-lg" : "bg-transparent"
             }`}
         >
             {/* Unified (top) Navigation Bar */}
@@ -226,13 +201,13 @@ export default function Header() {
                         href="https://api.whatsapp.com/send/?phone=744094495&text"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="hover:opacity-80 transition"
+                        className="hover:opacity-80 transition-all duration-300 hover:scale-110"
                     >
                         <Image src={whatsappIcon} alt="WhatsApp" width={27} height={27} />
                     </a>
                     <Link
                         href="/appointments"
-                        className={`flex items-center transition hover:text-brandGold ${defaultTextClass}`}
+                        className={`flex items-center transition-all duration-300 hover:text-brandGold hover:scale-105 ${defaultTextClass}`}
                     >
                         <Image
                             src={calendarIcon}
@@ -241,23 +216,25 @@ export default function Header() {
                             height={27}
                             className="mr-2"
                         />
-                        <span className="ml-1 hidden md:inline text-sm font-medium">
-              {t.appointment}
-            </span>
+                        <span className="ml-1 hidden md:inline text-sm font-medium font-didot">
+                            {t.appointment}
+                        </span>
                     </Link>
                 </div>
 
-                {/* Center Column: Logo */}
+                {/* Center Column: Logo with subtle animation */}
                 <div className="flex justify-center pt-7">
                     <Link href="/">
-                        <Image
-                            src={logoSrc}
-                            alt="Diamant Rouge"
-                            width={333}
-                            height={30}
-                            priority
-                            className="object-contain"
-                        />
+                        <div className="transition-all duration-500 hover:opacity-90 hover:scale-105">
+                            <Image
+                                src={logoSrc}
+                                alt="Diamant Rouge"
+                                width={333}
+                                height={30}
+                                priority
+                                className="object-contain"
+                            />
+                        </div>
                     </Link>
                 </div>
 
@@ -266,36 +243,52 @@ export default function Header() {
                     <div className="hidden md:flex items-center space-x-6">
                         <Link
                             href="https://www.youtube.com/playlist?list=PLAbU-g895HAqhHQRmYZbgbKa3A8u4utII"
-                            className={`flex items-center transition hover:text-brandGold ${defaultTextClass}`}
+                            className={`flex items-center transition-all duration-300 hover:text-brandGold hover:scale-105 ${defaultTextClass}`}
                             target="_blank"
                         >
-                            <Image src={guideIcon} alt={t.guide} width={30} height={30} />
-                            <span className="ml-1 text-sm font-medium">{t.guide}</span>
+                            <div className="relative">
+                                <Image src={guideIcon} alt={t.guide} width={30} height={30} />
+                                <span className="absolute -top-1 -right-1 flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                                </span>
+                            </div>
+                            <span className="ml-1 text-sm font-medium font-didot">{t.guide}</span>
                         </Link>
                         <Link
-                            href="/mon-panque"
-                            className={`flex items-center transition hover:text-brandGold ${defaultTextClass}`}
+                            href="/mon-compte"
+                            className={`flex items-center transition-all duration-300 hover:text-brandGold hover:scale-105 ${defaultTextClass}`}
                         >
                             <Image src={accountIcon} alt={t.compte} width={20} height={20} />
-                            <span className="ml-1 text-sm font-medium">{t.compte}</span>
+                            <span className="ml-1 text-sm font-medium font-didot">{t.compte}</span>
                         </Link>
                         <button
                             onClick={() => {
                                 /* Open wishlist modal if needed */
                             }}
-                            className={`flex items-center transition hover:text-brandGold ${defaultTextClass}`}
+                            className={`flex items-center transition-all duration-300 hover:text-brandGold hover:scale-105 ${defaultTextClass} relative`}
                         >
                             <Image src={enviesIcon} alt={t.envies} width={20} height={20} />
-                            <span className="ml-1 text-sm font-medium">{t.envies}</span>
+                            <span className="ml-1 text-sm font-medium font-didot">{t.envies}</span>
+                            {wishlist.length > 0 && (
+                                <span className="absolute -top-2 -right-2 flex items-center justify-center h-5 w-5 text-xs rounded-full bg-red-600 text-white">
+                                    {wishlist.length}
+                                </span>
+                            )}
                         </button>
                         <Link
                             href="/mon-panier"
-                            className={`flex items-center transition hover:text-brandGold ${defaultTextClass}`}
+                            className={`flex items-center transition-all duration-300 hover:text-brandGold hover:scale-105 ${defaultTextClass} relative`}
                         >
                             <Image src={panierIcon} alt={t.panier} width={21} height={22} />
-                            <span className="ml-1 text-sm font-medium">
-                {t.panier} ({cart.length})
-              </span>
+                            <span className="ml-1 text-sm font-medium font-didot">
+                                {t.panier}
+                            </span>
+                            {cart.length > 0 && (
+                                <span className="absolute -top-2 -right-2 flex items-center justify-center h-5 w-5 text-xs rounded-full bg-red-600 text-white">
+                                    {cart.length}
+                                </span>
+                            )}
                         </Link>
                     </div>
                     <button
@@ -306,24 +299,24 @@ export default function Header() {
                         {menuOpen ? (
                             <X
                                 size={26}
-                                className={
-                                    isHomePage
+                                className={`transition-all duration-300 ${
+                                    shouldApplyColorSwitching
                                         ? scrolled
                                             ? "text-richEbony"
                                             : "text-white"
                                         : "text-richEbony"
-                                }
+                                }`}
                             />
                         ) : (
                             <Menu
                                 size={26}
-                                className={
-                                    isHomePage
+                                className={`transition-all duration-300 ${
+                                    shouldApplyColorSwitching
                                         ? scrolled
                                             ? "text-richEbony"
                                             : "text-white"
                                         : "text-richEbony"
-                                }
+                                }`}
                             />
                         )}
                     </button>
@@ -338,7 +331,7 @@ export default function Header() {
                             <li>
                                 <Link
                                     href="/custom-collections"
-                                    className={`block py-2 text-base font-medium transition hover:text-brandGold ${defaultTextClass}`}
+                                    className={`block py-2 text-base font-didot font-medium transition-all duration-300 hover:text-brandGold hover:scale-105 ${defaultTextClass}`}
                                 >
                                     {t.collections}
                                 </Link>
@@ -353,16 +346,22 @@ export default function Header() {
                             >
                                 <Link
                                     href="/atelier-creations"
-                                    className={`block py-2 text-base font-medium transition hover:text-brandGold ${defaultTextClass}`}
+                                    className={`block py-2 text-base font-didot font-medium transition-all duration-300 hover:text-brandGold hover:scale-105 ${defaultTextClass} group`}
                                 >
-                                    {t.atelier}
+                                    <span className="inline-flex items-center">
+                                        {t.atelier}
+                                        <FontAwesomeIcon
+                                            icon={faGem}
+                                            className="ml-2 h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                        />
+                                    </span>
                                 </Link>
                             </li>
 
                             <li>
                                 <Link
                                     href="/haute-joaillerie"
-                                    className={`block py-2 text-base font-medium transition hover:text-brandGold ${defaultTextClass}`}
+                                    className={`block py-2 text-base font-didot font-medium transition-all duration-300 hover:text-brandGold hover:scale-105 ${defaultTextClass}`}
                                 >
                                     {t.haute}
                                 </Link>
@@ -377,9 +376,15 @@ export default function Header() {
                             >
                                 <Link
                                     href="/expertise"
-                                    className={`block py-2 text-base font-medium transition hover:text-brandGold ${defaultTextClass}`}
+                                    className={`block py-2 text-base font-didot font-medium transition-all duration-300 hover:text-brandGold hover:scale-105 ${defaultTextClass} group`}
                                 >
-                                    {t.expertise}
+                                    <span className="inline-flex items-center">
+                                        {t.expertise}
+                                        <FontAwesomeIcon
+                                            icon={faGem}
+                                            className="ml-2 h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                        />
+                                    </span>
                                 </Link>
                             </li>
 
@@ -392,9 +397,15 @@ export default function Header() {
                             >
                                 <Link
                                     href="/showrooms"
-                                    className={`block py-2 text-base font-medium transition hover:text-brandGold ${defaultTextClass}`}
+                                    className={`block py-2 text-base font-didot font-medium transition-all duration-300 hover:text-brandGold hover:scale-105 ${defaultTextClass} group`}
                                 >
-                                    {t.showrooms}
+                                    <span className="inline-flex items-center">
+                                        {t.showrooms}
+                                        <FontAwesomeIcon
+                                            icon={faGem}
+                                            className="ml-2 h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                        />
+                                    </span>
                                 </Link>
                             </li>
 
@@ -407,9 +418,15 @@ export default function Header() {
                             >
                                 <Link
                                     href="/joaillerie"
-                                    className={`block py-2 text-base font-medium transition hover:text-brandGold ${defaultTextClass}`}
+                                    className={`block py-2 text-base font-didot font-medium transition-all duration-300 hover:text-brandGold hover:scale-105 ${defaultTextClass} group`}
                                 >
-                                    {t.joaillerie}
+                                    <span className="inline-flex items-center">
+                                        {t.joaillerie}
+                                        <FontAwesomeIcon
+                                            icon={faGem}
+                                            className="ml-2 h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                        />
+                                    </span>
                                 </Link>
                             </li>
 
@@ -417,30 +434,30 @@ export default function Header() {
                             <li>
                                 <button
                                     onClick={() => setShowSearch(!showSearch)}
-                                    className="focus:outline-none relative top-2"
+                                    className="focus:outline-none relative top-2 transition-all duration-300 hover:scale-110"
                                 >
                                     {showSearch ? (
                                         <X
                                             size={26}
-                                            className={
-                                                isHomePage
+                                            className={`transition-all duration-300 ${
+                                                shouldApplyColorSwitching
                                                     ? scrolled
                                                         ? "text-richEbony"
                                                         : "text-white"
                                                     : "text-richEbony"
-                                            }
+                                            }`}
                                         />
                                     ) : (
                                         <FontAwesomeIcon
                                             icon={faMagnifyingGlass}
                                             size="lg"
-                                            className={
-                                                isHomePage
+                                            className={`transition-all duration-300 ${
+                                                shouldApplyColorSwitching
                                                     ? scrolled
                                                         ? "text-richEbony"
                                                         : "text-white"
                                                     : "text-richEbony"
-                                            }
+                                            }`}
                                         />
                                     )}
                                 </button>
@@ -449,33 +466,44 @@ export default function Header() {
                     </nav>
                 </div>
 
-                {/* Extended panel for Search or Submenu */}
+                {/* Enhanced Panel for Search or Submenu with elegant transitions */}
                 {showSearch ? (
                     <div
-                        className={`absolute left-0 top-full w-full transition-all duration-500 ${
-                            scrolled ? "bg-brandIvory" : "bg-transparent"
+                        className={`absolute left-0 top-full w-full transition-all duration-700 ${
+                            scrolled ? "bg-brandIvory/95 backdrop-blur-sm" : "bg-black/80 backdrop-blur-sm"
                         } animate-slideDownRefined`}
                         style={{ animationDuration: "1.8s" }}
                     >
-                        <div className="container mx-auto px-6 pt-6 pb-3 flex flex-col space-y-4">
-                            <div className="w-full">
-                                <input
-                                    type="search"
-                                    placeholder={t.rechercher}
-                                    className="w-full input-field py-1 px-3 text-base font-medium rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brandGold transition"
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    autoFocus
-                                />
+                        <div className="container mx-auto px-6 pt-6 pb-6 flex flex-col space-y-4">
+                            <div className="w-full max-w-2xl mx-auto">
+                                <div className="relative">
+                                    <input
+                                        type="search"
+                                        placeholder={t.rechercher}
+                                        className="w-full input-field py-3 px-5 text-base font-didot font-medium rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-brandGold transition-all duration-300"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        autoFocus
+                                    />
+                                    <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                                        <FontAwesomeIcon
+                                            icon={faDiamond}
+                                            size="sm"
+                                            className="text-brandGold"
+                                        />
+                                    </div>
+                                </div>
                             </div>
-                            <div className="w-full">
+                            <div className="w-full max-w-2xl mx-auto">
                                 {searchResults.length > 0 ? (
-                                    <ul className="space-y-1">
+                                    <ul className="space-y-2">
                                         {searchResults.map((result, idx) => (
                                             <li key={idx}>
                                                 <Link
                                                     href={`/search?query=${encodeURIComponent(result)}`}
-                                                    className={`block px-2 py-1 text-sm transition-all duration-700 ease-out hover:scale-105 hover:bg-brandGold hover:text-richEbony ${defaultTextClass}`}
+                                                    className={`block px-4 py-2 text-sm font-didot transition-all duration-500 ease-out hover:scale-105 hover:bg-brandGold hover:text-richEbony ${
+                                                        scrolled ? "text-richEbony" : "text-white"
+                                                    } rounded-md`}
                                                 >
                                                     {result}
                                                 </Link>
@@ -484,7 +512,11 @@ export default function Header() {
                                     </ul>
                                 ) : (
                                     searchQuery.trim() !== "" && (
-                                        <p className="text-sm text-gray-500">No results found.</p>
+                                        <p className={`text-sm font-didot italic ${
+                                            scrolled ? "text-gray-600" : "text-gray-300"
+                                        }`}>
+                                            Aucun résultat trouvé pour votre recherche.
+                                        </p>
                                     )
                                 )}
                             </div>
@@ -493,22 +525,24 @@ export default function Header() {
                 ) : (
                     activeSubmenu.key && (
                         <div
-                            className={`absolute left-0 top-full w-full transition-all duration-500 ${
-                                scrolled ? "bg-brandIvory" : "bg-transparent"
+                            className={`absolute left-0 top-full w-full transition-all duration-700 ${
+                                scrolled ? "bg-brandIvory/95 backdrop-blur-sm" : "bg-black/80 backdrop-blur-sm"
                             } animate-slideDownRefined`}
                             style={{ animationDuration: "1.8s" }}
                             onMouseEnter={handleSubmenuEnter}
                             onMouseLeave={handleMouseLeave}
                         >
-                            <div className="container pb-3">
+                            <div className="container pb-4 pt-2">
                                 <div className="relative">
                                     <div style={{ marginLeft: activeSubmenu.left, width: activeSubmenu.width }}>
-                                        <ul className="space-y-0.5">
+                                        <ul className="space-y-1">
                                             {submenuContent[activeSubmenu.key]?.map((item, idx) => (
                                                 <li key={idx}>
                                                     <Link
                                                         href={item.href}
-                                                        className={`block px-2 py-1 text-sm transition-all duration-700 ease-out hover:scale-105 hover:bg-brandGold hover:text-richEbony ${defaultTextClass}`}
+                                                        className={`block px-3 py-2 text-sm font-didot transition-all duration-500 ease-out hover:scale-105 hover:bg-brandGold hover:text-richEbony ${
+                                                            scrolled ? "text-richEbony" : "text-white"
+                                                        } rounded-md`}
                                                     >
                                                         {item.label}
                                                     </Link>
@@ -521,6 +555,113 @@ export default function Header() {
                         </div>
                     )
                 )}
+            </div>
+
+            {/* Mobile Menu - Slide from side */}
+            <div
+                className={`fixed inset-0 bg-black/70 backdrop-blur-md z-50 transition-all duration-500 
+                    ${menuOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+                onClick={() => setMenuOpen(false)}
+            >
+                <div
+                    className={`absolute top-0 right-0 w-3/4 h-full bg-brandIvory transition-all duration-500 transform
+                        ${menuOpen ? "translate-x-0" : "translate-x-full"}`}
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <div className="flex justify-end p-6">
+                        <button onClick={() => setMenuOpen(false)}>
+                            <X size={24} className="text-richEbony" />
+                        </button>
+                    </div>
+
+                    <div className="px-6 py-4">
+                        <ul className="space-y-6">
+                            <li>
+                                <Link
+                                    href="/custom-collections"
+                                    className="block py-2 text-lg font-didot font-medium text-richEbony hover:text-brandGold transition-colors"
+                                    onClick={() => setMenuOpen(false)}
+                                >
+                                    {t.collections}
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/atelier-creations"
+                                    className="block py-2 text-lg font-didot font-medium text-richEbony hover:text-brandGold transition-colors"
+                                    onClick={() => setMenuOpen(false)}
+                                >
+                                    {t.atelier}
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/haute-joaillerie"
+                                    className="block py-2 text-lg font-didot font-medium text-richEbony hover:text-brandGold transition-colors"
+                                    onClick={() => setMenuOpen(false)}
+                                >
+                                    {t.haute}
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/expertise"
+                                    className="block py-2 text-lg font-didot font-medium text-richEbony hover:text-brandGold transition-colors"
+                                    onClick={() => setMenuOpen(false)}
+                                >
+                                    {t.expertise}
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/showrooms"
+                                    className="block py-2 text-lg font-didot font-medium text-richEbony hover:text-brandGold transition-colors"
+                                    onClick={() => setMenuOpen(false)}
+                                >
+                                    {t.showrooms}
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/joaillerie"
+                                    className="block py-2 text-lg font-didot font-medium text-richEbony hover:text-brandGold transition-colors"
+                                    onClick={() => setMenuOpen(false)}
+                                >
+                                    {t.joaillerie}
+                                </Link>
+                            </li>
+                        </ul>
+
+                        <div className="mt-12 space-y-6">
+                            <Link
+                                href="/mon-compte"
+                                className="flex items-center text-richEbony hover:text-brandGold transition-colors"
+                                onClick={() => setMenuOpen(false)}
+                            >
+                                <Image src={accountIcon} alt={t.compte} width={20} height={20} className="mr-3" />
+                                <span className="text-base font-didot">{t.compte}</span>
+                            </Link>
+
+                            <Link
+                                href="/mon-panier"
+                                className="flex items-center text-richEbony hover:text-brandGold transition-colors"
+                                onClick={() => setMenuOpen(false)}
+                            >
+                                <Image src={panierIcon} alt={t.panier} width={20} height={20} className="mr-3" />
+                                <span className="text-base font-didot">{t.panier} ({cart.length})</span>
+                            </Link>
+
+                            <Link
+                                href="/appointments"
+                                className="flex items-center text-richEbony hover:text-brandGold transition-colors"
+                                onClick={() => setMenuOpen(false)}
+                            >
+                                <Image src={calendarIcon} alt="Calendrier" width={20} height={20} className="mr-3" />
+                                <span className="text-base font-didot">{t.appointment}</span>
+                            </Link>
+                        </div>
+                    </div>
+                </div>
             </div>
         </header>
     );

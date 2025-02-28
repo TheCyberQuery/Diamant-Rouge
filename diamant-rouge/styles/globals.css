@@ -1,3 +1,151 @@
+/* Add Font family Start */
+@import url("https://fonts.googleapis.com/css2?family=Kalam:wght@300;400;700&family=Qwitcher+Grypen:wght@400;700&display=swap");
+
+@font-face {
+    font-family: "railway-bold";
+    src: url("../fonts/raleway/Raleway-Bold.eot");
+    src: url("../fonts/raleway/Raleway-Boldd41d.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/raleway/Raleway-Bold.woff2") format("woff2"),
+    url("../fonts/raleway/Raleway-Bold.woff") format("woff"),
+    url("../fonts/raleway/Raleway-Bold.ttf") format("truetype"),
+    url("../fonts/raleway/Raleway-Bold.svg#Raleway-Bold") format("svg");
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "railway-extrabold";
+    src: url("../fonts/raleway/Raleway-ExtraBold.eot");
+    src: url("../fonts/raleway/Raleway-ExtraBoldd41d.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/raleway/Raleway-ExtraBold.woff2") format("woff2"),
+    url("../fonts/raleway/Raleway-ExtraBold.woff") format("woff"),
+    url("../fonts/raleway/Raleway-ExtraBold.ttf") format("truetype"),
+    url("../fonts/raleway/Raleway-ExtraBold.svg#Raleway-ExtraBold") format("svg");
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "railway-light";
+    src: url("../fonts/raleway/Raleway-Light.eot");
+    src: url("../fonts/raleway/Raleway-Lightd41d.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/raleway/Raleway-Light.woff2") format("woff2"),
+    url("../fonts/raleway/Raleway-Light.woff") format("woff"),
+    url("../fonts/raleway/Raleway-Light.ttf") format("truetype"),
+    url("../fonts/raleway/Raleway-Light.svg#Raleway-Light") format("svg");
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "railway-med";
+    src: url("../fonts/raleway/Raleway-Medium.eot");
+    src: url("../fonts/raleway/Raleway-Mediumd41d.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/raleway/Raleway-Medium.woff2") format("woff2"),
+    url("../fonts/raleway/Raleway-Medium.woff") format("woff"),
+    url("../fonts/raleway/Raleway-Medium.ttf") format("truetype"),
+    url("../fonts/raleway/Raleway-Medium.svg#Raleway-Medium") format("svg");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "railway-semibold";
+    src: url("../fonts/raleway/Raleway-SemiBold.eot");
+    src: url("../fonts/raleway/Raleway-SemiBoldd41d.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/raleway/Raleway-SemiBold.woff2") format("woff2"),
+    url("../fonts/raleway/Raleway-SemiBold.woff") format("woff"),
+    url("../fonts/raleway/Raleway-SemiBold.ttf") format("truetype"),
+    url("../fonts/raleway/Raleway-SemiBold.svg#Raleway-SemiBold") format("svg");
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "railway-reg";
+    src: url("../fonts/raleway/Raleway-Regular.eot");
+    src: url("../fonts/raleway/Raleway-Regulard41d.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/raleway/Raleway-Regular.woff2") format("woff2"),
+    url("../fonts/raleway/Raleway-Regular.woff") format("woff"),
+    url("../fonts/raleway/Raleway-Regular.ttf") format("truetype"),
+    url("../fonts/raleway/Raleway-Regular.svg#Raleway-Regular") format("svg");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "didot-ibold";
+    src: url("../fonts/didot-webfont/Didot-HTF-B16-Bold-Ital.eot");
+    src: url("../fonts/didot-webfont/Didot-HTF-B16-Bold-Itald41d.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/didot-webfont/Didot-HTF-B16-Bold-Ital.woff2") format("woff2"),
+    url("../fonts/didot-webfont/Didot-HTF-B16-Bold-Ital.woff") format("woff"),
+    url("../fonts/didot-webfont/Didot-HTF-B16-Bold-Ital.ttf") format("truetype"),
+    url("../fonts/didot-webfont/Didot-HTF-B16-Bold-Ital.svg#Didot-HTF-B16-Bold-Ital") format("svg");
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "didot-bold";
+    src: url("../fonts/didot-webfont/DidotLTStd-Bold.eot");
+    src: url("../fonts/didot-webfont/DidotLTStd-Boldd41d.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/didot-webfont/DidotLTStd-Bold.woff2") format("woff2"),
+    url("../fonts/didot-webfont/DidotLTStd-Bold.woff") format("woff"),
+    url("../fonts/didot-webfont/DidotLTStd-Bold.ttf") format("truetype"),
+    url("../fonts/didot-webfont/DidotLTStd-Bold.svg#DidotLTStd-Bold") format("svg");
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "didot-i";
+    src: url("../fonts/didot-webfont/DidotLTStd-Italic.eot");
+    src: url("../fonts/didot-webfont/DidotLTStd-Italicd41d.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/didot-webfont/DidotLTStd-Italic.woff2") format("woff2"),
+    url("../fonts/didot-webfont/DidotLTStd-Italic.woff") format("woff"),
+    url("../fonts/didot-webfont/DidotLTStd-Italic.ttf") format("truetype"),
+    url("../fonts/didot-webfont/DidotLTStd-Italic.svg#DidotLTStd-Italic") format("svg");
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "didot-med";
+    src: url("../fonts/didot-webfont/Didot-HTF-M96-Medium.eot");
+    src: url("../fonts/didot-webfont/Didot-HTF-M96-Mediumd41d.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/didot-webfont/Didot-HTF-M96-Medium.woff2") format("woff2"),
+    url("../fonts/didot-webfont/Didot-HTF-M96-Medium.woff") format("woff"),
+    url("../fonts/didot-webfont/Didot-HTF-M96-Medium.ttf") format("truetype"),
+    url("../fonts/didot-webfont/Didot-HTF-M96-Medium.svg#Didot-HTF-M96-Medium") format("svg");
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "didot";
+    src: url("../fonts/didot-webfont/Didot.eot");
+    src: url("../fonts/didot-webfont/Didotd41d.eot?#iefix") format("embedded-opentype"),
+    url("../fonts/didot-webfont/Didot.woff2") format("woff2"),
+    url("../fonts/didot-webfont/Didot.woff") format("woff"),
+    url("../fonts/didot-webfont/Didot.ttf") format("truetype"),
+    url("../fonts/didot-webfont/Didot.svg#Didot") format("svg");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Add Font family End */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -17,71 +165,71 @@
    📌 Base Typography & Layout (LIGHT MODE DEFAULT)
    ========================================================== */
 body {
-    @apply bg-brandIvory text-richEbony font-serif tracking-wide leading-relaxed;
+    @apply bg-brandIvory text-richEbony font-body tracking-wide leading-relaxed;
 }
 
-/* Headings use the brand gold */
-h1, h2, h3, h4, h5 {
-    @apply text-brandGold font-bold tracking-wide;
+h1 {
+    /* Use the "railway-reg" font for h1 */
+    @apply text-brandGold font-body font-bold tracking-wide text-h1;
 }
 
-h1 { @apply text-5xl md:text-7xl leading-tight; }
-h2 { @apply text-4xl md:text-6xl leading-snug; }
-h3 { @apply text-3xl md:text-5xl leading-snug; }
-h4 { @apply text-2xl md:text-4xl leading-snug; }
-h5 { @apply text-xl md:text-2xl leading-normal; }
+h2 {
+    /* Use the "didot" font for h2 */
+    @apply font-heading;
+}
 
-/* Paragraphs styled in platinum gray for subtle contrast */
+h3, h4, h5 {
+    @apply text-brandGold font-heading font-bold tracking-wide;
+}
+
 p {
     @apply text-platinumGray text-lg leading-relaxed;
+}
+
+h1, h2 {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
 
 /* ==========================================================
    🔥 Custom Components (Buttons, Cards, etc.)
    ========================================================== */
 @layer components {
-    /* 🎭 Primary Action Button */
     .button-primary {
         @apply bg-brandGold text-richEbony px-6 py-3 rounded-full font-medium
         hover:bg-burgundy hover:text-brandIvory transition duration-300
         shadow-luxury focus:ring-2 focus:ring-brandGold;
     }
 
-    /* 🏛️ Secondary Action Button */
     .button-secondary {
         @apply bg-transparent border border-brandGold text-brandGold px-6 py-3
         rounded-full font-medium hover:bg-brandGold hover:text-richEbony transition duration-300;
     }
 
-    /* Disabled Button Styles */
     .button-primary:disabled,
     .button-secondary:disabled {
         @apply bg-gray-400 text-gray-100 cursor-not-allowed opacity-50;
     }
 
-    /* 🖼️ Luxury Card Component */
     .card {
         @apply bg-brandIvory border border-brandGold text-richEbony rounded-lg
         shadow-luxury p-6 transition-transform hover:scale-105 duration-300;
     }
 
-    /* ✨ Custom Input Field */
     .input-field {
         @apply bg-transparent border border-brandGold text-richEbony px-4 py-2 rounded-lg
         focus:border-brandGold focus:ring focus:ring-brandGold transition duration-300;
     }
 
-    /* 🔘 Alert Box */
     .alert {
         @apply bg-burgundy text-brandIvory px-4 py-3 rounded-lg font-medium;
     }
 
-    /* 🖥️ Hover Scale Effect */
     .hover-scale {
         @apply transition-transform duration-300 hover:scale-105;
     }
 
-    /* 🔲 Dropdown Menu */
     .dropdown-menu {
         @apply absolute left-0 mt-2 w-56 bg-brandIvory text-richEbony shadow-lg opacity-0
         transform translate-y-4 scale-95 transition-all duration-500 rounded-lg
@@ -99,7 +247,6 @@ p {
     @apply bg-richEbony text-brandIvory;
 }
 
-/* Keep headings gold in dark mode */
 .dark h1,
 .dark h2,
 .dark h3,
@@ -108,17 +255,14 @@ p {
     @apply text-brandGold;
 }
 
-/* Card styling for dark mode */
 .dark .card {
     @apply bg-richEbony border-brandGold text-brandIvory;
 }
 
-/* Input fields in dark mode */
 .dark .input-field {
     @apply text-brandIvory border-brandGold focus:border-brandGold;
 }
 
-/* Buttons in dark mode */
 .dark .button-primary {
     @apply bg-brandGold text-richEbony hover:bg-burgundy hover:text-brandIvory;
 }
@@ -126,7 +270,6 @@ p {
     @apply border-brandGold text-brandGold hover:bg-brandGold hover:text-richEbony;
 }
 
-/* Dropdown in dark mode */
 .dark .dropdown-menu {
     @apply bg-richEbony text-brandIvory;
 }

@@ -2,7 +2,7 @@
 const defaultTheme = require('tailwindcss/defaultTheme')
 
 module.exports = {
-  darkMode: 'class', // Activate dark mode via a .dark class
+  darkMode: 'class', // Enable dark mode via a .dark class
   content: [
     './pages/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
@@ -10,7 +10,6 @@ module.exports = {
     './styles/globals.css',
   ],
   safelist: [
-    // Safelist your dynamically added classes
     'button-primary',
     'button-secondary',
     'card',
@@ -27,21 +26,35 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Custom brand colors
-        brandIvory: '#FAF3E3', // Light ivory background
-        brandGold: '#D4AF37',  // Luxurious gold accents
-        burgundy: '#6A0F23',   // Rich accent for hovers & dark sections
-        richEbony: '#0A0A0A',  // Dark text for light mode; switch to gold headings in dark mode
+        brandIvory: '#FAF3E3',
+        brandGold: '#D4AF37',
+        burgundy: '#6A0F23',
+        richEbony: '#0A0A0A',
         deepBlack: '#0C0C0C',
         platinumGray: '#B0B0B0',
         diamondWhite: '#FCFCFC',
         ivory: '#FFFFF0',
+        white: '#FFFFFF',
       },
       fontFamily: {
-        sans: ['railway-reg', ...defaultTheme.fontFamily.sans],
-        serif: ['railway-reg', ...defaultTheme.fontFamily.serif],
+        // Use the website’s body font ("railway-reg") and for headings the Didot family
+        body: ['"railway-reg"', ...defaultTheme.fontFamily.sans],
+        heading: ['"didot"'],
+        'railway-bold': ['"railway-bold"', ...defaultTheme.fontFamily.sans],
+        'railway-light': ['"railway-light"', ...defaultTheme.fontFamily.sans],
+        'railway-med': ['"railway-med"', ...defaultTheme.fontFamily.sans],
+        'railway-semibold': ['"railway-semibold"', ...defaultTheme.fontFamily.sans],
+        'didot-bold': ['"didot-bold"', ...defaultTheme.fontFamily.serif],
+        'didot-i': ['"didot-i"', ...defaultTheme.fontFamily.serif],
+        'didot-med': ['"didot-med"', ...defaultTheme.fontFamily.serif],
       },
       fontSize: {
+        'h1': ['3.75rem', { lineHeight: '4.3rem' }],   // ~60px
+        'h2': ['2.8125rem', { lineHeight: '3.4375rem' }], // ~45px
+        'h3': ['2.25rem', { lineHeight: '2.75rem' }],    // ~36px
+        'h4': ['1.875rem', { lineHeight: '2.375rem' }],   // ~30px
+        'h5': ['1.5rem', { lineHeight: '2rem' }],         // ~24px
+        // Keep the original extended sizes
         '6.5xl': '4rem',
         '7.5xl': '5.25rem',
         '8xl': '6rem',
